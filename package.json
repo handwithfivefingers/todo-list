@@ -1,5 +1,6 @@
 {
   "name": "todo-list",
+  "homepage": "https://handwithfivefingers.github.io/todo-list/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,6 +10,7 @@
     "antd": "^4.16.8",
     "axios": "^0.21.1",
     "formik": "^2.2.9",
+    "gh-pages": "^3.2.3",
     "json-server": "^0.16.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -21,11 +23,14 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "concurrently \" npm run sv \" \" react-scripts start \"",
-    "build": "react-scripts build && npm run sv",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "sv": "json-server --watch ./server/db.json --port 3002"
+    "sv": "json-server --watch ./server/db.json --port 3002",
+    "dev": "concurrently \" npm run sv \" \" npm start \"",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
