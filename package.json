@@ -1,6 +1,6 @@
 {
   "name": "todo-list",
-  "homepage": "https://handwithfivefingers.github.io/todo-list/",
+  "homepage": "https://todo-list-lyart-nine.vercel.app/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
