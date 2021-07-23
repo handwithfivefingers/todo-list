@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "concurrently \" npm run sv \" \" react-scripts start \"",
-    "build": "react-scripts build",
+    "build": "concurrently \" npm run sv \" \" react-scripts build \"",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "sv": "json-server --watch ./server/db.json --port 3002"
