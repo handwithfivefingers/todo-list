@@ -1,23 +1,27 @@
+import { Button, Col } from 'antd';
 import React, { Component } from 'react';
-import { Col, Button, Tooltip } from 'antd';
-import TaskItem from '../TaskItem';
-import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
+import { bindActionCreators, compose } from 'redux';
+import TaskItem from '../TaskItem';
 import { ModalAction } from './../../actions';
-import ModalForm from '../Layout/UI/ModalForm';
+// import ModalForm from '../Layout/UI/ModalForm';
 class TaskList extends Component {
+
   renderCardItem = () => {
-    let xhtml = [];
-    const { task } = this.props;
-    xhtml = task.map((item) => {
-      return <TaskItem task={item} key={item.id} />;
+    let xhtml = null;
+    const { task, projectId } = this.props;
+    // console.log(task, projectId);
+    const newTask = task.filter(item => item.project === projectId);
+    xhtml = newTask.map((item) => {
+      return <TaskItem key={item._id} task={item}/>;
     });
     return xhtml;
   };
+
   renderModalAddNew = () => {
-    const { ModalActionCreator } = this.props;
+    const { ModalActionCreator, projectId } = this.props;
     const { ShowModal } = ModalActionCreator;
-    ShowModal(`Add New Task`);
+    ShowModal({ title: `Add New Task`, projectId });
   };
   /** Fix here *
    * Need call Modal to global, not local like this
@@ -29,12 +33,6 @@ class TaskList extends Component {
     HideModal();
   };
 
-  handleSave = (val) => {
-    console.log(val);
-  };
-  onFinish = (val) => {
-    console.log(val);
-  };
   render() {
     const { label } = this.props;
     return (
@@ -42,12 +40,9 @@ class TaskList extends Component {
         <div className="task-background-component">
           <h2>{label}</h2>
           {this.renderCardItem()}
-            <Button
-              className="task-btn"
-              onClick={() => this.renderModalAddNew()}
-            >
-              Add new
-            </Button>
+          <Button className="task-btn" onClick={() => this.renderModalAddNew()}>
+            Add new
+          </Button>
         </div>
       </Col>
     );

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ModalAction } from '../../../actions';
 import { EditTask, AddNewTask } from '../../../actions/task';
 import { HideModal } from '../../../actions/modal';
+import InputItem from './Input';
 
 const ModalForm = (props) => {
   const [name, SetName] = useState('');
@@ -21,17 +22,17 @@ const ModalForm = (props) => {
     const { HideModal } = ModalAction;
     dispatch(HideModal());
   };
-  useEffect(() => {
-    if (taskReducer.showModal && taskReducer.taskediting) {
-      SetName(taskReducer.taskediting.name);
-      SetDesc(taskReducer.taskediting.desc);
-      SetStatus(taskReducer.taskediting.status);
-    } else {
-      SetName('');
-      SetDesc('');
-      SetStatus(0);
-    }
-  }, [taskReducer]);
+  // useEffect(() => {
+  //   // if (taskReducer.showModal && taskReducer.taskediting) {
+  //   //   SetName(taskReducer.taskediting.name);
+  //   //   SetDesc(taskReducer.taskediting.desc);
+  //   //   SetStatus(taskReducer.taskediting.status);
+  //   // } else {
+  //   //   SetName('');
+  //   //   SetDesc('');
+  //   //   SetStatus(0);
+  //   // }
+  // }, [taskReducer.taskediting]);
   const validate = (params) => {
     if (params.length < 3) {
       Setvalidation(true);
@@ -49,81 +50,82 @@ const ModalForm = (props) => {
     form.append('name', name);
     form.append('desc', desc);
     form.append('status', status);
-    console.log('Name:', name, 'Desc: ', desc, 'Status: ', status);
-    console.log('has been sent');
-    if (taskReducer.taskediting && taskReducer.taskediting.id) {
-      console.log(taskReducer.taskediting.id);
-      dispatch(EditTask({ name, desc, status }, taskReducer.taskediting.id));
+    if (taskReducer.modal.projectId) {
+      form.append('project', taskReducer.modal.projectId);
+    }
+    // console.log('Name:', name, 'Desc: ', desc, 'Status: ', status);
+    // console.log('has been sent');
+    if (taskReducer.taskediting && taskReducer.taskediting._id) {
+      console.log(taskReducer.taskediting._id);
+      const id = taskReducer.taskediting._id;
+      dispatch(EditTask({ name, desc, status, id }));
     } else {
-      dispatch(AddNewTask({ name, desc, status }));
+      const project = taskReducer.modal.projectId;
+      dispatch(AddNewTask({ name, desc, status, project }));
     }
     SetSubmitting((prevState) => !prevState);
     setTimeout(() => {
       SetSubmitting((prevState) => !prevState);
       dispatch(HideModal());
       Setvalidation(false);
+      SetName('');
+      SetDesc('');
+      SetStatus(0);
     }, 1000);
   };
-  const content = <p>Name To Do</p>;
   const renderInput = () => {
     let xhtml = null;
     xhtml = (
       <form id="form-group" className="form-group" onSubmit={SubmitTodoForm}>
         <div className="input">
-          <label>Name</label>
-          <input
-            className="form-control"
+          <InputItem
             type="text"
-            value={name}
+            label="Name"
+            // value={name}
+            value={
+              taskReducer.taskediting ? taskReducer.taskediting.name : name
+            }
             onChange={(e) => SetName(e.target.value)}
           />
         </div>
-        <div
-          className={`error-validate ${
-            validation ? 'err-validate' : 'validate'
-          }`}
-          style={{ display: 'none' }}
-        >
-          Title must have 4 character minimum !
-        </div>
+        <InputItem
+          type="validate"
+          validation={validation}
+          content=" Title must have 4 character minimum !"
+        />
         <div className="input">
-          <label>Desc</label>
-          <input
-            className="form-control"
+          <InputItem
             type="text"
-            value={desc}
+            label="Desc"
+            // value={desc}
+            value={
+              taskReducer.taskediting ? taskReducer.taskediting.desc : desc
+            }
             onChange={(e) => SetDesc(e.target.value)}
           />
         </div>
         <div className="input">
-          <label>Status</label>
-          <div className="select">
-            <select
-              className="form-control"
-              value={status}
-              onChange={(e) => SetStatus(e.target.value)}
-            >
-              {TASK_STATUS.map((stt) => {
-                return (
-                  <option key={stt.value} value={stt.value}>
-                    {stt.label}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
+          <InputItem
+            type="select"
+            label="Status"
+            // value={status}
+            value={
+              taskReducer.taskediting ? taskReducer.taskediting.status : status
+            }
+            onChange={(e) => SetStatus(e.target.value)}
+          >
+            {TASK_STATUS.map((stt) => {
+              return (
+                <option key={stt.value} value={stt.value}>
+                  {stt.label}
+                </option>
+              );
+            })}
+          </InputItem>
         </div>
-        {/* <button className="btn" type="submit" disabled={Submitting}>
-          Submit
-        </button> */}
         <Space>
           <Spin spinning={Submitting}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={Submitting}
-              loading={Submitting}
-            >
+            <Button type="primary" htmlType="submit" disabled={Submitting}>
               Submit
             </Button>
           </Spin>
@@ -135,9 +137,8 @@ const ModalForm = (props) => {
   return (
     <>
       <Modal
-        title={taskReducer.title}
+        title={taskReducer.modal !== null ? taskReducer.modal.title : ''}
         visible={taskReducer.showModal}
-        // onOk={props.handleSave}
         onCancel={onCancel}
         footer={null}
       >

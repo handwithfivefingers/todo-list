@@ -5,15 +5,24 @@ import {
   RestOutlined,
   CalendarOutlined,
 } from '@ant-design/icons';
-import { Avatar, Card, Menu, Skeleton, Dropdown, Button, Popover } from 'antd';
+import {
+  Avatar,
+  Card,
+  Menu,
+  Skeleton,
+  Dropdown,
+  Button,
+  Popover,
+  Popconfirm,
+  message,
+} from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { ModalAction } from '../../../actions';
 import { TaskAction } from './../../../actions';
 import ReactDOM from 'react-dom';
-import { Delete_Task } from '../../../actions/task';
-const { Meta } = Card;
+
 
 class CardItem extends Component {
   constructor(props) {
@@ -21,6 +30,7 @@ class CardItem extends Component {
     this.wrapperRef = React.createRef();
     this.state = {
       dropdown: false,
+      active: false,
     };
   }
 
@@ -35,7 +45,7 @@ class CardItem extends Component {
     const domNode = ReactDOM.findDOMNode(this);
     if (!domNode || !domNode.contains(event.target)) {
       this.setState({
-        dropdown: false,
+        active: false,
       });
     }
   };
@@ -45,18 +55,23 @@ class CardItem extends Component {
     const { Task_Editing } = TaskActionCreator;
     const { ShowModal } = ModalActionCreator;
     Task_Editing(task);
-    ShowModal(`Edit Task`);
+    ShowModal({ title: `Edit Task` });
   };
   handleDeleteTask = (task) => {
-    console.log(task);
     const { TaskActionCreator } = this.props;
     const { Delete_Task } = TaskActionCreator;
     Delete_Task(task);
+    message.success('Đã xóa Task');
   };
   handleDropdownMenu = (val) => {
     console.log(val);
     this.setState({
       dropdown: val,
+    });
+  };
+  handleSetting = (val) => {
+    this.setState({
+      active: val,
     });
   };
   render() {
@@ -74,21 +89,67 @@ class CardItem extends Component {
         </div>
         <div className="footer">
           <div className="action-button">
-            <SettingOutlined key="setting" />
-            <EditOutlined key="edit" onClick={() => this.handleOnclick(task)} />
-            <CalendarOutlined
-              key="calendar"
-              onClick={() => this.handleDropdownMenu(!this.state.dropdown)}
-            />
-            <RestOutlined
-              key="restout"
-              onClick={() => this.handleDeleteTask(task)}
-            />
-            <EllipsisOutlined
-              key="ellipsis"
-              onClick={() => this.handleDropdownMenu(!this.state.dropdown)}
-            />
+            <Popover content="Setting" trigger="hover">
+              <SettingOutlined
+                key="setting"
+                onClick={() => this.handleSetting(!this.state.active)}
+              />
+            </Popover>
+            <Popover content="Edit Task" trigger="hover">
+              <EditOutlined
+                key="edit"
+                onClick={() => this.handleOnclick(task)}
+              />
+            </Popover>
+            <Popover content="Task over" trigger="hover">
+              <CalendarOutlined
+                key="calendar"
+                onClick={() => this.handleDropdownMenu(!this.state.dropdown)}
+              />
+            </Popover>
+            {/* <Popover content="Delete Task" trigger="hover">
+              <RestOutlined
+                key="restout"
+                onClick={() => this.handleDeleteTask(task)}
+              />
+            </Popover> */}
+            <Popover content="Delete Task" trigger="hover">
+              <Popconfirm
+                title="Bạn có chắc muốn xóa task này ?"
+                onConfirm={(e) => this.handleDeleteTask(task)}
+                // onCancel={cancel}
+                okText="Xóa"
+                cancelText="Không"
+              >
+                <RestOutlined key="restout" />
+              </Popconfirm>
+            </Popover>
+
+            {/* <Popover content="Something else" trigger="hover">
+              <EllipsisOutlined
+                key="ellipsis"
+                onClick={() => this.handleDropdownMenu(!this.state.dropdown)}
+              />
+            </Popover> */}
           </div>
+        </div>
+        <div
+          className={`popup-action ${this.state.active ? 'popup-active' : ''}`}
+        >
+          <ul>
+            <li>
+              <a> Color Picker</a>
+            </li>
+            <li>
+              <a> Tag Flag</a>
+            </li>
+            <li>
+              <a> Tag User</a>
+            </li>
+            <li>
+              <a> ...</a>
+            </li>
+          </ul>
         </div>
       </div>
     );

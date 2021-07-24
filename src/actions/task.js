@@ -1,19 +1,46 @@
 import axios from './../helper/AxiosService';
 import { TASK } from './../constant/task';
 
-export const fetchListTask = (params) => {
+// export const fetchListTask = (params) => {
+//   return async (dispatch) => {
+//     dispatch({
+//       type: TASK.FETCH_TASK_REQUEST,
+//     });
+
+//      const res = await axios.get(`/tasks?q=${params ? params : ''}`);
+
+//     if (res.status === 200) {
+//       dispatch({
+//         type: TASK.FETCH_TASK_SUCCESS,
+//         payload: {
+//           data: res.data,
+//         },
+//       });
+//     } else {
+//       dispatch({
+//         type: TASK.FETCH_TASK_FAILURE,
+//         payload: {
+//           message: 'Lỗi network, vui lòng thử lại sau !',
+//         },
+//       });
+//     }
+//   };
+// };
+export const fetchListTask = () => {
   return async (dispatch) => {
     dispatch({
       type: TASK.FETCH_TASK_REQUEST,
     });
 
-     const res = await axios.get(`/tasks?q=${params ? params : ''}`);
+    const res = await axios.get(`/initialdata`);
 
     if (res.status === 200) {
+      const { tasks, project } = res.data;
       dispatch({
         type: TASK.FETCH_TASK_SUCCESS,
         payload: {
-          data: res.data,
+          tasks,
+          project,
         },
       });
     } else {
@@ -26,7 +53,6 @@ export const fetchListTask = (params) => {
     }
   };
 };
-
 export const Task_Editing = (task) => {
   console.log(task);
   return async (dispatch) => {
@@ -39,17 +65,17 @@ export const Task_Editing = (task) => {
   };
 };
 
-export const EditTask = (form, id) => {
+export const EditTask = (form) => {
   return async (dispatch) => {
     dispatch({
       type: TASK.TASK_EDIT_REQUEST,
     });
-    const res = await axios.put(`/tasks/${id}`, form);
-    if (res.status === 200) {
+    const res = await axios.post(`/task/update`, form);
+    if (res.status === 201) {
       dispatch({
         type: TASK.TASK_EDIT_SUCCESS,
         payload: {
-          data: res.data,
+          task: res.data.task,
         },
       });
     } else {
@@ -68,7 +94,7 @@ export const AddNewTask = (form) => {
     dispatch({
       type: TASK.TASK_ADD_NEW_REQUEST,
     });
-    const res = await axios.post(`/tasks`, form);
+    const res = await axios.post(`/task/create`, form);
     console.log(res);
     if (res.status === 201) {
       dispatch({
@@ -93,7 +119,7 @@ export const Delete_Task = (task) => {
     dispatch({
       type: TASK.TASK_DELETE_REQUEST,
     });
-    const res = await axios.delete(`/tasks/${task.id}`);
+    const res = await axios.post(`/task/delete`, task);
     console.log(res);
     if (res.status === 200) {
       dispatch({

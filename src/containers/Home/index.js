@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { Progress, Row, Col } from 'antd';
+import { SearchOutlined, FilePdfFilled } from '@ant-design/icons';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+
 const SideTask = [
   {
     id: 1,
@@ -32,19 +36,21 @@ const SideTask = [
 ];
 class Home extends Component {
   render() {
+    const { taskReducer } = this.props;
+
     return (
       <Row gutter={[16, 24]}>
         <Col span={6}>
-          {SideTask.map((item) => {
+          {taskReducer.project?.map((item) => {
             return (
-              <div className="todo-card-ui" key={item.id}>
+              <div className="todo-card-ui" key={item._id}>
                 <div className="body">
                   <div className="avatar">
                     <Progress
                       type="circle"
                       percent={item.progress}
                       width={80}
-                      status={item.status}
+                      status={item.type}
                     />
                   </div>
                   <div className="content">
@@ -59,16 +65,50 @@ class Home extends Component {
         <Col span={18}>
           <div className="home-content">
             <div className="search">
-              <label>Search</label>
+              <label>
+                <SearchOutlined />
+              </label>
               <input type="search" />
             </div>
-            <div className="main-content">main content</div>
-            <div className="footer-content">footer content</div>
+            <div className="main-content">
+              <div className="project-about">
+                <h1 className="project-title">Project Name</h1>
+                <p className="project-desc"> Description </p>
+              </div>
+              <div className="project-timeline">
+                <div className="item">
+                  Title : <span> ......... </span>
+                </div>
+              </div>
+              <div className="project-timeline">
+                <div className="item">
+                  Title : <span> ......... </span>
+                </div>
+              </div>
+              <div className="project-timeline">
+                <div className="item">
+                  Title : <span> ......... </span>
+                </div>
+              </div>
+            </div>
+            <div className="footer-content">
+              <div className="footer-item">
+                <FilePdfFilled />
+                Photoshop
+              </div>
+              <div className="footer-item">Illustrator</div>
+              <div className="footer-item">Sketchup</div>
+              <div className="footer-item">Blender</div>
+            </div>
           </div>
         </Col>
       </Row>
     );
   }
 }
-
-export default Home;
+const mapStatetoProps = (state) => ({
+  taskReducer: state.taskReducer,
+});
+const mapDispatchtoProps = null;
+const withConnect = connect(mapStatetoProps, mapDispatchtoProps);
+export default compose(withConnect)(Home);

@@ -8,40 +8,43 @@ const InputItem = (props) => {
   switch (props.type) {
     case 'text':
       return (
-        <Form.Item
-          name={props.name}
-          label={props.label}
-          rules={[{ required: true }]}
-        >
-          <Input value={props.name} pladeholder={props.name} />
-        </Form.Item>
-      );
-    case 'textarea':
-      return (
-        <Form.Item
-          name={props.name}
-          label={props.label}
-          rules={[{ required: true }]}
-        >
-          <Input value={props.name} pladeholder={props.name} />
-        </Form.Item>
+        <>
+          <label>{props.label}</label>
+          <input
+            className="form-control"
+            type="text"
+            value={props.value}
+            onChange={props.onChange}
+          />
+        </>
       );
     case 'select':
-      console.log(props);
       return (
-        <Form.Item
-          name={props.name}
-          label={props.label}
-          rules={[{ required: true }]}
-        >
-          <Select
-            placeholder="Select a option and change input text above"
-            // onChange={this.onGenderChange}
-            // allowClear
+        <>
+          <label>{props.label}</label>
+          <div className="select">
+            <select
+              className="form-control"
+              value={props.value}
+              onChange={props.onChange}
+            >
+              {props.children}
+            </select>
+          </div>
+        </>
+      );
+    case 'validate':
+      return (
+        <>
+          <div
+            className={`error-validate ${
+              props.validation ? 'err-validate' : 'validate'
+            }`}
+            style={{ display: 'none' }}
           >
-            {props.children}
-          </Select>
-        </Form.Item>
+            {props.content}
+          </div>
+        </>
       );
     default:
       return;

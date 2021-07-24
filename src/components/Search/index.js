@@ -20,21 +20,23 @@ const SearchItem = (props) => {
   //   dispatch(fetchListTask(value));
   //   console.log(value);
   // };
-  useEffect(() => {
-    const SearchTimeout = setTimeout(() => {
-      dispatch(fetchListTask(search));
-    }, 1000);
-    return () => clearTimeout(SearchTimeout);
-  }, [search]);
+  // useEffect(() => {
+  //   const SearchTimeout = setTimeout(() => {
+  //     dispatch(fetchListTask(search));
+  //   }, 1000);
+  //   return () => clearTimeout(SearchTimeout);
+  // }, [search]);
 
   return (
-    <Input 
+    <Input
       placeholder="input search text"
       // enterButton="Search"
       // suffix={suffix}
       // onSearch={onSearch}
       onChange={(e) => SetSearch(e.target.value)}
       allowClear
+      placeholder="input search loading default"
+      loading={true}
     />
   );
 };

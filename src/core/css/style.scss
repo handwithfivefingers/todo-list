@@ -129,6 +129,7 @@
 }
 // Card CSS
 .todo-card-ui {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -144,7 +145,7 @@
     flex-direction: row;
     flex: 1 1 auto;
     flex-wrap: wrap;
-    padding: 8px 0;
+    padding: 8px;
     justify-content: center;
     .avatar {
       align-self: center;
@@ -158,9 +159,14 @@
       border-left: 1px solid #eee;
       width: 66.66%;
       text-align: center;
-      letter-spacing: 0.2px;
-      padding: 6px;
+      padding: 5px 0px 0px 5px;
       margin-right: -8px;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      p {
+        text-align: left;
+      }
     }
   }
   .footer {
@@ -362,20 +368,104 @@
 }
 .home-content {
   border-left: 1px solid #eee;
-  padding: 8px;
-  display: flex;
-  flex: 1 1 auto;
+  display: block;
   flex-direction: column;
+  & div {
+    margin: 15px 0;
+  }
   .search {
-    background: rgb(247, 247, 247);
-    height: 50px;
+    position: relative;
+    label {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      color: var(--primary-color);
+    }
+    input {
+      border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(0, 0, 0, 5%);
+      border-radius: 20px;
+      padding: 4px 12px;
+      width: 100%;
+      @extend .transition;
+      &:focus,
+      &:hover {
+        border-color: var(--primary-color);
+      }
+    }
   }
   .main-content {
     background: #fff;
     height: 50vh;
+    @extend .box-shadow;
   }
   .footer-content {
-    background: #fff;
+    // background: #fff;
     height: 10vh;
+
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+    justify-content: center;
+    .footer-item {
+      @extend .box-shadow;
+      padding: 12px 20px;
+      background: #fff;
+      margin: 0 auto;
+      align-items: center;
+      // align-self: center;
+    }
   }
+}
+
+// Pop up
+.popup-action {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  @extend .transition;
+  // display:none;
+  min-width: 100px;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 5%);
+  ul {
+    list-style-type: none;
+    background: #fff;
+    width: 100%;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    flex-wrap: wrap;
+    z-index: 2;
+    margin: 0;
+    li {
+      width: 100%;
+      display: flex;
+      a {
+        margin: 4px;
+        padding: 4px 8px;
+        border-bottom: 1px solid #eee;
+        width: 100%;
+        color: inherit;
+        text-align: left;
+        @extend .transition;
+        @extend .hover;
+        // @extend .border-hover;
+      }
+      &:nth-child(4) a {
+        border: none;
+      }
+    }
+  }
+}
+.popup-action.popup-active {
+  opacity: 1;
+  visibility: visible;
+  bottom: 0;
+  left: 0;
+  transform: translateY(-50px);
+  // display:block;
 }

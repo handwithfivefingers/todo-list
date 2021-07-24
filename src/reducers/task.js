@@ -2,16 +2,18 @@ import { TASK } from './../constant/task';
 import { MODAL } from './../constant/modal';
 const initState = {
   tasks: [],
+  project: [],
   loading: false,
   message: '',
   showModal: false,
   taskediting: null,
-  title: '',
+  modal: null,
 };
-const findIndex = (array, item) => {
-  const result = array.findIndex((arr) => arr.id === item.id);
-  return result;
-};
+// const findIndex = (array, item) => {
+//   const result = array.findIndex((arr) => arr.id === item.id);
+//   return result;
+// };
+
 export default function tasks(state = initState, action) {
   let index = -1;
   switch (action.type) {
@@ -21,11 +23,12 @@ export default function tasks(state = initState, action) {
         loading: true,
       });
     case TASK.FETCH_TASK_SUCCESS:
-      const { data } = action.payload;
+      const { tasks, project } = action.payload;
       return (state = {
         ...state,
         loading: false,
-        tasks: data,
+        tasks,
+        project,
       });
     case TASK.FETCH_TASK_FAILURE:
       return (state = {
@@ -49,11 +52,12 @@ export default function tasks(state = initState, action) {
         ...state,
         taskediting: null,
         showModal: false,
+        modal: null,
       });
     case MODAL.MODAL_CHANGE_TITLE:
       return (state = {
         ...state,
-        title: action.payload,
+        modal: action.payload.data,
       });
     case TASK.TASK_EDIT_REQUEST:
       return (state = {
@@ -61,9 +65,10 @@ export default function tasks(state = initState, action) {
         ...state,
       });
     case TASK.TASK_EDIT_SUCCESS:
-      const item = action.payload.data;
+      console.log(action.payload.task);
+      const item = action.payload.task;
       const newTasksEdit = state.tasks;
-      index = state.tasks.findIndex((arr) => arr.id === item.id);
+      index = state.tasks.findIndex((arr) => arr._id === item._id);
       if (index !== -1) {
         const newtasksEdit = [
           // Lấy phần tử từ 0 -> index
@@ -104,23 +109,25 @@ export default function tasks(state = initState, action) {
       return (state = {
         ...state,
         loading: false,
-        tasks: [...AddTasks, action.payload.data],
+        tasks: [...AddTasks, action.payload.data.task],
       });
     case TASK.TASK_ADD_NEW_FAILURE:
       console.log(state.tasks);
       return (state = {
         ...state,
+        loading: false,
         message: action.payload,
       });
     case TASK.TASK_DELETE_REQUEST:
       console.log(state.tasks);
       return (state = {
         ...state,
+        loading: true,
       });
     case TASK.TASK_DELETE_SUCCESS:
       console.log(action.payload);
       const currentTask = state.tasks;
-      index = state.tasks.findIndex((arr) => arr.id === action.payload.data.id);
+      index = state.tasks.findIndex((arr) => arr._id === action.payload.data._id);
       const returnTask = [
         ...currentTask.slice(0, index),
         ...currentTask.slice(index + 1),
@@ -128,12 +135,14 @@ export default function tasks(state = initState, action) {
       return (state = {
         ...state,
         tasks: returnTask,
+        loading: false,
       });
     case TASK.TASK_DELETE_FAILURE:
       console.log(state.tasks);
       return (state = {
         ...state,
         message: action.payload,
+        loading: false,
       });
     default:
       return state;

@@ -1,5 +1,21 @@
+import NotFound from '../containers/404';
 import Home from './../containers/Home';
-import Task from './../containers/Task';
+import Project from './../containers/Project';
+import TaskBoard from './../containers/TaskBoard';
+
+export const TASK_SIDE = [
+  {
+    path: '/',
+    name: 'Home',
+    exact: true,
+    component: Home,
+  },
+  {
+    path: '/project',
+    name: 'Project',
+    component: Project,
+  },
+];
 export const TASK_ROUTE = [
   {
     path: '/',
@@ -8,8 +24,18 @@ export const TASK_ROUTE = [
     component: Home,
   },
   {
-    path: '/task',
-    name: 'Task',
-    component: Task,
+    path: '/project/:slug',
+    name: 'Project',
+    component: TaskBoard,
+  },
+  {
+    path: '/project',
+    name: 'Project',
+    component: Project,
+  },
+  {
+    path: '*',
+    name: 'Not Found',
+    component: NotFound,
   },
 ];
