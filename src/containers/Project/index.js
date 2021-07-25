@@ -43,7 +43,7 @@ class Project extends Component {
           {taskReducer.project
             ? taskReducer.project.map((item) => {
                 return (
-                  <Col span={6} key={item._id} className="gutter-row">
+                  <Col xs={24} sm={12} md={12} lg={8} xl={8} key={item._id} className="gutter-row">
                     <div className="todo-card-ui">
                       <div className="body">
                         <div className="avatar">
@@ -59,7 +59,7 @@ class Project extends Component {
                           <ul
                             style={{
                               listStyleType: 'none',
-                              textAlign: 'left',
+                              textAlign: 'center',
                               // padding: '5px 0 0 8px',
                               margin: 0,
                             }}

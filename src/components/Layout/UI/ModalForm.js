@@ -22,17 +22,13 @@ const ModalForm = (props) => {
     const { HideModal } = ModalAction;
     dispatch(HideModal());
   };
-  // useEffect(() => {
-  //   // if (taskReducer.showModal && taskReducer.taskediting) {
-  //   //   SetName(taskReducer.taskediting.name);
-  //   //   SetDesc(taskReducer.taskediting.desc);
-  //   //   SetStatus(taskReducer.taskediting.status);
-  //   // } else {
-  //   //   SetName('');
-  //   //   SetDesc('');
-  //   //   SetStatus(0);
-  //   // }
-  // }, [taskReducer.taskediting]);
+  useEffect(() => {
+    if (taskReducer.showModal && taskReducer.taskediting) {
+      SetName(taskReducer.taskediting.name);
+      SetDesc(taskReducer.taskediting.desc);
+      SetStatus(taskReducer.taskediting.status);
+    }
+  }, [taskReducer.taskediting]);
   const validate = (params) => {
     if (params.length < 3) {
       Setvalidation(true);
@@ -82,9 +78,7 @@ const ModalForm = (props) => {
             type="text"
             label="Name"
             // value={name}
-            value={
-              taskReducer.taskediting ? taskReducer.taskediting.name : name
-            }
+            value={name}
             onChange={(e) => SetName(e.target.value)}
           />
         </div>
@@ -98,9 +92,7 @@ const ModalForm = (props) => {
             type="text"
             label="Desc"
             // value={desc}
-            value={
-              taskReducer.taskediting ? taskReducer.taskediting.desc : desc
-            }
+            value={desc}
             onChange={(e) => SetDesc(e.target.value)}
           />
         </div>
@@ -109,9 +101,7 @@ const ModalForm = (props) => {
             type="select"
             label="Status"
             // value={status}
-            value={
-              taskReducer.taskediting ? taskReducer.taskediting.status : status
-            }
+            value={status}
             onChange={(e) => SetStatus(e.target.value)}
           >
             {TASK_STATUS.map((stt) => {

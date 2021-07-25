@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Layout, Breadcrumb } from 'antd';
-import SiderLayout from '../Sidebar';
 import FooterLayout from '../Footer';
 import HeaderLayout from '../Header';
 const { Content, Header } = Layout;

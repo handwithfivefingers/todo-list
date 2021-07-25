@@ -17,7 +17,7 @@ class LayoutRoute extends Component {
         {...remainProps}
         render={(routeProps) => {
           return (
-            <Layout style={{ minHeight: '100vh' }}>
+            <Layout style={{ minHeight: '100vh', overflowX:'hidden' }}>
               <SiderLayout {...routeProps} />
               <ContentLayout>
                 <YoursComponent {...routeProps} />

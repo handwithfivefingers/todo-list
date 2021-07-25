@@ -2,7 +2,6 @@ import React from 'react';
 import { Form, Input, Button, Select } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 
-const { Option } = Select;
 
 const InputItem = (props) => {
   switch (props.type) {
@@ -18,6 +17,18 @@ const InputItem = (props) => {
           />
         </>
       );
+      case 'password':
+        return (
+          <>
+            <label>{props.label}</label>
+            <input
+              className="form-control"
+              type="password"
+              value={props.value}
+              onChange={props.onChange}
+            />
+          </>
+        );
     case 'select':
       return (
         <>

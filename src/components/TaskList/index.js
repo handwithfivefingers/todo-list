@@ -36,7 +36,7 @@ class TaskList extends Component {
   render() {
     const { label } = this.props;
     return (
-      <Col className="gutter-row task-background" span={6}>
+      <Col className="gutter-row task-background" xs={24} sm={12} md={8} lg={8} xl={6}>
         <div className="task-background-component">
           <h2>{label}</h2>
           {this.renderCardItem()}

@@ -15,6 +15,8 @@ import {
   Popover,
   Popconfirm,
   message,
+  Col,
+  Row,
 } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -22,7 +24,6 @@ import { bindActionCreators, compose } from 'redux';
 import { ModalAction } from '../../../actions';
 import { TaskAction } from './../../../actions';
 import ReactDOM from 'react-dom';
-
 
 class CardItem extends Component {
   constructor(props) {
@@ -78,15 +79,19 @@ class CardItem extends Component {
     const { task } = this.props;
     return (
       <div className="todo-card-ui">
-        <div className="body">
-          <div className="avatar">
-            <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-          </div>
-          <div className="content">
-            <h3 className="title">{task.name}</h3>
-            <p className="desc">{task.desc}</p>
-          </div>
-        </div>
+        <Row className="body">
+          <Col lg={6} md={8} sm={24}>
+            <div className="avatar">
+              <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+            </div>
+          </Col>
+          <Col lg={18} md={16} sm={24}>
+            <div className="content">
+              <h3 className="title">{task.name}</h3>
+              <p className="desc">{task.desc}</p>
+            </div>
+          </Col>
+        </Row>
         <div className="footer">
           <div className="action-button">
             <Popover content="Setting" trigger="hover">
