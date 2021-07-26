@@ -17,6 +17,18 @@ const InputItem = (props) => {
           />
         </>
       );
+      case 'email':
+      return (
+        <>
+          <label>{props.label}</label>
+          <input
+            className="form-control"
+            type="email"
+            value={props.value}
+            onChange={props.onChange}
+          />
+        </>
+      );
       case 'password':
         return (
           <>

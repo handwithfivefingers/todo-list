@@ -74,7 +74,7 @@ class Home extends Component {
                     />
                   </div>
                   <div className="content">
-                    <h3>Item: {item.name}</h3>
+                    <h3>{item.name}</h3>
                     <p>Desc: {item.desc}</p>
                   </div>
                 </div>
@@ -94,7 +94,7 @@ class Home extends Component {
               <div className="todo-left-dashboard">
                 <div className="project-about">
                   <h1 className="project-title">
-                    Project Name: {project ? project.name : ''}
+                    {project ? project.name : ''}
                   </h1>
                   <ul
                     className="project-desc"
@@ -110,7 +110,7 @@ class Home extends Component {
                   </ul>
                 </div>
                 <div className="project-timeline">
-                  <h1> Progress</h1>
+                  <h1> Progress bar</h1>
                   <div className="item">
                     <span>
                       <Tooltip

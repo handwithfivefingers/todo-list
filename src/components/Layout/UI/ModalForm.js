@@ -27,6 +27,10 @@ const ModalForm = (props) => {
       SetName(taskReducer.taskediting.name);
       SetDesc(taskReducer.taskediting.desc);
       SetStatus(taskReducer.taskediting.status);
+    } else {
+      SetName('');
+      SetDesc('');
+      SetStatus(0);
     }
   }, [taskReducer.taskediting]);
   const validate = (params) => {

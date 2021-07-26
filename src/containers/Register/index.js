@@ -5,25 +5,29 @@ import { Link, Redirect } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
 import { AuthAction } from './../../actions';
 import { connect } from 'react-redux';
-class Login extends Component {
+class Register extends Component {
   state = {
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     Submitting: false,
   };
-  handleLogin = (e) => {
+  handleRegister = (e) => {
     e.preventDefault();
     this.setState({
       Submitting: true,
     });
+    const { firstName, lastName, email, password } = this.state;
     const { AuthActionCreator } = this.props;
-    const { LoginUser } = AuthActionCreator;
-    const { email, password } = this.state;
+    const { RegisterUser } = AuthActionCreator;
     const form = new FormData();
+    form.append('firstName', firstName);
+    form.append('lastName', lastName);
     form.append('email', email);
     form.append('password', password);
     setTimeout(() => {
-      LoginUser(form);
+      RegisterUser(form);
       this.setState({
         Submitting: false,
       });
@@ -31,24 +35,40 @@ class Login extends Component {
   };
   render() {
     const { authReducer } = this.props;
-    const { Submitting, email } = this.state;
+    const { Submitting, email, firstName, lastName } = this.state;
     if (authReducer.authenticate) {
       return <Redirect to="/" />;
     }
     return (
       <Space>
         <Card
-          title="Đăng nhập"
-          extra={<Link to="/register">Đăng kí</Link>}
+          title="Đăng kí"
+          extra={<Link to="/login">Đăng Nhập</Link>}
           style={{ width: '100%' }}
           bordered={true}
         >
-          <form className="form-group" onSubmit={this.handleLogin}>
+          <form className="form-group" onSubmit={this.handleRegister}>
+            <div className="input">
+              <InputItem
+                type="text"
+                label="First Name"
+                value={this.state.firstName}
+                onChange={(e) => this.setState({ firstName: e.target.value })}
+              />
+            </div>
+            <div className="input">
+              <InputItem
+                type="text"
+                label="Last Name"
+                value={this.state.lastName}
+                onChange={(e) => this.setState({ lastName: e.target.value })}
+              />
+            </div>
             <div className="input">
               <InputItem
                 type="email"
                 label="Email"
-                value={this.state.name}
+                value={this.state.email}
                 onChange={(e) => this.setState({ email: e.target.value })}
               />
             </div>
@@ -65,7 +85,7 @@ class Login extends Component {
                 <Button
                   type="primary"
                   htmlType="submit"
-                  disabled={Submitting || email === ''}
+                  disabled={Submitting || email === ""  || firstName === "" || lastName === ''}
                 >
                   Submit
                 </Button>
@@ -86,4 +106,4 @@ const mapDispatchtoProps = (dispatch) => ({
 
 const withConnect = connect(mapStatetoProps, mapDispatchtoProps);
 
-export default compose(withConnect)(Login);
+export default compose(withConnect)(Register);
