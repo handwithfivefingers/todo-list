@@ -221,22 +221,22 @@
       width: 33.33%;
     }
     input {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      -ms-appearance: none;
-      appearance: none;
-      outline: 0;
-      box-shadow: none;
-      border: 0 !important;
-      background: #2c3e50;
-      background-image: none;
+      // -webkit-appearance: none;
+      // -moz-appearance: none;
+      // -ms-appearance: none;
+      // appearance: none;
+      // outline: 0;
+      // box-shadow: none;
+      // border: 0 !important;
+      // background: #2c3e50;
+      // background-image: none;
     }
     input,
     .select {
-      border-radius: 5px;
+      // border-radius: 5px;
       width: 75%;
-      color: #fff;
-      padding: 8px 20px;
+      // color: #fff;
+      // padding: 8px 20px;
     }
   }
   .select {
@@ -372,6 +372,7 @@
   border-left: 1px solid #eee;
   display: block;
   flex-direction: column;
+  margin:15px 0;
   .search {
     position: relative;
     label {

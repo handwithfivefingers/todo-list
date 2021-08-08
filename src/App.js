@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { fetchListTask } from './actions/task';
 import './App.css';
-import ModalForm from './components/Layout/UI/ModalForm';
+import ModalForm from './components/Layout/UI/Modal/ModalForm';
 import { TASK_ROUTE } from './constant/route';
 import NotFound from './containers/404';
-import './core/css/style.scss';
+import './assets/css/style.scss';
 import LayoutRoute from './Layout';
 
 function App() {

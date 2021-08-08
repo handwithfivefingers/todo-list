@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
-import { ModalAction, TaskAction } from '../../actions';
+import { ModalAction, TaskAction, ProjectAction } from '../../actions';
 class Project extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +25,15 @@ class Project extends Component {
     const { ShowModal } = ModalListAction;
     ShowModal({ title: `Add New Project` });
   }
+  EditProject = (item) => {
+    console.log('edit project:', item);
+    const { ProjectListAction } = this.props;
+    const { projectEditting } = ProjectListAction;
+    const { ModalListAction } = this.props;
+    const { ShowModal } = ModalListAction;
+    ShowModal({ title: `Update Project` });
+    projectEditting(item);
+  }
   render() {
     const { taskReducer } = this.props;
 
@@ -32,8 +41,8 @@ class Project extends Component {
       <>
         <Row>
           <Col>
-            <Popover content="Sorry this api doesnt complete" trigger="hover">
-              <Button type="primary" onClick={this.showform} disabled>
+            <Popover content="Add new project" trigger="hover">
+              <Button type="primary" onClick={this.showform}>
                 <PlusSquareOutlined /> New Project
               </Button>
             </Popover>
@@ -42,68 +51,68 @@ class Project extends Component {
         <Row gutter={[24, 16]}>
           {taskReducer.project
             ? taskReducer.project.map((item) => {
-                return (
-                  <Col xs={24} sm={12} md={12} lg={8} xl={8} key={item._id} className="gutter-row">
-                    <div className="todo-card-ui">
-                      <div className="body">
-                        <div className="avatar">
-                          <Progress
-                            type="circle"
-                            percent={item.progress}
-                            width={80}
-                            status={item.type}
-                          />
-                        </div>
-                        <div className="content">
-                          <h3>Item: {item.name}</h3>
-                          <ul
-                            style={{
-                              listStyleType: 'none',
-                              textAlign: 'center',
-                              // padding: '5px 0 0 8px',
-                              margin: 0,
-                            }}
-                          >
-                            <li>Desc: {item.desc}</li>
-                            <li>Status: {item.type}</li>
-                            <li>Created: {item.createdAt.substring(0, 10)}</li>
-                            <li>Updated: {item.updatedAt.substring(0, 10)}</li>
-                          </ul>
-                        </div>
+              return (
+                <Col xs={24} sm={12} md={12} lg={8} xl={8} key={item._id} className="gutter-row">
+                  <div className="todo-card-ui">
+                    <div className="body">
+                      <div className="avatar">
+                        <Progress
+                          type="circle"
+                          percent={item.progress}
+                          width={80}
+                          status={item.type}
+                        />
                       </div>
-                      <div className="footer">
-                        <div className="action-button" style={{ padding: 0 }}>
-                          <Popover content="Manager Task" trigger="hover">
-                            <Link
-                              key={item._id}
-                              to={{
-                                pathname: `/project/${item.slug}`,
-                                state: { projectId: item._id },
-                              }}
-                              style={{
-                                width: '100%',
-                                borderRight: '1px solid #eee',
-                                color: 'inherit',
-                              }}
-                            >
-                              <LoginOutlined />
-                            </Link>
-                          </Popover>
-                          <Popover content="Edit" trigger="hover">
-                            <EditOutlined />
-                          </Popover>
-                          <Popover content="Delete Task" trigger="hover">
-                            <RestOutlined
-                              key="restout"
-                              onClick={() => console.log(`del`)}
-                            />
-                          </Popover>
-                        </div>
+                      <div className="content">
+                        <h3>Item: {item.name}</h3>
+                        <ul
+                          style={{
+                            listStyleType: 'none',
+                            textAlign: 'center',
+                            // padding: '5px 0 0 8px',
+                            margin: 0,
+                          }}
+                        >
+                          <li>Desc: {item.desc}</li>
+                          <li>Status: {item.type}</li>
+                          <li>Created: {item.createdAt.substring(0, 10)}</li>
+                          <li>Updated: {item.updatedAt.substring(0, 10)}</li>
+                        </ul>
                       </div>
                     </div>
-                  </Col>
-                );
-              })
+                    <div className="footer">
+                      <div className="action-button" style={{ padding: 0 }}>
+                        <Popover content="Manager Task" trigger="hover">
+                          <Link
+                            key={item._id}
+                            to={{
+                              pathname: `/project/${item.slug}`,
+                              state: { projectId: item._id },
+                            }}
+                            style={{
+                              width: '100%',
+                              borderRight: '1px solid #eee',
+                              color: 'inherit',
+                            }}
+                          >
+                            <LoginOutlined />
+                          </Link>
+                        </Popover>
+                        <Popover content="Edit" trigger="hover">
+                          <EditOutlined onClick={() => this.EditProject(item)} />
+                        </Popover>
+                        <Popover content="Delete Task" trigger="hover">
+                          <RestOutlined
+                            key="restout"
+                            onClick={() => console.log(`del`)}
+                          />
+                        </Popover>
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+              );
+            })
             : ''}
         </Row>
       </>
@@ -117,6 +126,7 @@ const mapStatetoProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   TaskListAction: bindActionCreators(TaskAction, dispatch),
   ModalListAction: bindActionCreators(ModalAction, dispatch),
+  ProjectListAction: bindActionCreators(ProjectAction, dispatch),
 });
 const withConnect = connect(mapStatetoProps, mapDispatchToProps);
 export default compose(withConnect)(Project);

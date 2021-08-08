@@ -2,58 +2,69 @@ import React from 'react';
 import { Form, Input, Button, Select } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 
-
 const InputItem = (props) => {
   switch (props.type) {
     case 'text':
       return (
         <>
           <label>{props.label}</label>
-          <input
-            className="form-control"
+          <Input
             type="text"
             value={props.value}
             onChange={props.onChange}
+            size={props.size}
           />
         </>
       );
-      case 'email':
+    case 'number':
       return (
         <>
           <label>{props.label}</label>
-          <input
-            className="form-control"
+          <Input
+            type="number"
+            value={props.value}
+            onChange={props.onChange}
+            min={props.min}
+            max={props.max}
+            size={props.size}
+          />
+        </>
+      );
+    case 'email':
+      return (
+        <>
+          <label>{props.label}</label>
+          <Input
             type="email"
+            value={props.value}
+            onChange={props.onChange}
+            size={props.size}
+          />
+        </>
+      );
+    case 'password':
+      return (
+        <>
+          <label>{props.label}</label>
+          <Input.Password
+            size={props.size}
+            type="password"
             value={props.value}
             onChange={props.onChange}
           />
         </>
       );
-      case 'password':
-        return (
-          <>
-            <label>{props.label}</label>
-            <input
-              className="form-control"
-              type="password"
-              value={props.value}
-              onChange={props.onChange}
-            />
-          </>
-        );
     case 'select':
       return (
         <>
           <label>{props.label}</label>
-          <div className="select">
-            <select
-              className="form-control"
-              value={props.value}
-              onChange={props.onChange}
-            >
-              {props.children}
-            </select>
-          </div>
+          <Select
+            defaultValue={props.defaultValue}
+            style={{ width: '75%' }}
+            onChange={props.onChange}
+          >
+            {props.children}
+          </Select>
         </>
       );
     case 'validate':

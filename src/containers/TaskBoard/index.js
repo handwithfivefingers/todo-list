@@ -6,7 +6,8 @@ import { bindActionCreators, compose } from 'redux';
 import SearchItem from '../../components/Search';
 import { ModalAction, TaskAction } from './../../actions';
 import TaskList from './../../components/TaskList';
-import { TASK_STATUS } from './../../constant/task';
+import DailyReport from './../../components/DailyReport';
+import { TASK, TASK_STATUS } from './../../constant/task';
 
 class TaskBoard extends Component {
   state = {
@@ -16,7 +17,7 @@ class TaskBoard extends Component {
     let xhtml = null;
     const { taskReducer, location } = this.props;
     if (location.state !== null && location.state !== undefined) {
-      xhtml = TASK_STATUS.map((status) => {
+      xhtml = TASK_STATUS.map((status, index) => {
         const task = taskReducer.tasks.filter(
           (item) => parseInt(item.status) === status.value
         );
@@ -34,7 +35,7 @@ class TaskBoard extends Component {
   };
 
   render() {
-    const { taskReducer } = this.props;
+    const { taskReducer, location } = this.props;
     // console.log('location', this.props.location);
     return (
       <>
@@ -59,6 +60,10 @@ class TaskBoard extends Component {
         </Row>
         <Row gutter={[16, 24]}>
           {taskReducer.tasks.length > 0 ? this.renderTaskBoard() : ''}
+          <DailyReport
+            label="Generate Report"
+            projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'}
+          />
         </Row>
       </>
     );

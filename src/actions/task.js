@@ -137,12 +137,24 @@ export const Delete_Task = (task) => {
   };
 };
 
-export const SearchTask = (params) => {
+export const SearchTask = (search) => {
   return async (dispatch) => {
     dispatch({
       type: TASK.TASK_SEARCH_REQUEST,
     });
-    const res = await axios.get(`/tasks?q=${params}`);
+    const res = await axios.post(`/task/search/`, search);
     console.log(res);
+    if (res.status === 200) {
+      const { task } = res.data;
+      dispatch({
+        type: TASK.TASK_SEARCH_SUCCESS,
+        payload: task,
+      });
+    } else {
+      dispatch({
+        type: TASK.TASK_SEARCH_FAILURE,
+        payload: { message: res.data },
+      });
+    }
   };
 };

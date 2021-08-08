@@ -42,7 +42,12 @@ class Home extends Component {
     this.setState({
       project: item,
     });
-    console.log(this.state);
+  }
+  componentDidMount() {
+    const { taskReducer } = this.props;
+    if (taskReducer.project) {
+      this.applyTask(taskReducer.project[0]);
+    }
   }
   componentDidUpdate(prevProps) {
     const { taskReducer } = this.props;
@@ -51,7 +56,6 @@ class Home extends Component {
     }
   }
   render() {
-    console.log(this.state);
     const { taskReducer } = this.props;
     const { project } = this.state;
     return (
@@ -84,12 +88,6 @@ class Home extends Component {
         </Col>
         <Col xs={24} sm={24} md={16} lg={18} xl={18}>
           <div className="home-content">
-            <div className="search">
-              <label>
-                <SearchOutlined />
-              </label>
-              <input type="search" />
-            </div>
             <div className="main-content">
               <div className="todo-left-dashboard">
                 <div className="project-about">
@@ -145,7 +143,7 @@ class Home extends Component {
                 <div className="todo-user">
                   {UserJoin.map((user) => {
                     return (
-                      <div className="project-user">
+                      <div className="project-user" key={user.id}>
                         <div className="avatar">
                           <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                         </div>

@@ -1,5 +1,6 @@
 import { TASK } from './../constant/task';
 import { MODAL } from './../constant/modal';
+import { projectConst } from '../constant/project';
 const initState = {
   tasks: [],
   project: [],
@@ -7,12 +8,26 @@ const initState = {
   message: '',
   showModal: false,
   taskediting: null,
+  projecteditting: null,
   modal: null,
 };
 // const findIndex = (array, item) => {
 //   const result = array.findIndex((arr) => arr.id === item.id);
 //   return result;
 // };
+const UpdateStateByIndex = (array, newdata, id) => {
+  let index = -1;
+  const currentTask = array;
+  index = currentTask.findIndex(
+    (arr) => arr._id === id
+  );
+  const returnTask = [
+    ...currentTask.slice(0, index),
+    newdata,
+    ...currentTask.slice(index + 1),
+  ];
+  return returnTask
+};
 
 export default function tasks(state = initState, action) {
   let index = -1;
@@ -127,7 +142,9 @@ export default function tasks(state = initState, action) {
     case TASK.TASK_DELETE_SUCCESS:
       console.log(action.payload);
       const currentTask = state.tasks;
-      index = state.tasks.findIndex((arr) => arr._id === action.payload.data._id);
+      index = state.tasks.findIndex(
+        (arr) => arr._id === action.payload.data._id
+      );
       const returnTask = [
         ...currentTask.slice(0, index),
         ...currentTask.slice(index + 1),
@@ -137,6 +154,7 @@ export default function tasks(state = initState, action) {
         tasks: returnTask,
         loading: false,
       });
+
     case TASK.TASK_DELETE_FAILURE:
       console.log(state.tasks);
       return (state = {
@@ -144,6 +162,48 @@ export default function tasks(state = initState, action) {
         message: action.payload,
         loading: false,
       });
+    case TASK.TASK_SEARCH_REQUEST:
+      return (state = {
+        ...state,
+        loading: true,
+      });
+    case TASK.TASK_SEARCH_SUCCESS:
+      return (state = {
+        ...state,
+        loading: false,
+        tasks: action.payload,
+      });
+    case TASK.TASK_SEARCH_FAILURE:
+      return (state = {
+        ...state,
+        loading: false,
+        message: action.payload,
+      });
+    case projectConst.PRO_EDITTING:
+      const { projecteditting } = action.payload;
+      console.log(action.payload)
+      return {
+        ...state,
+        projecteditting
+      }
+    case projectConst.PRO_CREATE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      }
+    case projectConst.PRO_EDITTING_SUCCESS:
+      let data = action.payload.project;
+      console.log(data, action.payload);
+      return {
+        ...state,
+        loading: false,
+        project: UpdateStateByIndex(state.project, data, data._id),
+      }
+    case projectConst.PRO_EDITTING_FAILURE:
+      return {
+        ...state,
+        loading: false,
+      }
     default:
       return state;
   }

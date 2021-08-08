@@ -7,10 +7,7 @@ import {
 } from '@ant-design/icons';
 import {
   Avatar,
-  Card,
-  Menu,
   Skeleton,
-  Dropdown,
   Button,
   Popover,
   Popconfirm,
@@ -76,20 +73,24 @@ class CardItem extends Component {
     });
   };
   render() {
-    const { task } = this.props;
+    const { task, taskReducer } = this.props;
     return (
       <div className="todo-card-ui">
         <Row className="body">
           <Col lg={6} md={8} sm={24}>
             <div className="avatar">
-              <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+              <Skeleton loading={taskReducer.loading} active avatar>
+                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+              </Skeleton>
             </div>
           </Col>
           <Col lg={18} md={16} sm={24}>
-            <div className="content">
-              <h3 className="title">{task.name}</h3>
-              <p className="desc">{task.desc}</p>
-            </div>
+            <Skeleton loading={taskReducer.loading} active>
+              <div className="content">
+                <h3 className="title">{task.name}</h3>
+                <p className="desc">{task.desc}</p>
+              </div>
+            </Skeleton>
           </Col>
         </Row>
         <div className="footer">
