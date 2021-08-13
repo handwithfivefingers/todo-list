@@ -57,7 +57,6 @@ export const isUserLogIn = () => {
     const token = localStorage.getItem('token');
     if (token) {
       const user = JSON.parse(localStorage.getItem('user'));
-      console.log(user);
       dispatch({
         type: AUTHENTICATE.LOGIN_SUCCESS,
         payload: {
@@ -77,8 +76,12 @@ export const isUserLogIn = () => {
 }
 export const userLogout = () => {
   return async (dispatch) => {
+    dispatch({
+      type: AUTHENTICATE.LOGIN_REQUEST,
+    })
     const res = await axios.post('/signout');
     if (res.status === 200) {
+      localStorage.clear();
       dispatch({
         type: AUTHENTICATE.LOGOUT_SUCCESS,
       })

@@ -1,6 +1,5 @@
+import { Input, Select } from 'antd';
 import React from 'react';
-import { Form, Input, Button, Select } from 'antd';
-import { FormInstance } from 'antd/lib/form';
 
 const InputItem = (props) => {
   switch (props.type) {

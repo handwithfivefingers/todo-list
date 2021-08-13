@@ -1,27 +1,29 @@
-import React, { Component } from 'react';
-import { Layout, Menu, Button } from 'antd';
 import {
-  FolderOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
-  UserOutlined,
+  FolderOutlined, LogoutOutlined, PieChartOutlined, TeamOutlined,
+  UserOutlined
 } from '@ant-design/icons';
-import { NavLink, Redirect } from 'react-router-dom';
-import { TASK_SIDE } from './../../../constant/route';
+import { Layout, Menu, Switch } from 'antd';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
-import Logo from './../../../logo.svg';
 import { AuthAction } from './../../../actions';
+import Logo from './../../../logo.svg';
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 class SiderLayout extends Component {
   state = {
+    theme: 'dark',
     collapsed: false,
     breakpoint: false,
   };
   onCollapse = (collapsed) => {
     this.setState({ collapsed });
+  };
+  changeTheme = value => {
+    this.setState({
+      theme: value ? 'dark' : 'light',
+    });
   };
   Signout = () => {
     const { authActionCreator } = this.props;
@@ -30,7 +32,7 @@ class SiderLayout extends Component {
   }
   render() {
     const { collapsed } = this.state;
-    const { authReducer } = this.props;
+    const { authReducer, match } = this.props;
     return (
       <Sider
         collapsible
@@ -42,20 +44,25 @@ class SiderLayout extends Component {
           this.setState({ breakpoint: broken });
         }}
         width={`${this.state.breakpoint ? '65px' : '200px'}`}
-      // style={{
-      //   width: `${this.state.breakpoint ? '50px' : '200px'}`,
-      // }}
+        theme={this.state.theme}
       >
         <div
           className="logo"
           style={{ background: `url(${Logo}) center no-repeat` }}
         />
-
+        <Switch
+          checked={this.state.theme === 'dark'}
+          onChange={this.changeTheme}
+          checkedChildren="Dark"
+          unCheckedChildren="Light"
+        />
         <Menu
-          theme="dark"
-          defaultSelectedKeys={this.props.match.path}
-          mode="inline"
+          theme={this.state.theme}
+          defaultSelectedKeys={match.path}
+          mode="vertical"
+          style={{ background: 'inherit' }}
         >
+
           <Menu.Item key={'/'} icon={<PieChartOutlined />} >
             <NavLink to="/">Home</NavLink>
           </Menu.Item>
@@ -66,13 +73,15 @@ class SiderLayout extends Component {
             authReducer.authenticate && authReducer.token
               ?
               <>
-                <Menu.Item key={'/profile'} icon={<PieChartOutlined />} >
-                  <NavLink to="/profile">Profile</NavLink>
-                </Menu.Item>
-                <Menu.Item>
-                  <Button type="link" icon={<PieChartOutlined />} style={{ paddingLeft: 0, color: 'rgba(255, 255, 255, 0.65)' }} onClick={this.Signout}>Sign out</Button>
-                </Menu.Item>
-
+                <SubMenu key="sub2" icon={<TeamOutlined />} title="Profile">
+                  <Menu.Item key={'/profile'} icon={<UserOutlined />} >
+                    <NavLink to="/profile">Profile</NavLink>
+                  </Menu.Item>
+                  <Menu.Item key="signout" onClick={this.Signout} icon={<LogoutOutlined />}>
+                    {/* <Button type="link" icon={<PieChartOutlined />} style={{ paddingLeft: 0, color: 'rgba(255, 255, 255, 0.65)' }} onClick={this.Signout}>Sign out</Button> */}
+                    Sign out
+                  </Menu.Item>
+                </SubMenu>
               </>
               :
               <Menu.Item key={'/login'} icon={<PieChartOutlined />} >
@@ -80,13 +89,13 @@ class SiderLayout extends Component {
               </Menu.Item>
           }
 
-          <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
+          {/* <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
             <Menu.Item key="6">Team 1</Menu.Item>
             <Menu.Item key="8">Team 2</Menu.Item>
           </SubMenu>
           <Menu.Item key="9" icon={<FileOutlined />}>
             Files
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       </Sider>
     );

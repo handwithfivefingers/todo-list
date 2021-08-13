@@ -1,37 +1,30 @@
-import { Row, Space, Button, Card, Spin } from 'antd';
+import { Button, Card, Form, Input, Space, Spin } from 'antd';
 import React, { Component } from 'react';
-import InputItem from './../../components/Layout/UI/Input';
+import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
 import { AuthAction } from './../../actions';
-import { connect } from 'react-redux';
+
 class Login extends Component {
   state = {
-    email: '',
-    password: '',
-    Submitting: false,
+    submitting: false,
   };
-  handleLogin = (e) => {
-    e.preventDefault();
+  onFinish = (val) => {
     this.setState({
-      Submitting: true,
+      submitting: true,
     });
     const { AuthActionCreator } = this.props;
     const { LoginUser } = AuthActionCreator;
-    const { email, password } = this.state;
-    const form = new FormData();
-    form.append('email', email);
-    form.append('password', password);
     setTimeout(() => {
-      LoginUser(form);
+      LoginUser(val);
       this.setState({
-        Submitting: false,
+        submitting: false,
       });
     }, 1000);
-  };
+  }
   render() {
     const { authReducer } = this.props;
-    const { Submitting, email } = this.state;
+    const { submitting } = this.state;
     if (authReducer.authenticate) {
       return <Redirect to="/" />;
     }
@@ -40,38 +33,34 @@ class Login extends Component {
         <Card
           title="Đăng nhập"
           extra={<Link to="/register">Đăng kí</Link>}
-          style={{ width: '100%' }}
+          style={{ width: '400px' }}
           bordered={true}
         >
-          <form className="form-group" onSubmit={this.handleLogin}>
-            <div className="input">
-              <InputItem
-                type="email"
-                label="Email"
-                value={this.state.name}
-                onChange={(e) => this.setState({ email: e.target.value })}
-              />
-            </div>
-            <div className="input">
-              <InputItem
-                type="password"
-                label="Password"
-                value={this.state.password}
-                onChange={(e) => this.setState({ password: e.target.value })}
-              />
-            </div>
-            <Space>
-              <Spin spinning={Submitting}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={Submitting || email === ''}
-                >
-                  Submit
-                </Button>
-              </Spin>
-            </Space>
-          </form>
+          <Form
+            ref={this.formRef}
+            onFinish={this.onFinish}
+            labelCol={{ span: 6 }}
+          >
+            <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter your email !' }]}>
+              <Input type="email" />
+            </Form.Item>
+            <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter your password !' }]}>
+              <Input.Password />
+            </Form.Item>
+            <Form.Item>
+              <Space>
+                <Spin spinning={submitting}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={submitting}
+                  >
+                    Submit
+                  </Button>
+                </Spin>
+              </Space>
+            </Form.Item>
+          </Form>
         </Card>
       </Space>
     );

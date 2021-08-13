@@ -5,7 +5,7 @@ class FooterLayout extends Component {
   render() {
     return (
       <Footer style={{ textAlign: 'center' }}>
-        Ant Design ©2018 Created by Ant UED
+        Truyen Mai ©2019
       </Footer>
     );
   }

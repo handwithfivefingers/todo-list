@@ -3,12 +3,12 @@ import { Avatar, Button, Col, Row } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
+import ModalForm from '../../components/Layout/UI/Modal/ModalForm';
 import SearchItem from '../../components/Search';
 import { ModalAction, TaskAction } from './../../actions';
-import TaskList from './../../components/TaskList';
 import DailyReport from './../../components/DailyReport';
-import { TASK, TASK_STATUS } from './../../constant/task';
-import ModalForm from '../../components/Layout/UI/Modal/ModalForm';
+import TaskList from './../../components/TaskList';
+import { TASK_STATUS } from './../../constant/task';
 class TaskBoard extends Component {
 
   renderTaskBoard = () => {
@@ -33,7 +33,7 @@ class TaskBoard extends Component {
   };
 
   render() {
-    const { taskReducer, location } = this.props;
+    const { location } = this.props;
     // console.log('location', this.props.location);
     return (
       <>

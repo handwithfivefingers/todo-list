@@ -1,41 +1,30 @@
-import { Row, Space, Button, Card, Spin } from 'antd';
+import { Button, Card, Form, Input, Space, Spin } from 'antd';
 import React, { Component } from 'react';
-import InputItem from './../../components/Layout/UI/Input';
+import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
 import { AuthAction } from './../../actions';
-import { connect } from 'react-redux';
 class Register extends Component {
   state = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    Submitting: false,
+    submitting: false,
   };
-  handleRegister = (e) => {
-    e.preventDefault();
+
+  onFinish = (val) => {
     this.setState({
-      Submitting: true,
+      submitting: true,
     });
-    const { firstName, lastName, email, password } = this.state;
     const { AuthActionCreator } = this.props;
     const { RegisterUser } = AuthActionCreator;
-    const form = new FormData();
-    form.append('firstName', firstName);
-    form.append('lastName', lastName);
-    form.append('email', email);
-    form.append('password', password);
     setTimeout(() => {
-      RegisterUser(form);
+      RegisterUser(val);
       this.setState({
-        Submitting: false,
+        submitting: false,
       });
     }, 1000);
-  };
+  }
   render() {
     const { authReducer } = this.props;
-    const { Submitting, email, firstName, lastName } = this.state;
+    const { submitting } = this.state;
     if (authReducer.authenticate) {
       return <Redirect to="/" />;
     }
@@ -47,51 +36,32 @@ class Register extends Component {
           style={{ width: '100%' }}
           bordered={true}
         >
-          <form className="form-group" onSubmit={this.handleRegister}>
-            <div className="input">
-              <InputItem
-                type="text"
-                label="First Name"
-                value={this.state.firstName}
-                onChange={(e) => this.setState({ firstName: e.target.value })}
-              />
-            </div>
-            <div className="input">
-              <InputItem
-                type="text"
-                label="Last Name"
-                value={this.state.lastName}
-                onChange={(e) => this.setState({ lastName: e.target.value })}
-              />
-            </div>
-            <div className="input">
-              <InputItem
-                type="email"
-                label="Email"
-                value={this.state.email}
-                onChange={(e) => this.setState({ email: e.target.value })}
-              />
-            </div>
-            <div className="input">
-              <InputItem
-                type="password"
-                label="Password"
-                value={this.state.password}
-                onChange={(e) => this.setState({ password: e.target.value })}
-              />
-            </div>
+          <Form ref={this.formRef} onFinish={this.onFinish}>
             <Space>
-              <Spin spinning={Submitting}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={Submitting || email === ""  || firstName === "" || lastName === ''}
-                >
-                  Submit
+              <Form.Item name="firstName" rules={[{ required: true, message: 'First name is required!' }]}>
+                <Input placeholder="First Name" />
+              </Form.Item>
+              <Form.Item name="lastName" rules={[{ required: true, message: 'Last name is required!' }]}>
+                <Input placeholder="Last Name" />
+              </Form.Item>
+            </Space>
+
+            <Form.Item name="email" rules={[{ required: true, message: 'Email is required!' }]}>
+              <Input type="email" placeholder="Email" />
+            </Form.Item>
+
+            <Form.Item name="password" rules={[{ required: true, message: 'Password is required!' }]}>
+              <Input.Password placeholder="Password" />
+            </Form.Item>
+            <Form.Item>
+              <Spin spinning={submitting}>
+                <Button type="primary" htmlType="submit" disabled={submitting}>
+                  Register
                 </Button>
               </Spin>
-            </Space>
-          </form>
+            </Form.Item>
+
+          </Form>
         </Card>
       </Space>
     );

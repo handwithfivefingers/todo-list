@@ -1,8 +1,8 @@
+import { Breadcrumb, Layout } from 'antd';
 import React, { Component } from 'react';
-import { Layout, Breadcrumb } from 'antd';
 import FooterLayout from '../Footer';
 import HeaderLayout from '../Header';
-const { Content, Header } = Layout;
+const { Content } = Layout;
 
 class ContentLayout extends Component {
   render() {

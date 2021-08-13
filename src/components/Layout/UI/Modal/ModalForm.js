@@ -1,31 +1,14 @@
-import React, { useRef, useState, useEffect } from 'react';
 import {
-  Tooltip,
-  Spin,
-  Modal,
-  Radio,
-  Space,
-  Button,
-  Popover,
-  Input,
-  Progress,
-  Select,
-  Form,
-  Slider,
-  message
+  Button, Form, Input, message, Modal, Select, Slider, Spin
 } from 'antd';
-import {
-  MinusOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
-
-import { TASK_STATUS } from '../../../../constant/task';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ModalAction } from '../../../../actions';
-import { EditTask, AddNewTask } from '../../../../actions/task';
-import { projectUpdate } from '../../../../actions/project';
 import { HideModal } from '../../../../actions/modal';
-import InputItem from '../Input';
+import { projectUpdate } from '../../../../actions/project';
+import { AddNewTask, EditTask } from '../../../../actions/task';
+import { TASK_STATUS } from '../../../../constant/task';
+
 
 const { Option } = Select;
 const ModalForm = (props) => {
@@ -111,7 +94,7 @@ const ModalForm = (props) => {
             step={10}
             defaultValue={0}
             onChange={(value) => { formRef.current?.setFieldsValue({ progress: value }) }}
-            onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
+            // onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
           />
         </Form.Item>
 
@@ -169,7 +152,7 @@ const ModalForm = (props) => {
             step={10}
             defaultValue={0}
             onChange={(value) => { formRef.current?.setFieldsValue({ progress: value }) }}
-            onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
+            // onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
           />
         </Form.Item>
         <Form.Item label="Status" name="status">

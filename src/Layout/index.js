@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import SiderLayout from '../components/Layout/Sidebar';
-import ContentLayout from '../components/Layout/Content';
-import { Layout } from 'antd';
 import { connect } from 'react-redux';
+import { Redirect, Route } from 'react-router-dom';
 import { compose } from 'redux';
-import PrivateRoute from './PrivateRoute';
+import ContentLayout from '../components/Layout/Content';
+import SiderLayout from '../components/Layout/Sidebar';
 class LayoutRoute extends Component {
   constructor(props) {
     super(props);
@@ -13,14 +11,27 @@ class LayoutRoute extends Component {
       default: null,
     };
   }
-  render() {
-    const { component: YoursComponent, ...remainProps } = this.props;
-    const { authReducer } = this.props;
-    if (authReducer.authenticate) {
-
-    }
+  RouteSelected = ({ RouteSelect, remainProps }) => {
     return (
-      <Layout style={{ minHeight: '100vh', overflowX: 'hidden' }}>
+      <>
+
+        <Route
+          {...remainProps}
+          render={(routeProps) => {
+            return (
+              <RouteSelect {...routeProps} />
+            );
+          }}
+        />
+
+      </>
+    )
+  }
+  render() {
+    const { component: YoursComponent, name, ...remainProps } = this.props;
+    const token = localStorage.getItem('token');
+    if (token !== null && token !== undefined) {
+      return (
         <Route
           {...remainProps}
           render={(routeProps) => {
@@ -34,8 +45,39 @@ class LayoutRoute extends Component {
             );
           }}
         />
-      </Layout>
-    );
+      )
+    } else {
+      switch (name) {
+        case "Project":
+          return (
+            <Redirect to="/login" />
+          )
+        case "Profile":
+          return (
+            <Redirect to="/login" />
+          )
+        case "Taskboard":
+          return (
+            <Redirect to="/login" />
+          )
+        default:
+          return (
+            <Route
+              {...remainProps}
+              render={(routeProps) => {
+                return (
+                  <>
+                    <SiderLayout {...routeProps} />
+                    <ContentLayout>
+                      <YoursComponent {...routeProps} />
+                    </ContentLayout>
+                  </>
+                );
+              }}
+            />
+          )
+      }
+    }
   }
 }
 const mapStatetoProps = state => ({

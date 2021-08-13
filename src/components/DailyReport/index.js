@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Col, Button } from 'antd';
+import { Button, Col } from 'antd';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { TASK_STATUS } from '../../constant/task';
 const DailyReport = ({ projectId, label }) => {
@@ -23,7 +23,7 @@ const DailyReport = ({ projectId, label }) => {
           {TaskGen?.map(item => {
             return (
               <li key={item._id}>
-                <p> {item.status == 0 ? `${item.name}: ${item.progress ? item.progress : 0}` : `${item.name}: ${item.progress ? item.progress : 0}`}</p>
+                <p> {item.status === 0 ? `${item.name}: ${item.progress ? item.progress : 0}` : `${item.name}: ${item.progress ? item.progress : 0}`}</p>
                 <p>{item.desc}</p>
               </li>
             )

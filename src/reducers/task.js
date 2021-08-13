@@ -82,7 +82,6 @@ export default function tasks(state = initState, action) {
         ...state,
       });
     case TASK.TASK_EDIT_SUCCESS:
-      console.log(action.payload.task);
       const item = action.payload.task;
       const newTasksEdit = state.tasks;
       index = state.tasks.findIndex((arr) => arr._id === item._id);
@@ -198,7 +197,7 @@ export default function tasks(state = initState, action) {
       }
     case projectConst.PRO_EDITTING_SUCCESS:
       let data = action.payload.project;
-      console.log(data, action.payload);
+      // console.log(data, action.payload);
       return {
         ...state,
         loading: false,

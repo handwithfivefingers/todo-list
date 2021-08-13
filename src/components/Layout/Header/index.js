@@ -1,5 +1,5 @@
+import { Layout } from 'antd';
 import React, { Component } from 'react';
-import { Layout, Menu } from 'antd';
 const { Header } = Layout;
 class HeaderLayout extends Component {
   render() {

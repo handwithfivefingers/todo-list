@@ -1,26 +1,15 @@
 import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-  RestOutlined,
-  CalendarOutlined,
+  CalendarOutlined, EditOutlined, RestOutlined, SettingOutlined
 } from '@ant-design/icons';
 import {
-  Avatar,
-  Skeleton,
-  Button,
-  Popover,
-  Popconfirm,
-  message,
-  Col,
-  Row,
+  Avatar, Col, message, Popconfirm, Popover, Row, Skeleton
 } from 'antd';
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { ModalAction } from '../../../actions';
 import { TaskAction } from './../../../actions';
-import ReactDOM from 'react-dom';
 
 class CardItem extends Component {
   constructor(props) {
