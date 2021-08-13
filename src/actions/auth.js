@@ -7,10 +7,13 @@ export const LoginUser = (form) => {
     });
     const res = await axios.post('/signin', form);
     if (res.status === 200) {
+      const { token, user } = res.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
       dispatch({
         type: AUTHENTICATE.LOGIN_SUCCESS,
         payload: {
-          data: res.data,
+          token, user,
         },
       });
     } else {
@@ -48,3 +51,27 @@ export const RegisterUser = (form) => {
     }
   };
 };
+
+export const isUserLogIn = () => {
+  return async (dispatch) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const user = JSON.parse(localStorage.getItem('user'));
+      console.log(user);
+      dispatch({
+        type: AUTHENTICATE.LOGIN_SUCCESS,
+        payload: {
+          token,
+          user,
+        },
+      });
+    } else {
+      dispatch({
+        type: AUTHENTICATE.LOGIN_FAILURE,
+        payload: {
+          error: 'Fail to login',
+        },
+      });
+    }
+  };
+}

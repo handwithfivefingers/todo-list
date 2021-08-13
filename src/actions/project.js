@@ -24,6 +24,7 @@ export const projectUpdate = (form) => {
     })
     const res = await axios.post('/project/update', form);
     if (res.status === 201) {
+      console.log(res);
       dispatch({
         type: projectConst.PRO_EDITTING_SUCCESS,
         payload: res.data

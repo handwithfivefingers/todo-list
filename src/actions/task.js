@@ -54,7 +54,7 @@ export const fetchListTask = () => {
   };
 };
 export const Task_Editing = (task) => {
-  console.log(task);
+  // console.log(task);
   return async (dispatch) => {
     dispatch({
       type: TASK.TASK_EDITING,
@@ -143,7 +143,7 @@ export const SearchTask = (search) => {
       type: TASK.TASK_SEARCH_REQUEST,
     });
     const res = await axios.post(`/task/search/`, search);
-    console.log(res);
+    // console.log(res);
     if (res.status === 200) {
       const { task } = res.data;
       dispatch({

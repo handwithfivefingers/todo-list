@@ -11,8 +11,8 @@ class TaskList extends Component {
     let xhtml = null;
     const { task, projectId } = this.props;
     // console.log(task, projectId);
-    const newTask = task.filter(item => item.project === projectId);
-    xhtml = newTask.map((item) => {
+    const newTask = task?.filter(item => item.project === projectId);
+    xhtml = newTask?.map((item) => {
       return <TaskItem key={item._id} task={item}/>;
     });
     return xhtml;

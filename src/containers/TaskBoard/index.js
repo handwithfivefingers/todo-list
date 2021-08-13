@@ -8,17 +8,15 @@ import { ModalAction, TaskAction } from './../../actions';
 import TaskList from './../../components/TaskList';
 import DailyReport from './../../components/DailyReport';
 import { TASK, TASK_STATUS } from './../../constant/task';
-
+import ModalForm from '../../components/Layout/UI/Modal/ModalForm';
 class TaskBoard extends Component {
-  state = {
-    search: '',
-  };
+
   renderTaskBoard = () => {
     let xhtml = null;
     const { taskReducer, location } = this.props;
     if (location.state !== null && location.state !== undefined) {
       xhtml = TASK_STATUS.map((status, index) => {
-        const task = taskReducer.tasks.filter(
+        const task = taskReducer.tasks?.filter(
           (item) => parseInt(item.status) === status.value
         );
         return (
@@ -49,7 +47,7 @@ class TaskBoard extends Component {
             </Button>
           </Col>
           <Col span={16}>
-            <SearchItem />
+            <SearchItem projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'} />
           </Col>
           <Col span={4}>
             <Avatar icon={<UserOutlined />} />
@@ -59,12 +57,13 @@ class TaskBoard extends Component {
           </Col>
         </Row>
         <Row gutter={[16, 24]}>
-          {taskReducer.tasks.length > 0 ? this.renderTaskBoard() : ''}
+          {this.renderTaskBoard()}
           <DailyReport
             label="Generate Report"
             projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'}
           />
         </Row>
+        <ModalForm />
       </>
     );
   }

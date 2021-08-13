@@ -5,6 +5,8 @@ const initialState = {
   authenticating: false,
   information: null,
   message: '',
+  token: null,
+  user: '',
 };
 
 export default function Auth(state = initialState, action) {
@@ -15,11 +17,13 @@ export default function Auth(state = initialState, action) {
         authenticating: true,
       });
     case AUTHENTICATE.LOGIN_SUCCESS:
+      let { token, user } = action.payload;
       return (state = {
         ...state,
         authenticating: false,
         authenticate: true,
-        user: action.payload.data,
+        token,
+        user,
       });
     case AUTHENTICATE.LOGIN_FAILURE:
       return (state = {

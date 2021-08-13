@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
 import { ModalAction, TaskAction, ProjectAction } from '../../actions';
+import ModalForm from '../../components/Layout/UI/Modal/ModalForm';
 class Project extends Component {
   constructor(props) {
     super(props);
@@ -26,7 +27,6 @@ class Project extends Component {
     ShowModal({ title: `Add New Project` });
   }
   EditProject = (item) => {
-    console.log('edit project:', item);
     const { ProjectListAction } = this.props;
     const { projectEditting } = ProjectListAction;
     const { ModalListAction } = this.props;
@@ -60,7 +60,7 @@ class Project extends Component {
                           type="circle"
                           percent={item.progress}
                           width={80}
-                          status={item.type}
+                          status={item.status}
                         />
                       </div>
                       <div className="content">
@@ -115,6 +115,7 @@ class Project extends Component {
             })
             : ''}
         </Row>
+        <ModalForm project />
       </>
     );
   }

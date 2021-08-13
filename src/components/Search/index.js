@@ -13,7 +13,7 @@ const suffix = (
   />
 );
 
-const SearchItem = () => {
+const SearchItem = ({ projectId }) => {
   const [search, SetSearch] = useState('');
   const dispatch = useDispatch();
   // const onSearch = (value) => {
@@ -27,11 +27,13 @@ const SearchItem = () => {
   //   return form;
   // };
   useEffect(() => {
+    console.log(projectId);
     const SearchTimeout = setTimeout(() => {
-          const form = new FormData();
-          form.append('search', search);
-          dispatch(SearchTask(form));
-        }, 1000)
+      const form = new FormData();
+      form.append('search', search);
+      form.append('project', projectId);
+      dispatch(SearchTask(form));
+    }, 1000)
     return () => clearTimeout(SearchTimeout);
   }, [search]);
 
@@ -43,7 +45,7 @@ const SearchItem = () => {
       // onSearch={onSearch}
       onChange={(e) => SetSearch(e.target.value)}
       allowClear
-      placeholder="input search loading default"
+      placeholder="Finding Nemo ?"
       loading={true}
     />
   );

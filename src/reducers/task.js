@@ -10,6 +10,7 @@ const initState = {
   taskediting: null,
   projecteditting: null,
   modal: null,
+  animation: false,
 };
 // const findIndex = (array, item) => {
 //   const result = array.findIndex((arr) => arr.id === item.id);
@@ -66,6 +67,7 @@ export default function tasks(state = initState, action) {
       return (state = {
         ...state,
         taskediting: null,
+        projecteditting: null,
         showModal: false,
         modal: null,
       });
@@ -166,22 +168,25 @@ export default function tasks(state = initState, action) {
       return (state = {
         ...state,
         loading: true,
+        animation: true,
       });
     case TASK.TASK_SEARCH_SUCCESS:
       return (state = {
         ...state,
         loading: false,
+        animation: false,
         tasks: action.payload,
       });
     case TASK.TASK_SEARCH_FAILURE:
       return (state = {
         ...state,
         loading: false,
+        animation: false,
         message: action.payload,
       });
     case projectConst.PRO_EDITTING:
       const { projecteditting } = action.payload;
-      console.log(action.payload)
+      // console.log(action.payload)
       return {
         ...state,
         projecteditting

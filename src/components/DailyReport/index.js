@@ -4,17 +4,8 @@ import { useSelector } from 'react-redux';
 import { TASK_STATUS } from '../../constant/task';
 const DailyReport = ({ projectId, label }) => {
   const tasks = useSelector(state => state.taskReducer.tasks);
-  const [html, setHtml] = useState();
   const ref = useRef();
-  useEffect(() => {
-    if (ref.current) {
-      console.log(ref.current)
-    }
 
-  }, [])
-  useEffect(() => {
-
-  }, [html])
   const generatingReportText = () => {
     let xhtml = null;
     /** List generate following :
@@ -23,23 +14,22 @@ const DailyReport = ({ projectId, label }) => {
      * Issue: (get issue field)
      * Will do: (get list to do)
      *   */
-    const listTaskGen = tasks.filter(task => task.project === projectId)
+    const listTaskGen = tasks?.filter(task => task.project === projectId)
     xhtml = TASK_STATUS.map(taskStatus => {
-      const TaskGen = listTaskGen.filter(taskGen => parseInt(taskGen.status) === taskStatus.value);
+      const TaskGen = listTaskGen?.filter(taskGen => parseInt(taskGen.status) === taskStatus.value);
       return (
-        <>
-          <ul style={{ textAlign: 'left', padding: 8 }}>
-            <p>{taskStatus.value === 0 ? 'Will Do' : taskStatus.label}:</p>
-            {TaskGen.map(item => {
-              return (
-                <li>
-                  <p> {item.status == 0 ? `${item.name}: ${item.progress ? item.progress : 0}` : `${item.name}: ${item.progress ? item.progress : 0}`}</p>
-                  <p>{item.desc}</p>
-                </li>
-              )
-            })}
-          </ul>
-        </>
+        <ul key={`report-${projectId}-${taskStatus.value}`} style={{ textAlign: 'left', padding: 8 }}>
+          <p>{taskStatus.value === 0 ? 'Will Do' : taskStatus.label}:</p>
+          {TaskGen?.map(item => {
+            return (
+              <li key={item._id}>
+                <p> {item.status == 0 ? `${item.name}: ${item.progress ? item.progress : 0}` : `${item.name}: ${item.progress ? item.progress : 0}`}</p>
+                <p>{item.desc}</p>
+              </li>
+            )
+          })}
+        </ul>
+
       )
     })
     return xhtml;

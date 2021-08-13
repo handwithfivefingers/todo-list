@@ -10,13 +10,15 @@ import {
   Input,
   Progress,
   Select,
+  Form,
+  Slider,
+  message
 } from 'antd';
 import {
   MinusOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-// import { FormInstance } from 'antd/lib/form';
-// import InputItem from './Input';
+
 import { TASK_STATUS } from '../../../../constant/task';
 import { useDispatch, useSelector } from 'react-redux';
 import { ModalAction } from '../../../../actions';
@@ -24,230 +26,172 @@ import { EditTask, AddNewTask } from '../../../../actions/task';
 import { projectUpdate } from '../../../../actions/project';
 import { HideModal } from '../../../../actions/modal';
 import InputItem from '../Input';
+
 const { Option } = Select;
 const ModalForm = (props) => {
-  const [name, SetName] = useState('');
-  const [desc, SetDesc] = useState('');
-  const [status, SetStatus] = useState(0);
-  const [progress, Setprogress] = useState(0);
-
-  const [Submitting, SetSubmitting] = useState(false);
-  const [validation, Setvalidation] = useState(false);
 
   const taskReducer = useSelector((state) => state.taskReducer);
   const authReducer = useSelector((state) => state.authReducer);
 
+  const formRef = React.createRef();
   const dispatch = useDispatch();
 
   const onCancel = () => {
     const { HideModal } = ModalAction;
     dispatch(HideModal());
   };
-
   useEffect(() => {
+    if (authReducer.user) {
+      formRef.current?.setFieldsValue({
+        userid: authReducer.user._id,
+        project: taskReducer.modal.projectId ? taskReducer.modal.projectId : ''
+      })
+    }
     if (taskReducer.showModal && taskReducer.taskediting) {
-      SetName(taskReducer.taskediting.name);
-      SetDesc(taskReducer.taskediting.desc);
-      SetStatus(taskReducer.taskediting.status);
+      formRef.current.setFieldsValue({
+        name: taskReducer.taskediting.name,
+        desc: taskReducer.taskediting.desc,
+        status: taskReducer.taskediting.status,
+        id: taskReducer.taskediting._id,
+        project: taskReducer.taskediting.project
+      })
     } else if (taskReducer.showModal && taskReducer.projecteditting) {
-      SetName(taskReducer.projecteditting.name);
-      SetDesc(taskReducer.projecteditting.desc);
-      SetStatus(taskReducer.projecteditting.type);
-      Setprogress(taskReducer.projecteditting.progress);
+      formRef.current.setFieldsValue({
+        name: taskReducer.projecteditting.name,
+        desc: taskReducer.projecteditting.desc,
+        progress: taskReducer.projecteditting.progress,
+        status: taskReducer.projecteditting.status,
+        id: taskReducer.projecteditting._id
+      })
     } else {
-      SetName('');
-      SetDesc('');
-      SetStatus(0);
-      Setprogress(0);
+      formRef.current?.setFieldsValue({
+        name: '',
+        desc: '',
+        progress: 0,
+        status: props.project ? 'active' : 0,
+        id: ''
+      })
     }
-  }, [taskReducer.showModal, taskReducer.taskediting]);
+  }, [taskReducer.showModal])
 
-  const validate = (params) => {
-    if (params.length < 3) {
-      Setvalidation(true);
-      return false;
-    }
-    Setvalidation(false);
-    return true;
-  };
-
-  const SubmitTodoForm = (e) => {
-    e.preventDefault();
-    console.log(status)
-    if (!validate(name)) {
-      return false;
-    }
-    const form = new FormData();
-    form.append('name', name);
-    form.append('desc', desc);
-    form.append('status', status);
-    if (taskReducer.modal.projectId) {
-      form.append('project', taskReducer.modal.projectId);
-    }
-    // console.log('Name:', name, 'Desc: ', desc, 'Status: ', status);
-    // console.log('has been sent');
-
+  const onFinish = (val) => {
     if (taskReducer.taskediting && taskReducer.taskediting._id) {
-      // console.log(taskReducer.taskediting._id);
-      const id = taskReducer.taskediting._id;
-      form.append('id', id);
-      dispatch(EditTask(form));
-    } else if (taskReducer.projecteditting && taskReducer.projecteditting._id) {
-      form.append('id', taskReducer.projecteditting._id);
-      form.append('progress', progress)
-      dispatch(projectUpdate(form))
+      dispatch(EditTask(val));
+      message.success('Task updated successfully');
+    }
+    else if (taskReducer.projecteditting && taskReducer.projecteditting._id) {
+      dispatch(projectUpdate(val))
+      message.success('Project updated successfully');
     } else {
-      const project = taskReducer.modal.projectId;
-      dispatch(AddNewTask({ name, desc, status, project }));
+      dispatch(AddNewTask(val));
+      message.success('Task created successfully');
     }
-    SetSubmitting((prevState) => !prevState);
-    setTimeout(() => {
-      SetSubmitting((prevState) => !prevState);
-      dispatch(HideModal());
-      Setvalidation(false);
-      SetName('');
-      SetDesc('');
-      SetStatus(0);
-    }, 1000);
-  };
-
-  const handleChange = (value) => {
-    console.log(value);
-  };
-
-  const decline = () => {
-    let prog = progress - 10;
-    if (prog < 0) {
-      prog = 0;
-    }
-    Setprogress(prog);
-  };
-  const increase = () => {
-    let prog = progress + 10;
-    if (prog > 100) {
-      prog = 100;
-    }
-    Setprogress(prog);
-  };
-  const renderInput = () => {
-    let xhtml = null;
-    xhtml = (
-      <form id="form-group" className="form-group" onSubmit={SubmitTodoForm}>
-        <div className="input">
-          <InputItem
-            type="text"
-            label="Name"
-            // value={name}
-            value={name}
-            onChange={(e) => SetName(e.target.value)}
+    dispatch(HideModal());
+  }
+  const renderTask = () => {
+    return (
+      <Form
+        onFinish={onFinish}
+        labelCol={{ span: 6 }}
+        ref={formRef}
+      >
+        <Form.Item
+          label="Task Name"
+          name="name"
+          rules={[{ required: true, message: 'Title atleast 4 character' }]}
+        >
+          <Input allowClear />
+        </Form.Item>
+        <Form.Item label="Description" name="desc" >
+          <Input.TextArea allowClear />
+        </Form.Item>
+        <Form.Item label="Progress" name="progress" >
+          <Slider
+            dots
+            step={10}
+            defaultValue={0}
+            onChange={(value) => { formRef.current?.setFieldsValue({ progress: value }) }}
+            onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
           />
-        </div>
-        <InputItem
-          type="validate"
-          validation={validation}
-          content=" Title must have 4 character minimum !"
-        />
-        <div className="input">
-          <InputItem
-            type="text"
-            label="Desc"
-            // value={desc}
-            value={desc}
-            onChange={(e) => SetDesc(e.target.value)}
-          />
-        </div>
-        {taskReducer.modal && (taskReducer.modal.title !== 'Add New Project' && taskReducer.modal.title !== 'Update Project') ? (
-          <>
-            <div className="input">
-              <label>Progress</label>
-              <div
-                className="form-control"
-                style={{
-                  width: '75%',
-                  display: 'flex',
-                  // flexWrap: 'wrap',
-                  justifyContent: 'center',
-                }}
-              >
-                <Progress percent={progress} />
-                <Button.Group>
-                  <Button onClick={decline} icon={<MinusOutlined />} />
-                  <Button onClick={increase} icon={<PlusOutlined />} />
-                </Button.Group>
-              </div>
-            </div>
-            <div className="input">
-              <label>Status</label>
-              <Select
-                value={status}
-                style={{ width: '75%' }}
-                onChange={(value) => SetStatus(value)}
-              >
-                {TASK_STATUS.map((stt) => {
-                  return (
-                    <Option key={stt.value} value={stt.value}>
-                      {stt.label}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="input">
-              <label>Progress</label>
-              <div
-                className="form-control"
-                style={{
-                  width: '75%',
-                  display: 'flex',
-                  // flexWrap: 'wrap',
-                  justifyContent: 'center',
-                }}
-              >
-                <Progress percent={progress} />
-                <Button.Group>
-                  <Button onClick={decline} icon={<MinusOutlined />} />
-                  <Button onClick={increase} icon={<PlusOutlined />} />
-                </Button.Group>
-              </div>
-            </div>
+        </Form.Item>
 
-            <div className="input">
-              <label>Status</label>
-              <Select
-                defaultValue="normal"
-                style={{ width: '75%' }}
-                onChange={handleChange}
-              >
-                <Option value="normal">Normal</Option>
-                <Option value="active">Active</Option>
-                <Option value="exception">Exception</Option>
-              </Select>
-            </div>
-            <div className="input">
-              <InputItem
-                type="text"
-                label="User Id"
-                // value={desc}
-                value={authReducer.user ? authReducer.user.user._id : ''}
-              // onChange={(e) => SetDesc(e.target.value)}
-              />
-            </div>
-          </>
-        )}
-        <Space>
-          <Spin spinning={Submitting}>
-            <Button type="primary" htmlType="submit" disabled={Submitting}>
-              Submit
-            </Button>
+        <Form.Item label="Status" name="status">
+          <Select defaultValue='active'>
+            {TASK_STATUS.map((stt) => {
+              return (
+                <Option key={stt.value} value={stt.value}>
+                  {stt.label}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+        <Form.Item label="Issue" name="issue" >
+          <Input.TextArea allowClear />
+        </Form.Item>
+        <Form.Item label="ID" name="id" style={{ display: 'none' }}>
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item label="Project ID" name="project" style={{ display: 'none' }}>
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item label="User ID" name="userid" style={{ display: 'none' }}>
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item>
+          <Spin spinning={false}>
+            <Button htmlType="submit" type="primary" disabled={false}> Submit</Button>
           </Spin>
-        </Space>
-      </form>
-    );
-    return xhtml;
-  };
+        </Form.Item>
+      </Form>
+    )
+  }
+  const renderProject = () => {
+    return (
+      <Form
+        onFinish={onFinish}
+        labelCol={{ span: 6 }}
+        ref={formRef}
+      >
+        <Form.Item
+          label="Project Name"
+          name="name"
+          rules={[{ required: true, message: 'Title atleast 4 character' }]}
+        >
+          <Input allowClear />
+        </Form.Item>
+        <Form.Item label="Description" name="desc" >
+          <Input.TextArea allowClear />
+        </Form.Item>
+        <Form.Item label="Progress" name="progress" >
+          <Slider
+            dots
+            step={10}
+            defaultValue={0}
+            onChange={(value) => { formRef.current?.setFieldsValue({ progress: value }) }}
+            onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
+          />
+        </Form.Item>
+        <Form.Item label="Status" name="status">
+          <Select defaultValue={taskReducer.projecteditting ? taskReducer.projecteditting.status : 'active'}>
+            <Select.Option value='active'> Active </Select.Option>
+            <Select.Option value='exception'> Exception </Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="ID" name="id" style={{ display: 'none' }}>
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item label="User ID" name="userid" style={{ display: 'none' }}>
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item>
+          <Spin spinning={false}>
+            <Button htmlType="submit" type="primary" disabled={false}> Submit</Button>
+          </Spin>
+        </Form.Item>
+      </Form>
+    )
+  }
   return (
     <>
       <Modal
@@ -256,7 +200,7 @@ const ModalForm = (props) => {
         onCancel={onCancel}
         footer={null}
       >
-        {renderInput()}
+        {props.project ? renderProject() : renderTask()}
       </Modal>
     </>
   );

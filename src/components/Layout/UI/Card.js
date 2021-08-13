@@ -29,16 +29,17 @@ class CardItem extends Component {
     this.state = {
       dropdown: false,
       active: false,
+      loading: true
     };
   }
 
   componentDidMount() {
-    document.addEventListener('mousedown', this.handleClickOutside);
+    // document.addEventListener('mousedown', this.handleClickOutside);
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
+  // componentWillUnmount() {
+  //   document.removeEventListener('mousedown', this.handleClickOutside);
+  // }
   handleClickOutside = (event) => {
     const domNode = ReactDOM.findDOMNode(this);
     if (!domNode || !domNode.contains(event.target)) {
@@ -47,7 +48,6 @@ class CardItem extends Component {
       });
     }
   };
-
   handleOnclick = (task) => {
     const { TaskActionCreator, ModalActionCreator } = this.props;
     const { Task_Editing } = TaskActionCreator;
@@ -79,13 +79,13 @@ class CardItem extends Component {
         <Row className="body">
           <Col lg={6} md={8} sm={24}>
             <div className="avatar">
-              <Skeleton loading={taskReducer.loading} active avatar>
+              <Skeleton loading={taskReducer.animation} active avatar>
                 <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
               </Skeleton>
             </div>
           </Col>
           <Col lg={18} md={16} sm={24}>
-            <Skeleton loading={taskReducer.loading} active>
+            <Skeleton loading={taskReducer.animation} active>
               <div className="content">
                 <h3 className="title">{task.name}</h3>
                 <p className="desc">{task.desc}</p>
