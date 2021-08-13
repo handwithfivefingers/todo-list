@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Button } from 'antd';
 import {
   FolderOutlined,
   PieChartOutlined,
@@ -7,11 +7,12 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import { TASK_SIDE } from './../../../constant/route';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import Logo from './../../../logo.svg';
+import { AuthAction } from './../../../actions';
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 class SiderLayout extends Component {
@@ -20,12 +21,16 @@ class SiderLayout extends Component {
     breakpoint: false,
   };
   onCollapse = (collapsed) => {
-    // console.log(collapsed);
     this.setState({ collapsed });
   };
-
+  Signout = () => {
+    const { authActionCreator } = this.props;
+    const { userLogout } = authActionCreator;
+    userLogout();
+  }
   render() {
     const { collapsed } = this.state;
+    const { authReducer } = this.props;
     return (
       <Sider
         collapsible
@@ -37,9 +42,9 @@ class SiderLayout extends Component {
           this.setState({ breakpoint: broken });
         }}
         width={`${this.state.breakpoint ? '65px' : '200px'}`}
-        // style={{
-        //   width: `${this.state.breakpoint ? '50px' : '200px'}`,
-        // }}
+      // style={{
+      //   width: `${this.state.breakpoint ? '50px' : '200px'}`,
+      // }}
       >
         <div
           className="logo"
@@ -51,16 +56,30 @@ class SiderLayout extends Component {
           defaultSelectedKeys={this.props.match.path}
           mode="inline"
         >
-          {TASK_SIDE.map((route, index) => {
-            return (
-              <Menu.Item
-                key={route.path}
-                icon={index === 0 ? <PieChartOutlined /> : <FolderOutlined />}
-              >
-                <NavLink to={route.path}>{route.name}</NavLink>
+          <Menu.Item key={'/'} icon={<PieChartOutlined />} >
+            <NavLink to="/">Home</NavLink>
+          </Menu.Item>
+          <Menu.Item key={'/project'} icon={<FolderOutlined />} >
+            <NavLink to="/project">Project</NavLink>
+          </Menu.Item>
+          {
+            authReducer.authenticate && authReducer.token
+              ?
+              <>
+                <Menu.Item key={'/profile'} icon={<PieChartOutlined />} >
+                  <NavLink to="/profile">Profile</NavLink>
+                </Menu.Item>
+                <Menu.Item>
+                  <Button type="link" icon={<PieChartOutlined />} style={{ paddingLeft: 0, color: 'rgba(255, 255, 255, 0.65)' }} onClick={this.Signout}>Sign out</Button>
+                </Menu.Item>
+
+              </>
+              :
+              <Menu.Item key={'/login'} icon={<PieChartOutlined />} >
+                <NavLink to="/login">Login</NavLink>
               </Menu.Item>
-            );
-          })}
+          }
+
           <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
             <Menu.Item key="6">Team 1</Menu.Item>
             <Menu.Item key="8">Team 2</Menu.Item>
@@ -75,7 +94,10 @@ class SiderLayout extends Component {
 }
 const mapStatetoProps = (state) => ({
   taskReducer: state.taskReducer,
+  authReducer: state.authReducer
 });
-const mapDispatchtoProps = null;
+const mapDispatchtoProps = dispatch => ({
+  authActionCreator: bindActionCreators(AuthAction, dispatch),
+});
 const withConnect = connect(mapStatetoProps, mapDispatchtoProps);
 export default compose(withConnect)(SiderLayout);

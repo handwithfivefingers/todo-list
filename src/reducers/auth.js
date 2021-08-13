@@ -49,6 +49,15 @@ export default function Auth(state = initialState, action) {
         authenticating: false,
         message: action.payload.message,
       });
+    case AUTHENTICATE.LOGOUT_SUCCESS:
+      return (state = {
+        ...state,
+        authenticating: false,
+        authenticate: false,
+        user: null,
+        token: null,
+        // message: action.payload.message,
+      });
     default:
       return state;
   }

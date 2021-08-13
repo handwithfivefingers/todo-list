@@ -75,3 +75,13 @@ export const isUserLogIn = () => {
     }
   };
 }
+export const userLogout = () => {
+  return async (dispatch) => {
+    const res = await axios.post('/signout');
+    if (res.status === 200) {
+      dispatch({
+        type: AUTHENTICATE.LOGOUT_SUCCESS,
+      })
+    }
+  }
+}
