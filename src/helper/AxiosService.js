@@ -4,10 +4,10 @@ import { AUTHENTICATE } from '../constant/auth';
 const token = window.localStorage.getItem('token');
 
 const instance = axios.create({
-  baseURL: `${
-    process.env.REACT_APP_API_GLOBAL || process.env.REACT_APP_API_LOCAL
-  }`,
-  // baseURL: `${process.env.REACT_APP_API_LOCAL}`,
+  // baseURL: `${
+  //   process.env.REACT_APP_API_GLOBAL || process.env.REACT_APP_API_LOCAL
+  // }`,
+  baseURL: `${process.env.REACT_APP_API_LOCAL}`,
   headers: {
     Authorization: token ? `Bear ${token}` : ''
   }
