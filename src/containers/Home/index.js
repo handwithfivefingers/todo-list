@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
-import { Progress, Row, Col, Tooltip, Avatar } from 'antd';
-import { SearchOutlined, CheckOutlined, CloseOutlined  } from '@ant-design/icons';
+import {
+  Progress, Row, Col, Tooltip, Avatar, Card, Space,
+  Statistic, Slider, Spin
+} from 'antd';
+import {
+  SearchOutlined, CheckOutlined, CloseOutlined, ArrowUpOutlined,
+  ArrowDownOutlined
+} from '@ant-design/icons';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import PS from './../../assets/img/PS.png';
 import AI from './../../assets/img/AI.png';
 import Blender from './../../assets/img/Blender.png';
 import VS from './../../assets/img/VS.png';
+import { Line, Area } from '@ant-design/charts';
+import moment from 'moment';
 const UserJoin = [
   {
     id: 1,
@@ -33,9 +42,54 @@ const UserJoin = [
     status: true,
   },
 ];
+const api = "https://api.zingnews.vn/public/v2/corona/getChart";
 class Home extends Component {
   state = {
     project: null,
+    last15Days: {
+      data: [],
+      height: 400,
+      xField: 'x',
+      yField: 'y',
+      tooltip: {
+        formatter: (datum) => {
+          return { name: datum.x, value: datum.y + ' ca' };
+        },
+      },
+      point: {
+        size: 5,
+        shape: 'diamond',
+      },
+      xAxis: {
+        title: {
+          text: 'Từ 15 ngày trước',
+          style: { fontSize: 18 },
+        }
+      }
+    },
+    lastAprilToNow: {
+      data: [],
+      xField: 'x',
+      yField: 'y',
+      xAxis: {
+        range: [0, 1],
+      },
+      xAxis: {
+        title: {
+          text: 'Từ 27/4 đến nay',
+          style: { fontSize: 18 },
+        }
+      },
+      tooltip: {
+        formatter: (datum) => {
+          return { name: datum.x, value: datum.y + ' ca' };
+        },
+      },
+    },
+    today: 0,
+    total: 0,
+    lastUpdated: null,
+    loading: false,
   };
 
   applyTask(item) {
@@ -48,6 +102,29 @@ class Home extends Component {
     if (taskReducer.project) {
       this.applyTask(taskReducer.project[0]);
     }
+    this.setState({ loading: true })
+    const res = axios.get(`${api}`);
+    res.then(response => {
+      this.setState({
+        last15Days: {
+          ...this.state.last15Days,
+          data: response.data.data.vn.cases // 100
+        },
+        lastAprilToNow: {
+          ...this.state.lastAprilToNow,
+          data: response.data.data.vnSeason4.cases
+        },
+        today: response.data.data.vnSeason4.toDay,
+        total: response.data.data.vnSeason4.total,
+        // lastUpdate: moment.utc(response.data.data.lastUpdated * 1000).format('HH')
+        lastUpdate: moment.utc(response.data.data.vnSeason4CommunityDaily.lastUpdated * 1000).format('HH'),
+      })
+    }).catch(error => {
+      console.log('home error:', error)
+    }).finally(() => {
+      console.log('finally')
+      this.setState({ loading: false })
+    })
   }
   componentDidUpdate(prevProps) {
     const { taskReducer } = this.props;
@@ -58,124 +135,67 @@ class Home extends Component {
   render() {
     const { taskReducer } = this.props;
     const { project } = this.state;
+    console.log(this.state.lastUpdate);
     return (
       <Row gutter={[16, 24]}>
-        <Col xs={24} sm={24} md={8} lg={6} xl={6}>
-          {taskReducer.project?.map((item) => {
-            return (
-              <div
-                className="todo-card-ui"
-                key={item._id}
-                onClick={() => this.applyTask(item)}
-              >
-                <div className="body">
-                  <div className="avatar">
-                    <Progress
-                      type="circle"
-                      percent={item.progress}
-                      width={80}
-                      status={item.type}
-                    />
-                  </div>
-                  <div className="content">
-                    <h3>{item.name}</h3>
-                    <p>Desc: {item.desc}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <Col span={24}>
+          <Space>
+            <h2>Số liệu Covid-19 tại Việt Nam</h2>
+          </Space>
         </Col>
-        <Col xs={24} sm={24} md={16} lg={18} xl={18}>
-          <div className="home-content">
-            <div className="main-content">
-              <div className="todo-left-dashboard">
-                <div className="project-about">
-                  <h1 className="project-title">
-                    {project ? project.name : ''}
-                  </h1>
-                  <ul
-                    className="project-desc"
-                    style={{ listStyleType: 'none' }}
-                  >
-                    <li>Description: {project ? project.desc : ''}</li>
-                    <li>
-                      Id: <span>{project ? project._id : ''} </span>
-                    </li>
-                    <li>
-                      Status: <span>{project ? project.type : ''} </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="project-timeline">
-                  <h1> Progress bar</h1>
-                  <div className="item">
-                    <span>
-                      <Tooltip
-                        title={`Done: ${
-                          project ? project.progress / 2 : ''
-                        }% / To do: ${
-                          project ? project.progress / 2 : ''
-                        }% / In Progress: ${
-                          project ? 100 - project.progress : ''
-                        }% `}
-                      >
-                        <Progress
-                          percent={project ? project.progress : ''}
-                          success={{
-                            percent: project ? project.progress / 2 : '',
-                          }}
-                          type="dashboard"
-                        />
-                      </Tooltip>
-                    </span>
-                    <span>
-                      <Progress percent={30} />
-                      <Progress percent={50} status="active" />
-                      <Progress percent={70} status="exception" />
-                      <Progress percent={100} />
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="todo-right-dashboard">
-                <h1>User Join </h1>
-                <div className="todo-user">
-                  {UserJoin.map((user) => {
-                    return (
-                      <div className="project-user" key={user.id}>
-                        <div className="avatar">
-                          <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                        </div>
-                        <div className="content">
-                          <ul style={{ listStyleType: 'none' }}>
-                            <li>Name: {user.name}</li>
-                            <li>Status: {user.status ? <CheckOutlined  style={{color:'#52c41a'}}/> : <CloseOutlined />}</li>
-                          </ul>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-            <Row>
-              <div className="footer-content">
-                <div className="footer-item">
-                  <img src={PS} />
-                </div>
-                <div className="footer-item">
-                  <img src={AI} />
-                </div>
-                <div className="footer-item">
-                  <img src={Blender} />
-                </div>
-                <div className="footer-item">
-                  <img src={VS} />
-                </div>
-              </div>
-            </Row>
-          </div>
+        <Col xs={24} sm={12} md={12} lg={12}>
+          <Row>
+            <Col xs={24} sm={12} md={12} lg={12}>
+              <Spin spinning={this.state.loading}>
+                <Card>
+                  <Statistic
+                    title="Tổng số ca nhiễm hôm nay"
+                    value={this.state.today}
+                    // precision={2}
+                    valueStyle={{ color: 'rgba(239,68,68,1)' }}
+                    prefix={<ArrowUpOutlined />}
+                    suffix=" ca"
+                  />
+                </Card>
+              </Spin>
+            </Col>
+            <Col xs={24} sm={12} md={12} lg={12}>
+              <Spin spinning={this.state.loading}>
+                <Card>
+                  <Statistic
+                    title="Tổng số ca nhiễm cả nước"
+                    value={this.state.total}
+                    // precision={2}
+                    valueStyle={{ color: 'rgba(239,68,68,1)' }}
+                    prefix={<ArrowUpOutlined />}
+                    suffix=" ca"
+                  />
+                </Card>
+              </Spin>
+            </Col>
+          </Row>
+        </Col>
+        <Col xs={24} sm={12} md={12} lg={6}>
+          <Spin spinning={this.state.loading}>
+            <Card>
+              <Statistic
+                title="Cập nhật theo Zingnew:"
+                value={this.state.lastUpdate}
+                // precision={2}
+                valueStyle={{ color: '#3f8600' }}
+                // prefix={<ArrowUpOutlined />}
+                suffix=" giờ trước"
+              />
+            </Card>
+          </Spin>
+        </Col>
+        <Col xs={24} sm={24} md={12}>
+          <Spin spinning={this.state.loading}>
+            <Line {...this.state.last15Days} />
+          </Spin>
+        </Col>
+        <Col xs={24} sm={24} md={12}>
+          <Area {...this.state.lastAprilToNow} />
         </Col>
       </Row>
     );

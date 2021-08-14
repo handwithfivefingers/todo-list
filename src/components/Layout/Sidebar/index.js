@@ -50,19 +50,18 @@ class SiderLayout extends Component {
           className="logo"
           style={{ background: `url(${Logo}) center no-repeat` }}
         />
-        <Switch
+        {/* <Switch
           checked={this.state.theme === 'dark'}
           onChange={this.changeTheme}
           checkedChildren="Dark"
           unCheckedChildren="Light"
-        />
+        /> */}
         <Menu
           theme={this.state.theme}
           defaultSelectedKeys={match.path}
           mode="vertical"
           style={{ background: 'inherit' }}
         >
-
           <Menu.Item key={'/'} icon={<PieChartOutlined />} >
             <NavLink to="/">Home</NavLink>
           </Menu.Item>
@@ -88,14 +87,6 @@ class SiderLayout extends Component {
                 <NavLink to="/login">Login</NavLink>
               </Menu.Item>
           }
-
-          {/* <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-            <Menu.Item key="6">Team 1</Menu.Item>
-            <Menu.Item key="8">Team 2</Menu.Item>
-          </SubMenu>
-          <Menu.Item key="9" icon={<FileOutlined />}>
-            Files
-          </Menu.Item> */}
         </Menu>
       </Sider>
     );
