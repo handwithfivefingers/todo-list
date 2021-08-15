@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Progress, Row, Col, Tooltip, Avatar, Card, Space,
-  Statistic, Slider, Spin
+  Statistic, Slider, Spin, Table, Button, Input
 } from 'antd';
 import {
   SearchOutlined, CheckOutlined, CloseOutlined, ArrowUpOutlined,
@@ -16,32 +16,7 @@ import Blender from './../../assets/img/Blender.png';
 import VS from './../../assets/img/VS.png';
 import { Line, Area } from '@ant-design/charts';
 import moment from 'moment';
-const UserJoin = [
-  {
-    id: 1,
-    name: 'James',
-    desc: 'Something ....',
-    status: true,
-  },
-  {
-    id: 2,
-    name: 'Simon',
-    desc: 'Something ....',
-    status: false,
-  },
-  {
-    id: 3,
-    name: 'David',
-    desc: 'Something ....',
-    status: false,
-  },
-  {
-    id: 4,
-    name: 'Angela',
-    desc: 'Something ....',
-    status: true,
-  },
-];
+
 const api = "https://api.zingnews.vn/public/v2/corona/getChart";
 const province = "https://api.zingnews.vn/public/v2/corona/getChart?type=province";
 class Home extends Component {
@@ -61,12 +36,6 @@ class Home extends Component {
         size: 5,
         shape: 'diamond',
       },
-      xAxis: {
-        title: {
-          text: 'Từ 15 ngày trước',
-          style: { fontSize: 18 },
-        }
-      }
     },
     lastAprilToNow: {
       data: [],
@@ -75,34 +44,105 @@ class Home extends Component {
       xAxis: {
         range: [0, 1],
       },
-      xAxis: {
-        title: {
-          text: 'Từ 27/4 đến nay',
-          style: { fontSize: 18 },
-        }
-      },
       tooltip: {
         formatter: (datum) => {
           return { name: datum.x, value: datum.y + ' ca' };
         },
       },
+      searchText: '',
+      searchedColumn: '',
     },
+    sourceData: [],
     today: 0,
     total: 0,
     lastUpdated: null,
     loading: false,
   };
 
-  applyTask(item) {
+  getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={node => {
+            this.searchInput = node;
+          }}
+          placeholder={`Tìm kiếm Tỉnh/Thành Phố`}
+          value={selectedKeys[0]}
+          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+            Reset
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+        : '',
+    onFilterDropdownVisibleChange: visible => {
+      if (visible) {
+        setTimeout(() => this.searchInput.select(), 100);
+      }
+    },
+    render: text =>
+      this.state.searchedColumn === dataIndex ? (
+        text
+      ) : (
+        text
+      ),
+  });
+
+  columns = [
+    {
+      title: 'Tỉnh thành',
+      dataIndex: 'x',
+      key: 'x',
+      width: '40%',
+      ...this.getColumnSearchProps('x'),
+    },
+    {
+      title: 'Ca trong ngày',
+      dataIndex: 'y',
+      key: 'y',
+      width: '30%',
+      sorter: (a, b) => a.y - b.y,
+    },
+    {
+      title: 'Tổng ca nhiễm',
+      dataIndex: 'z',
+      key: 'z',
+      sorter: (a, b) => a.z - b.z,
+      sortDirections: ['descend', 'ascend'],
+    },
+  ]
+  handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
     this.setState({
-      project: item,
+      searchText: selectedKeys[0],
+      searchedColumn: dataIndex,
     });
-  }
+  };
+
+  handleReset = clearFilters => {
+    clearFilters();
+    this.setState({ searchText: '' });
+  };
+
   componentDidMount() {
-    const { taskReducer } = this.props;
-    if (taskReducer.project) {
-      this.applyTask(taskReducer.project[0]);
-    }
     this.setState({ loading: true })
     const res = axios.get(`${api}`);
     res.then(response => {
@@ -117,13 +157,23 @@ class Home extends Component {
         },
         today: response.data.data.vnSeason4.toDay,
         total: response.data.data.vnSeason4.total,
-        lastUpdate: moment.utc(response.data.data.lastUpdated * 1000).format('HH')
-        // lastUpdate: moment.utc(response.data.data.vnSeason4CommunityDaily.lastUpdated * 1000).format('HH'),
+        // lastUpdate: moment.utc(response.data.data.lastUpdated * 1000).format('HH')
       })
     }).catch(error => {
       console.log('error:', error)
     }).finally(() => {
 
+      this.setState({ loading: false })
+    })
+    const provinceData = axios.get(`${province}`);
+    provinceData.then(response => {
+      this.setState({
+        sourceData: response.data.data.cases,
+        lastUpdate: moment.utc(response.data.data.lastUpdated * 1000).format('HH'),
+      })
+    }).catch(error => {
+      console.log('error:', error)
+    }).finally(() => {
       this.setState({ loading: false })
     })
   }
@@ -141,37 +191,33 @@ class Home extends Component {
             <h2>Số liệu Covid-19 tại Việt Nam</h2>
           </Space>
         </Col>
-        <Col xs={24} sm={12} md={12} lg={12}>
-          <Row>
-            <Col xs={24} sm={12} md={12} lg={12}>
-              <Spin spinning={this.state.loading}>
-                <Card>
-                  <Statistic
-                    title="Tổng số ca nhiễm hôm nay"
-                    value={this.state.today}
-                    // precision={2}
-                    valueStyle={{ color: 'rgba(239,68,68,1)' }}
-                    prefix={<ArrowUpOutlined />}
-                    suffix=" ca"
-                  />
-                </Card>
-              </Spin>
-            </Col>
-            <Col xs={24} sm={12} md={12} lg={12}>
-              <Spin spinning={this.state.loading}>
-                <Card>
-                  <Statistic
-                    title="Tổng số ca nhiễm cả nước"
-                    value={this.state.total}
-                    // precision={2}
-                    valueStyle={{ color: 'rgba(239,68,68,1)' }}
-                    prefix={<ArrowUpOutlined />}
-                    suffix=" ca"
-                  />
-                </Card>
-              </Spin>
-            </Col>
-          </Row>
+        <Col xs={24} sm={12} md={12} lg={6}>
+          <Spin spinning={this.state.loading}>
+            <Card>
+              <Statistic
+                title="Tổng số ca nhiễm hôm nay"
+                value={this.state.today}
+                // precision={2}
+                valueStyle={{ color: 'rgba(239,68,68,1)' }}
+                prefix={<ArrowUpOutlined />}
+                suffix=" ca"
+              />
+            </Card>
+          </Spin>
+        </Col>
+        <Col xs={24} sm={12} md={12} lg={6}>
+          <Spin spinning={this.state.loading}>
+            <Card>
+              <Statistic
+                title="Tổng số ca nhiễm cả nước"
+                value={this.state.total}
+                // precision={2}
+                valueStyle={{ color: 'rgba(239,68,68,1)' }}
+                prefix={<ArrowUpOutlined />}
+                suffix=" ca"
+              />
+            </Card>
+          </Spin>
         </Col>
         <Col xs={24} sm={12} md={12} lg={6}>
           <Spin spinning={this.state.loading}>
@@ -187,13 +233,45 @@ class Home extends Component {
             </Card>
           </Spin>
         </Col>
-        <Col xs={24} sm={24} md={12}>
-          <Spin spinning={this.state.loading}>
-            <Line {...this.state.last15Days} />
-          </Spin>
+        <Col xs={24} sm={12} md={12} lg={6}>
+          <Card>
+            <Statistic
+              title={`${this.state.sourceData.length > 1 ? `${this.state.sourceData[0].x}` : ''} nhiều ca nhất`}
+              valueStyle={{ color: 'rgba(239,68,68,1)' }}
+              prefix={<ArrowUpOutlined />}
+              value={`${this.state.sourceData.length > 1 ? this.state.sourceData[0].y : ''} ca`}
+            />
+          </Card>
         </Col>
         <Col xs={24} sm={24} md={12}>
-          <Area {...this.state.lastAprilToNow} />
+          <Card title="Thống kê từ 15 ngày trước">
+            <Spin spinning={this.state.loading}>
+              <Line {...this.state.last15Days} />
+            </Spin>
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={12}>
+          <Card title="Thống kê từ 27/4">
+            <Spin spinning={this.state.loading}>
+              <Area {...this.state.lastAprilToNow} />
+            </Spin>
+          </Card>
+        </Col>
+        <Col span={24}>
+          <Card title='Số liệu theo tỉnh thành'>
+            <Table loading={this.state.loading} columns={this.columns} bordered size="small" dataSource={this.state.sourceData}>
+              {/* <Table.Column title="Province" dataIndex="x" render={(value, record, index) => {
+                return <span>{value}</span>
+              }} />
+              <Table.Column title="Today" dataIndex="y" sorter={(a, b) => a.y - b.y} render={(value, record, index) => {
+                return <span>{value}</span>
+              }} />
+              <Table.Column title="Total" dataIndex="z" sorter={(a, b) => a.z - b.z} render={(value, record, index) => {
+                return <span>{value}</span>
+              }} /> */}
+            </Table>
+
+          </Card>
         </Col>
       </Row>
     );

@@ -30,60 +30,81 @@ class SiderLayout extends Component {
     const { collapsed } = this.state;
     const { authReducer, match } = this.props;
     return (
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={this.onCollapse}
-        breakpoint="lg"
-        collapsedWidth="0"
-        onBreakpoint={(broken) => {
-          this.setState({ breakpoint: broken });
-        }}
-        width={`${this.state.breakpoint ? '65px' : '200px'}`}
-      >
-        <div
-          className="logo"
-          style={{ background: `url(${Logo}) center no-repeat` }}
-        />
-        {/* <Switch
-          checked={this.state.theme === 'dark'}
-          onChange={this.changeTheme}
-          checkedChildren="Dark"
-          unCheckedChildren="Light"
-        /> */}
-        <Menu
-          theme={this.state.theme}
-          defaultSelectedKeys={match.path}
-          mode="vertical"
-          style={{ background: 'inherit' }}
-        >
-          <Menu.Item key={'/'} icon={<PieChartOutlined />} >
-            <NavLink to="/">Home</NavLink>
-          </Menu.Item>
-          <Menu.Item key={'/project'} icon={<FolderOutlined />} >
-            <NavLink to="/project">Project</NavLink>
-          </Menu.Item>
-          {
-            authReducer.authenticate && authReducer.token
-              ?
-              <>
-                <SubMenu key="sub2" icon={<TeamOutlined />} title="Profile">
-                  <Menu.Item key={'/profile'} icon={<UserOutlined />} >
+      <>
+        <div className="sidebar-mobile">
+          <Menu
+            theme={this.state.theme}
+            defaultSelectedKeys={match.path}
+            mode="vertical"
+            style={{ background: 'inherit' }}
+          >
+            <Menu.Item key={'/'} icon={<PieChartOutlined />} >
+              <NavLink to="/">Home</NavLink>
+            </Menu.Item>
+            <Menu.Item key={'/project'} icon={<PieChartOutlined />} >
+              <NavLink to="/project">Project</NavLink>
+            </Menu.Item>
+            {
+              authReducer.authenticate && authReducer.token ?
+                <>
+                  <Menu.Item key={'/profile'} icon={<PieChartOutlined />} >
                     <NavLink to="/profile">Profile</NavLink>
                   </Menu.Item>
-                  <Menu.Item key="signout" onClick={this.Signout} icon={<LogoutOutlined />}>
-                    Sign out
+                  <Menu.Item key={'/signout'} icon={<PieChartOutlined />} >
+                    <a onClick={this.Signout}>
+                      Sign out
+                    </a>
                   </Menu.Item>
-                </SubMenu>
-              </>
-              :
-              <Menu.Item key={'/login'} icon={<PieChartOutlined />} >
-                <NavLink to="/login">Login</NavLink>
-              </Menu.Item>
-          }
-        </Menu>
-      </Sider>
-    );
+                </> :
+                <>
+                  <Menu.Item key={'/login'} icon={<PieChartOutlined />} >
+                    <NavLink to="/login">Login</NavLink>
+                  </Menu.Item>
+                </>
+            }
+          </Menu>
+        </div>
+        <Sider
+          className="sidebar-desktop"
+        >
+          <div
+            className="logo"
+            style={{ background: `url(${Logo}) center no-repeat` }}
+          />
+          <Menu
+            theme={this.state.theme}
+            defaultSelectedKeys={match.path}
+            mode="vertical"
+            style={{ background: 'inherit' }}
+          >
+            <Menu.Item key={'/'} icon={<PieChartOutlined />} >
+              <NavLink to="/">Home</NavLink>
+            </Menu.Item>
+            <Menu.Item key={'/project'} icon={<FolderOutlined />} >
+              <NavLink to="/project">Project</NavLink>
+            </Menu.Item>
+            {
+              authReducer.authenticate && authReducer.token
+                ?
+                <>
+                  <SubMenu key="sub2" icon={<TeamOutlined />} title="Profile">
+                    <Menu.Item key={'/profile'} icon={<UserOutlined />} >
+                      <NavLink to="/profile">Profile</NavLink>
+                    </Menu.Item>
+                    <Menu.Item key="signout" onClick={this.Signout} icon={<LogoutOutlined />}>
+                      Sign out
+                    </Menu.Item>
+                  </SubMenu>
+                </>
+                :
+                <Menu.Item key={'/login'} icon={<PieChartOutlined />} >
+                  <NavLink to="/login">Login</NavLink>
+                </Menu.Item>
+            }
+          </Menu>
+        </Sider>
+      </>
+    )
   }
 }
 const mapStatetoProps = (state) => ({
