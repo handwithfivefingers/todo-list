@@ -1,39 +1,12 @@
 import axios from './../helper/AxiosService';
 import { TASK } from './../constant/task';
 
-// export const fetchListTask = (params) => {
-//   return async (dispatch) => {
-//     dispatch({
-//       type: TASK.FETCH_TASK_REQUEST,
-//     });
-
-//      const res = await axios.get(`/tasks?q=${params ? params : ''}`);
-
-//     if (res.status === 200) {
-//       dispatch({
-//         type: TASK.FETCH_TASK_SUCCESS,
-//         payload: {
-//           data: res.data,
-//         },
-//       });
-//     } else {
-//       dispatch({
-//         type: TASK.FETCH_TASK_FAILURE,
-//         payload: {
-//           message: 'Lỗi network, vui lòng thử lại sau !',
-//         },
-//       });
-//     }
-//   };
-// };
-export const fetchListTask = () => {
+export const fetchListTask = (id) => {
   return async (dispatch) => {
     dispatch({
       type: TASK.FETCH_TASK_REQUEST,
     });
-
-    const res = await axios.get(`/initialdata`);
-
+    const res = await axios.post(`/initialdata`, { id });
     if (res.status === 200) {
       const { tasks, project } = res.data;
       dispatch({
@@ -53,8 +26,8 @@ export const fetchListTask = () => {
     }
   };
 };
+// Setting Editting
 export const Task_Editing = (task) => {
-  // console.log(task);
   return async (dispatch) => {
     dispatch({
       type: TASK.TASK_EDITING,
@@ -64,7 +37,7 @@ export const Task_Editing = (task) => {
     });
   };
 };
-
+// Update Task
 export const EditTask = (form) => {
   return async (dispatch) => {
     dispatch({

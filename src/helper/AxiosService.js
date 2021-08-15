@@ -2,23 +2,21 @@ import axios from 'axios';
 import store from './../store/configureStore';
 import { AUTHENTICATE } from '../constant/auth';
 const token = window.localStorage.getItem('token');
-
+const { authReducer } = store.getState();
 const instance = axios.create({
   baseURL: `${
     process.env.REACT_APP_API_GLOBAL || process.env.REACT_APP_API_LOCAL
   }`,
   // baseURL: `${process.env.REACT_APP_API_LOCAL}`,
   headers: {
-    Authorization: token ? `Bear ${token}` : ''
+    Authorization: token ? `Bearer ${token}` : ''
   }
 });
 
 instance.interceptors.request.use((req) => {
-  const { authReducer } = store.getState();
-  if (authReducer.user.token) {
-    req.headers.Authorization = `Bears ${authReducer.user.token}`;
+  if (authReducer.token) {
+    req.headers.Authorization = `Bearer ${authReducer.token}`;
   }
-
   return req;
 });
 

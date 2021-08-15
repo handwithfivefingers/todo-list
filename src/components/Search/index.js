@@ -25,7 +25,6 @@ const SearchItem = ({ projectId }) => {
       onChange={(e) => SetSearch(e.target.value)}
       allowClear
       placeholder="Finding Nemo ?"
-      loading={true}
     />
   );
 };

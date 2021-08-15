@@ -29,7 +29,7 @@ class LayoutRoute extends Component {
   }
   render() {
     const { component: YoursComponent, name, ...remainProps } = this.props;
-    const token = localStorage.getItem('token');
+    const token = window.localStorage.getItem('token');
     if (token !== null && token !== undefined) {
       return (
         <Route

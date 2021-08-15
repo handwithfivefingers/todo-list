@@ -29,7 +29,23 @@ const UpdateStateByIndex = (array, newdata, id) => {
   ];
   return returnTask
 };
-
+// const AddnewItemByIndex = (array, newdata) => {
+//   let index = -1;
+//   const currentArray = array;
+//   const returnArray = []
+// }
+const removeItemByIndex = (array, item) => {
+  let index = -1;
+  const currentTask = array;
+  index = array.findIndex(
+      (arr) => arr._id === item._id
+  );
+const returnTask = [
+  ...currentTask.slice(0, index),
+  ...currentTask.slice(index + 1),
+];
+return returnTask
+}
 export default function tasks(state = initState, action) {
   let index = -1;
   switch (action.type) {
@@ -114,7 +130,6 @@ export default function tasks(state = initState, action) {
         message: action.payload,
       });
     case TASK.TASK_ADD_NEW_REQUEST:
-      console.log(state.tasks);
       return (state = {
         loading: true,
         ...state,
@@ -190,11 +205,6 @@ export default function tasks(state = initState, action) {
         ...state,
         projecteditting
       }
-    case projectConst.PRO_CREATE_REQUEST:
-      return {
-        ...state,
-        loading: true,
-      }
     case projectConst.PRO_EDITTING_SUCCESS:
       let data = action.payload.project;
       // console.log(data, action.payload);
@@ -207,6 +217,41 @@ export default function tasks(state = initState, action) {
       return {
         ...state,
         loading: false,
+      }
+    case projectConst.PRO_CREATE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      }
+    case projectConst.PRO_CREATE_SUCCESS:
+      let projectCreate = action.payload.project;
+      return {
+        ...state,
+        loading: false,
+        project: [...state.project, projectCreate],
+      };
+    case projectConst.PRO_CREATE_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        message: action.payload.message
+      }
+    case projectConst.PRO_DELETE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      }
+    case projectConst.PRO_DELETE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        project: removeItemByIndex(state.project, action.payload.project),
+      };
+    case projectConst.PRO_DELETE_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        message: action.payload.message
       }
     default:
       return state;

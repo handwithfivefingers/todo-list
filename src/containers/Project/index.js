@@ -2,7 +2,7 @@ import {
   EditOutlined,
   LoginOutlined, PlusSquareOutlined, RestOutlined
 } from '@ant-design/icons';
-import { Button, Col, Popover, Progress, Row } from 'antd';
+import { Button, Col, Popover, Progress, Row, Spin, Popconfirm, message } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -20,6 +20,26 @@ class Project extends Component {
     x: 0,
     y: 0,
   };
+  componentDidMount() {
+    const { TaskListAction } = this.props;
+    const { fetchListTask } = TaskListAction;
+    if (this.props.authReducer.user) {
+      const id = this.props.authReducer.user._id;
+      if (id !== null && id !== undefined && id !== "") {
+        fetchListTask(id);
+      }
+    }
+  }
+  componentDidUpdate(prevProps) {
+    const { TaskListAction } = this.props;
+    const { fetchListTask } = TaskListAction;
+    if (prevProps.authReducer.user !== this.props.authReducer.user) {
+      const id = this.props.authReducer.user._id;
+      if (id !== null && id !== undefined && id !== "") {
+        fetchListTask(id);
+      }
+    }
+  }
   showform() {
     console.log('bind func');
     const { ModalListAction } = this.props;
@@ -33,6 +53,12 @@ class Project extends Component {
     const { ShowModal } = ModalListAction;
     ShowModal({ title: `Update Project` });
     projectEditting(item);
+  }
+  deleteProject = (item) => {
+    const { ProjectListAction } = this.props;
+    const { projectDelete } = ProjectListAction;
+    projectDelete(item);
+    message.success('Đã xóa Project');
   }
   render() {
     const { taskReducer } = this.props;
@@ -48,73 +74,81 @@ class Project extends Component {
             </Popover>
           </Col>
         </Row>
-        <Row gutter={[24, 16]}>
-          {taskReducer.project
-            ? taskReducer.project.map((item) => {
-              return (
-                <Col xs={24} sm={12} md={12} lg={8} xl={8} key={item._id} className="gutter-row">
-                  <div className="todo-card-ui">
-                    <div className="body">
-                      <div className="avatar">
-                        <Progress
-                          type="circle"
-                          percent={item.progress}
-                          width={80}
-                          status={item.status}
-                        />
-                      </div>
-                      <div className="content">
-                        <h3>Item: {item.name}</h3>
-                        <ul
-                          style={{
-                            listStyleType: 'none',
-                            textAlign: 'center',
-                            // padding: '5px 0 0 8px',
-                            margin: 0,
-                          }}
-                        >
-                          <li>Desc: {item.desc}</li>
-                          <li>Status: {item.type}</li>
-                          <li>Created: {item.createdAt.substring(0, 10)}</li>
-                          <li>Updated: {item.updatedAt.substring(0, 10)}</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="footer">
-                      <div className="action-button" style={{ padding: 0 }}>
-                        <Popover content="Manager Task" trigger="hover">
-                          <Link
-                            key={item._id}
-                            to={{
-                              pathname: `/project/${item.slug}`,
-                              state: { projectId: item._id },
-                            }}
+        <Spin spinning={taskReducer.loading}>
+          <Row gutter={[24, 16]}>
+
+            {taskReducer.project
+              ? taskReducer.project.map((item) => {
+                return (
+                  <Col xs={24} sm={12} md={12} lg={8} xl={8} key={item._id} className="gutter-row">
+                    <div className="todo-card-ui">
+                      <div className="body">
+                        <div className="avatar">
+                          <Progress
+                            type="circle"
+                            percent={item.progress}
+                            width={80}
+                            status={item.status}
+                          />
+                        </div>
+                        <div className="content">
+                          <h3>Item: {item.name}</h3>
+                          <ul
                             style={{
-                              width: '100%',
-                              borderRight: '1px solid #eee',
-                              color: 'inherit',
+                              listStyleType: 'none',
+                              textAlign: 'center',
+                              // padding: '5px 0 0 8px',
+                              margin: 0,
                             }}
                           >
-                            <LoginOutlined />
-                          </Link>
-                        </Popover>
-                        <Popover content="Edit" trigger="hover">
-                          <EditOutlined onClick={() => this.EditProject(item)} />
-                        </Popover>
-                        <Popover content="Delete Task" trigger="hover">
-                          <RestOutlined
-                            key="restout"
-                            onClick={() => console.log(`del`)}
-                          />
-                        </Popover>
+                            <li>Desc: {item.desc}</li>
+                            <li>Status: {item.type}</li>
+                            <li>Created: {item.createdAt.substring(0, 10)}</li>
+                            <li>Updated: {item.updatedAt.substring(0, 10)}</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="footer">
+                        <div className="action-button" style={{ padding: 0 }}>
+                          <Popover content="Manager Task" trigger="hover">
+                            <Link
+                              key={item._id}
+                              to={{
+                                pathname: `/project/${item.slug}`,
+                                state: { projectId: item._id },
+                              }}
+                              style={{
+                                width: '100%',
+                                borderRight: '1px solid #eee',
+                                color: 'inherit',
+                              }}
+                            >
+                              <LoginOutlined />
+                            </Link>
+                          </Popover>
+                          <Popover content="Edit" trigger="hover">
+                            <EditOutlined onClick={() => this.EditProject(item)} />
+                          </Popover>
+                          <Popover content="Delete Task" trigger="hover">
+                            <Popconfirm
+                              title="Bạn có chắc muốn xóa task này ?"
+                              onConfirm={(e) => this.deleteProject(item)}
+                              // onCancel={cancel}
+                              okText="Xóa"
+                              cancelText="Không"
+                            >
+                              <RestOutlined key="restout" />
+                            </Popconfirm>
+                          </Popover>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Col>
-              );
-            })
-            : ''}
-        </Row>
+                  </Col>
+                );
+              })
+              : ''}
+          </Row>
+        </Spin>
         <ModalForm project />
       </>
     );
@@ -123,6 +157,7 @@ class Project extends Component {
 
 const mapStatetoProps = (state) => ({
   taskReducer: state.taskReducer,
+  authReducer: state.authReducer,
 });
 const mapDispatchToProps = (dispatch) => ({
   TaskListAction: bindActionCreators(TaskAction, dispatch),

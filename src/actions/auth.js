@@ -34,11 +34,13 @@ export const RegisterUser = (form) => {
     const res = await axios.post('/signup', form);
     console.log(res);
     if (res.status === 201) {
-      const { message } = res.data;
+      const { token, user } = res.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
       dispatch({
         type: AUTHENTICATE.REGISTER_SUCCESS,
         payload: {
-          data: res.data,
+          token, user
         },
       });
     } else {
@@ -54,31 +56,13 @@ export const RegisterUser = (form) => {
 
 export const isUserLogIn = () => {
   return async (dispatch) => {
-    const token = localStorage.getItem('token');
-    // if (token) {
-    //   const user = JSON.parse(localStorage.getItem('user'));
-    //   dispatch({
-    //     type: AUTHENTICATE.LOGIN_SUCCESS,
-    //     payload: {
-    //       token,
-    //       user,
-    //     },
-    //   });
-    // } else {
-    //   dispatch({
-    //     type: AUTHENTICATE.LOGIN_FAILURE,
-    //     payload: {
-    //       error: 'Fail to login',
-    //     },
-    //   });
-    // }
     dispatch({
       type: AUTHENTICATE.LOGIN_REQUEST
     })
+    const token = window.localStorage.getItem('token');
     if (token) {
       const user = JSON.parse(localStorage.getItem('user'));
       const res = await axios.post('/auth/required');
-      console.log('res', res);
       if (res.status === 200) {
         dispatch({
           type: AUTHENTICATE.LOGIN_SUCCESS,
@@ -88,9 +72,8 @@ export const isUserLogIn = () => {
           },
         })
       } else {
-        dispatch({
-          type: AUTHENTICATE.LOGOUT_SUCCESS
-        })
+        console.log('logout')
+        userLogout();
       }
     }
   };

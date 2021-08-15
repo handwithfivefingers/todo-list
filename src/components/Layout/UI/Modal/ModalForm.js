@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ModalAction } from '../../../../actions';
 import { HideModal } from '../../../../actions/modal';
-import { projectUpdate } from '../../../../actions/project';
+import { projectUpdate, createProject } from '../../../../actions/project';
 import { AddNewTask, EditTask } from '../../../../actions/task';
 import { TASK_STATUS } from '../../../../constant/task';
 
@@ -30,6 +30,7 @@ const ModalForm = (props) => {
         project: taskReducer.modal.projectId ? taskReducer.modal.projectId : ''
       })
     }
+    // Task update
     if (taskReducer.showModal && taskReducer.taskediting) {
       formRef.current.setFieldsValue({
         name: taskReducer.taskediting.name,
@@ -38,7 +39,9 @@ const ModalForm = (props) => {
         id: taskReducer.taskediting._id,
         project: taskReducer.taskediting.project
       })
-    } else if (taskReducer.showModal && taskReducer.projecteditting) {
+    }
+    // Project update
+    else if (taskReducer.showModal && taskReducer.projecteditting) {
       formRef.current.setFieldsValue({
         name: taskReducer.projecteditting.name,
         desc: taskReducer.projecteditting.desc,
@@ -46,7 +49,9 @@ const ModalForm = (props) => {
         status: taskReducer.projecteditting.status,
         id: taskReducer.projecteditting._id
       })
-    } else {
+    }
+    //  Task/Project create
+    else {
       formRef.current?.setFieldsValue({
         name: '',
         desc: '',
@@ -58,16 +63,30 @@ const ModalForm = (props) => {
   }, [taskReducer.showModal])
 
   const onFinish = (val) => {
-    if (taskReducer.taskediting && taskReducer.taskediting._id) {
-      dispatch(EditTask(val));
-      message.success('Task updated successfully');
-    }
-    else if (taskReducer.projecteditting && taskReducer.projecteditting._id) {
-      dispatch(projectUpdate(val))
-      message.success('Project updated successfully');
-    } else {
+    let id = formRef.current.getFieldValue('id');
+    let projectid = formRef.current.getFieldValue('project');
+    console.log('projectid', projectid);
+    console.log(formRef.current.getFieldsValue())
+    if (id !== "") {
+      // update
+      if (taskReducer.projecteditting && taskReducer.projecteditting._id) {
+        // Project update
+        dispatch(projectUpdate(val))
+        message.success('Project updated successfully');
+      } else if (taskReducer.taskediting && taskReducer.taskediting._id) {
+        // Task update
+        dispatch(EditTask(val));
+        message.success('Task updated successfully');
+      }
+    } else if (projectid !== "" && projectid !== undefined) {
+      //create
+      // Task
       dispatch(AddNewTask(val));
       message.success('Task created successfully');
+    } else {
+      // Project
+      dispatch(createProject(val));
+      message.success('Project created successfully');
     }
     dispatch(HideModal());
   }
@@ -94,7 +113,7 @@ const ModalForm = (props) => {
             step={10}
             defaultValue={0}
             onChange={(value) => { formRef.current?.setFieldsValue({ progress: value }) }}
-            // onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
+          // onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
           />
         </Form.Item>
 
@@ -152,7 +171,7 @@ const ModalForm = (props) => {
             step={10}
             defaultValue={0}
             onChange={(value) => { formRef.current?.setFieldsValue({ progress: value }) }}
-            // onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
+          // onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
           />
         </Form.Item>
         <Form.Item label="Status" name="status">

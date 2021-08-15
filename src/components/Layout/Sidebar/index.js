@@ -20,11 +20,7 @@ class SiderLayout extends Component {
   onCollapse = (collapsed) => {
     this.setState({ collapsed });
   };
-  changeTheme = value => {
-    this.setState({
-      theme: value ? 'dark' : 'light',
-    });
-  };
+
   Signout = () => {
     const { authActionCreator } = this.props;
     const { userLogout } = authActionCreator;
@@ -44,7 +40,6 @@ class SiderLayout extends Component {
           this.setState({ breakpoint: broken });
         }}
         width={`${this.state.breakpoint ? '65px' : '200px'}`}
-        theme={this.state.theme}
       >
         <div
           className="logo"
@@ -77,7 +72,6 @@ class SiderLayout extends Component {
                     <NavLink to="/profile">Profile</NavLink>
                   </Menu.Item>
                   <Menu.Item key="signout" onClick={this.Signout} icon={<LogoutOutlined />}>
-                    {/* <Button type="link" icon={<PieChartOutlined />} style={{ paddingLeft: 0, color: 'rgba(255, 255, 255, 0.65)' }} onClick={this.Signout}>Sign out</Button> */}
                     Sign out
                   </Menu.Item>
                 </SubMenu>

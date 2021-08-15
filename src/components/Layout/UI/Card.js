@@ -119,13 +119,6 @@ class CardItem extends Component {
                 <RestOutlined key="restout" />
               </Popconfirm>
             </Popover>
-
-            {/* <Popover content="Something else" trigger="hover">
-              <EllipsisOutlined
-                key="ellipsis"
-                onClick={() => this.handleDropdownMenu(!this.state.dropdown)}
-              />
-            </Popover> */}
           </div>
         </div>
         <div

@@ -6,7 +6,22 @@ export const createProject = (form) => {
       type: projectConst.PRO_CREATE_REQUEST
     })
     const res = await axios.post(`/project/create`, form);
-    console.log(res);
+    if (res.status === 201) {
+      const { project } = res.data;
+      dispatch({
+        type: projectConst.PRO_CREATE_SUCCESS,
+        payload: {
+          project
+        }
+      })
+    } else {
+      dispatch({
+        type: projectConst.PRO_EDITTING_FAILURE,
+        payload: {
+          message: 'Something wrong here'
+        }
+      })
+    }
   }
 };
 export const projectEditting = (projecteditting) => {
@@ -38,4 +53,26 @@ export const projectUpdate = (form) => {
       })
     }
   }
+}
+
+export const projectDelete = (project) => {
+  return async (dispatch) => {
+    dispatch({
+      type: projectConst.PRO_DELETE_REQUEST,
+    });
+    const res = await axios.post(`/project/delete`, project);
+    if (res.status === 200) {
+      dispatch({
+        type: projectConst.PRO_DELETE_SUCCESS,
+        payload: {
+          project
+        },
+      });
+    } else {
+      dispatch({
+        type: projectConst.PRO_DELETE_FAILURE,
+        message: 'Something went wrong',
+      });
+    }
+  };
 }

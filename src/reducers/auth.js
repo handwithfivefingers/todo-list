@@ -41,7 +41,8 @@ export default function Auth(state = initialState, action) {
         ...state,
         authenticating: false,
         authenticate: true,
-        information: action.payload.data,
+        token: action.payload.token,
+        user: action.payload.user
       });
     case AUTHENTICATE.REGISTER_FAILURE:
       return (state = {

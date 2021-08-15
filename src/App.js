@@ -14,7 +14,7 @@ import LayoutRoute from './Layout';
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchListTask());
+    // dispatch(fetchListTask());
     dispatch(isUserLogIn())
   }, []);
   return (

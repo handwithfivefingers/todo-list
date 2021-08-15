@@ -43,6 +43,7 @@ const UserJoin = [
   },
 ];
 const api = "https://api.zingnews.vn/public/v2/corona/getChart";
+const province = "https://api.zingnews.vn/public/v2/corona/getChart?type=province";
 class Home extends Component {
   state = {
     project: null,
@@ -116,13 +117,13 @@ class Home extends Component {
         },
         today: response.data.data.vnSeason4.toDay,
         total: response.data.data.vnSeason4.total,
-        // lastUpdate: moment.utc(response.data.data.lastUpdated * 1000).format('HH')
-        lastUpdate: moment.utc(response.data.data.vnSeason4CommunityDaily.lastUpdated * 1000).format('HH'),
+        lastUpdate: moment.utc(response.data.data.lastUpdated * 1000).format('HH')
+        // lastUpdate: moment.utc(response.data.data.vnSeason4CommunityDaily.lastUpdated * 1000).format('HH'),
       })
     }).catch(error => {
-      console.log('home error:', error)
+      console.log('error:', error)
     }).finally(() => {
-      console.log('finally')
+
       this.setState({ loading: false })
     })
   }
@@ -133,9 +134,6 @@ class Home extends Component {
     }
   }
   render() {
-    const { taskReducer } = this.props;
-    const { project } = this.state;
-    console.log(this.state.lastUpdate);
     return (
       <Row gutter={[16, 24]}>
         <Col span={24}>
