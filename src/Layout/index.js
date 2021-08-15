@@ -9,21 +9,7 @@ class LayoutRoute extends Component {
     super(props);
     this.state = {
       default: null,
-      breakpoint: null,
     };
-  }
-  componentDidMount() {
-    let breakpoint = window.innerWidth;
-    console.log(breakpoint)
-    this.setState({
-      breakpoint,
-    })
-  }
-  componentDidUpdate(prevState) {
-    let breakpoint = window.innerWidth;
-    if (prevState.breakpoint !== breakpoint) {
-      console.log(breakpoint)
-    }
   }
   render() {
     const { component: YoursComponent, name, ...remainProps } = this.props;
@@ -35,7 +21,7 @@ class LayoutRoute extends Component {
           render={(routeProps) => {
             return (
               <>
-                <SiderLayout {...routeProps} type={this.state.breakpoint > 768 ? 'desktop' : 'mobile'} />
+                <SiderLayout {...routeProps} />
                 <ContentLayout>
                   <YoursComponent {...routeProps} />
                 </ContentLayout>

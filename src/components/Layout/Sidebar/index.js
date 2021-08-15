@@ -14,20 +14,13 @@ const { Sider } = Layout;
 class SiderLayout extends Component {
   state = {
     theme: 'dark',
-    collapsed: false,
-    breakpoint: false,
   };
-  onCollapse = (collapsed) => {
-    this.setState({ collapsed });
-  };
-
   Signout = () => {
     const { authActionCreator } = this.props;
     const { userLogout } = authActionCreator;
     userLogout();
   }
   render() {
-    const { collapsed } = this.state;
     const { authReducer, match } = this.props;
     return (
       <>

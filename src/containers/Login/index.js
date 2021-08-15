@@ -33,19 +33,20 @@ class Login extends Component {
         <Card
           title="Đăng nhập"
           extra={<Link to="/register">Đăng kí</Link>}
-          style={{ width: '400px' }}
           bordered={true}
+          style={{ width: 350 }}
         >
           <Form
             ref={this.formRef}
             onFinish={this.onFinish}
             labelCol={{ span: 6 }}
           >
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter your email !' }]}>
-              <Input type="email" />
+
+            <Form.Item name="email" rules={[{ required: true, message: 'Please enter your email !' }]}>
+              <Input type="email" placeholder="Email" />
             </Form.Item>
-            <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter your password !' }]}>
-              <Input.Password />
+            <Form.Item name="password" rules={[{ required: true, message: 'Please enter your password !' }]}>
+              <Input.Password placeholder="Password" />
             </Form.Item>
             <Form.Item>
               <Space>
@@ -60,6 +61,8 @@ class Login extends Component {
                 </Spin>
               </Space>
             </Form.Item>
+
+
           </Form>
         </Card>
       </Space>
