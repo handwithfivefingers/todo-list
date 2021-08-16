@@ -1,4 +1,4 @@
-import { Button, Col } from 'antd';
+import { Button, Col, Skeleton } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -13,7 +13,7 @@ class TaskList extends Component {
     // console.log(task, projectId);
     const newTask = task?.filter(item => item.project === projectId);
     xhtml = newTask?.map((item) => {
-      return <TaskItem key={item._id} task={item}/>;
+      return <TaskItem key={item._id} task={item} />;
     });
     return xhtml;
   };
@@ -34,17 +34,20 @@ class TaskList extends Component {
   };
 
   render() {
-    const { label } = this.props;
+    const { label, taskReducer } = this.props;
     return (
+
       <Col className="gutter-row task-background" xs={24} sm={12} md={8} lg={8} xl={6}>
-        <div className="task-background-component">
-          <h2>{label}</h2>
-          {this.renderCardItem()}
-          <Button className="task-btn" onClick={() => this.renderModalAddNew()}>
-            Add new
-          </Button>
-        </div>
+          <div className="task-background-component">
+            <h2>{label}</h2>
+            {this.renderCardItem()}
+            <Button className="task-btn" onClick={() => this.renderModalAddNew()}>
+              Add new
+            </Button>
+          </div>
+      
       </Col>
+
     );
   }
 }

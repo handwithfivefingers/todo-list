@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { isUserLogIn } from './actions/auth';
-import { fetchListTask } from './actions/task';
 import './App.css';
 import './assets/css/style.scss';
 import { TASK_ROUTE } from './constant/route';
@@ -14,7 +13,6 @@ import LayoutRoute from './Layout';
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    // dispatch(fetchListTask());
     dispatch(isUserLogIn())
   }, []);
   return (

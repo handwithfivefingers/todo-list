@@ -1,5 +1,5 @@
 import { EnterOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Row } from 'antd';
+import { Avatar, Button, Col, Row, Spin } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -33,12 +33,12 @@ class TaskBoard extends Component {
   };
 
   render() {
-    const { location } = this.props;
+    const { location, taskReducer } = this.props;
     // console.log('location', this.props.location);
     return (
       <>
-        <Row gutter={[16, 24]} align="middle">
-          <Col span={4}>
+        <Row gutter={[16, 24]} align="left">
+          <Col xs={6} sm={4} md={4} lg={4}>
             <Button
               type="link"
               onClick={() => this.props.history.goBack()}
@@ -46,24 +46,30 @@ class TaskBoard extends Component {
               <EnterOutlined /> Back
             </Button>
           </Col>
-          <Col span={16}>
+          <Col xs={18} sm={12} md={12} lg={16}>
             <SearchItem projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'} />
           </Col>
-          <Col span={4}>
+          <Col xs={24} sm={8} md={8} lg={4}>
             <Avatar icon={<UserOutlined />} />
             <Avatar icon={<UserOutlined />} />
             <Avatar icon={<UserOutlined />} />
             <Avatar icon={<UserOutlined />} />
           </Col>
+
         </Row>
-        <Row gutter={[16, 24]}>
-          {this.renderTaskBoard()}
-          <DailyReport
-            label="Generate Report"
-            projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'}
-          />
-        </Row>
+        <Spin spinning={taskReducer.loading}>
+          <Row gutter={[16, 24]}>
+
+            {this.renderTaskBoard()}
+            <DailyReport
+              label="Generate Report"
+              projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'}
+            />
+
+          </Row>
+        </Spin>
         <ModalForm />
+
       </>
     );
   }

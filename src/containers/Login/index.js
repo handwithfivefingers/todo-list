@@ -50,15 +50,13 @@ class Login extends Component {
             </Form.Item>
             <Form.Item>
               <Space>
-                <Spin spinning={submitting}>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    disabled={submitting}
-                  >
-                    Submit
-                  </Button>
-                </Spin>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  disabled={authReducer.authenticating}
+                >
+                  Submit
+                </Button>
               </Space>
             </Form.Item>
 

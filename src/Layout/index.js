@@ -1,3 +1,4 @@
+import { Spin } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
@@ -12,7 +13,7 @@ class LayoutRoute extends Component {
     };
   }
   render() {
-    const { component: YoursComponent, name, ...remainProps } = this.props;
+    const { component: YoursComponent, authReducer, name, ...remainProps } = this.props;
     const token = window.localStorage.getItem('token');
     if (token !== null && token !== undefined) {
       return (
@@ -23,7 +24,9 @@ class LayoutRoute extends Component {
               <>
                 <SiderLayout {...routeProps} />
                 <ContentLayout>
-                  <YoursComponent {...routeProps} />
+                  <Spin spinning={authReducer.authenticating}>
+                    <YoursComponent {...routeProps} />
+                  </Spin>
                 </ContentLayout>
               </>
             );
@@ -53,7 +56,9 @@ class LayoutRoute extends Component {
                   <>
                     <SiderLayout {...routeProps} />
                     <ContentLayout>
-                      <YoursComponent {...routeProps} />
+                      <Spin spinning={authReducer.authenticating}>
+                        <YoursComponent {...routeProps} />
+                      </Spin>
                     </ContentLayout>
                   </>
                 );
