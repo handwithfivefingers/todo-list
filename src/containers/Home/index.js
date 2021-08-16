@@ -167,9 +167,13 @@ class Home extends Component {
     })
     const provinceData = axios.get(`${province}`);
     provinceData.then(response => {
+      let now = moment(new Date()); //todays date
+      let end = moment.utc((response.data.data.lastUpdated) * 1000); // another date
+      let duration = moment.duration(now.diff(end));
+      let hours = duration.asHours();
       this.setState({
         sourceData: response.data.data.cases,
-        lastUpdate: moment.utc(response.data.data.lastUpdated * 1000).format('HH'),
+        lastUpdate: hours.toString().substring(0, 2),
       })
     }).catch(error => {
       console.log('error:', error)

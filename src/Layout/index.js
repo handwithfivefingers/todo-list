@@ -23,7 +23,7 @@ class LayoutRoute extends Component {
             return (
               <>
                 <SiderLayout {...routeProps} />
-                <ContentLayout>
+                <ContentLayout  {...routeProps}>
                   <Spin spinning={authReducer.authenticating}>
                     <YoursComponent {...routeProps} />
                   </Spin>
@@ -55,7 +55,7 @@ class LayoutRoute extends Component {
                 return (
                   <>
                     <SiderLayout {...routeProps} />
-                    <ContentLayout>
+                    <ContentLayout  {...routeProps}>
                       <Spin spinning={authReducer.authenticating}>
                         <YoursComponent {...routeProps} />
                       </Spin>
