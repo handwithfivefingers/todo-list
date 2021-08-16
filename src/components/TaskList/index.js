@@ -18,15 +18,12 @@ class TaskList extends Component {
     return xhtml;
   };
 
-  renderModalAddNew = () => {
+  renderModalAddNew = (val) => {
+    console.log(val);
     const { ModalActionCreator, projectId } = this.props;
     const { ShowModal } = ModalActionCreator;
     ShowModal({ title: `Add New Task`, projectId });
   };
-  /** Fix here *
-   * Need call Modal to global, not local like this
-   */
-
   handleCancel = () => {
     const { ModalActionCreator } = this.props;
     const { HideModal } = ModalActionCreator;
@@ -34,18 +31,18 @@ class TaskList extends Component {
   };
 
   render() {
-    const { label, taskReducer } = this.props;
+    const { stt } = this.props;
     return (
 
       <Col className="gutter-row task-background" xs={24} sm={12} md={8} lg={8} xl={6}>
-          <div className="task-background-component">
-            <h2>{label}</h2>
-            {this.renderCardItem()}
-            <Button className="task-btn" onClick={() => this.renderModalAddNew()}>
-              Add new
-            </Button>
-          </div>
-      
+        <div className="task-background-component">
+          <h2>{stt.label}</h2>
+          {this.renderCardItem()}
+          <Button className="task-btn" onClick={() => this.renderModalAddNew(stt.value)}>
+            Add new
+          </Button>
+        </div>
+
       </Col>
 
     );

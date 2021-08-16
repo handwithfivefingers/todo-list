@@ -37,7 +37,9 @@ const ModalForm = (props) => {
         desc: taskReducer.taskediting.desc,
         status: taskReducer.taskediting.status,
         id: taskReducer.taskediting._id,
-        project: taskReducer.taskediting.project
+        project: taskReducer.taskediting.project,
+        progress: taskReducer.taskediting.progress,
+        issue: taskReducer.taskediting.issue
       })
     }
     // Project update

@@ -4,34 +4,8 @@ import { Col, Skeleton } from 'antd';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 class TaskItem extends Component {
-  // state = {
-  //   loading: true,
-  // };
-  // componentDidMount() {
-  //   const { task } = this.props;
-  //   if (task && task !== undefined) {
-  //     this.CardSkeleton(false);
-  //   } else {
-  //     this.CardSkeleton(true);
-  //   }
-  // }
-
-  // CardSkeleton = (val) => {
-  //   setTimeout(() => {
-  //     this.setState({ loading: val })
-  //   }, 1000)
-  // }
-
-  // renderCardItem = () => {
-  //   const { task } = this.props;
-  //   let xhtml = null;
-  //   if (task !== null && task !== undefined) {
-
-  //   }
-  //   return xhtml;
-  // }
   render() {
-    const { task, taskReducer } = this.props;
+    const { task } = this.props;
     return (
       <CardItem task={task} />
     );

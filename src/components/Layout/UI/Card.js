@@ -2,7 +2,7 @@ import {
   CalendarOutlined, EditOutlined, RestOutlined, SettingOutlined
 } from '@ant-design/icons';
 import {
-  Avatar, Col, message, Popconfirm, Popover, Row, Skeleton
+  Avatar, Col, message, Popconfirm, Popover, Row, Skeleton, Progress, Space, Alert
 } from 'antd';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
@@ -62,25 +62,17 @@ class CardItem extends Component {
     });
   };
   render() {
-    const { task, taskReducer } = this.props;
+    const { task, authReducer } = this.props;
     return (
       <div className="todo-card-ui">
-        <Row className="body">
-          <Col lg={6} md={8} sm={24}>
-            <div className="avatar">
-              <Skeleton loading={taskReducer.animation} active avatar>
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-              </Skeleton>
-            </div>
-          </Col>
-          <Col lg={18} md={16} sm={24}>
-            <Skeleton loading={taskReducer.animation} active>
-              <div className="content">
-                <h3 className="title">{task.name}</h3>
-                <p className="desc">{task.desc}</p>
-              </div>
-            </Skeleton>
-          </Col>
+        <Row style={{ padding: 10 }}>
+          <Space align="start">
+            <Avatar size="small" style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{authReducer.user ? authReducer.user.firstName.substring(0, 1) : 'U'}</Avatar>
+            <h3 className="title">{task.name}</h3>
+          </Space>
+          <p className="desc">{task.desc}</p>
+          <Progress percent={task.progress} size="small" status={task.progress === 100 ? 'success' : 'active'} />
+          {task.issue ? <Alert message={task.issue} type="error" /> : ''}
         </Row>
         <div className="footer">
           <div className="action-button">
@@ -102,12 +94,6 @@ class CardItem extends Component {
                 onClick={() => this.handleDropdownMenu(!this.state.dropdown)}
               />
             </Popover>
-            {/* <Popover content="Delete Task" trigger="hover">
-              <RestOutlined
-                key="restout"
-                onClick={() => this.handleDeleteTask(task)}
-              />
-            </Popover> */}
             <Popover content="Delete Task" trigger="hover">
               <Popconfirm
                 title="Bạn có chắc muốn xóa task này ?"
@@ -145,6 +131,7 @@ class CardItem extends Component {
 }
 const mapStatetoProps = (state) => ({
   taskReducer: state.taskReducer,
+  authReducer: state.authReducer
 });
 const mapDispatchToProps = (dispatch) => ({
   TaskActionCreator: bindActionCreators(TaskAction, dispatch),

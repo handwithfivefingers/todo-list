@@ -23,7 +23,7 @@ class TaskBoard extends Component {
           <TaskList
             key={status._id}
             task={task}
-            label={status.label}
+            stt={{ label: status.label, value: status.value }}
             projectId={location.state.projectId}
           />
         );

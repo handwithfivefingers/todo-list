@@ -8,7 +8,6 @@ const { Content } = Layout;
 
 class ContentLayout extends Component {
   render() {
-    console.log(this.props);
     return (
       <Layout className="site-layout">
         <HeaderLayout />

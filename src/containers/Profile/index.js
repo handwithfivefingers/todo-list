@@ -1,82 +1,39 @@
-import React, { Component } from 'react';
-import { Card, } from 'antd';
-const tabList = [
-  {
-    key: 'tab1',
-    tab: 'tab1',
-  },
-  {
-    key: 'tab2',
-    tab: 'tab2',
-  },
-];
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Card, Row, Col, Button, Badge, Avatar, Space } from 'antd';
+const Profile = () => {
+  const authReducer = useSelector(state => state.authReducer);
+  const user = authReducer.user ? authReducer.user : '';
+  return (
+    <Row gutter={[6, 6]} justify="start">
+      <Space size="large">
+        <Badge count={5}>
+          <Avatar shape="square" size="large" />
+        </Badge>
+        <Badge count={0} showZero>
+          <Avatar shape="square" size="large" />
+        </Badge>
+      </Space>
 
-const contentList = {
-  tab1: <p>content1</p>,
-  tab2: <p>content2</p>,
-};
-
-const tabListNoTitle = [
-  {
-    key: 'article',
-    tab: 'article',
-  },
-  {
-    key: 'app',
-    tab: 'app',
-  },
-  {
-    key: 'project',
-    tab: 'project',
-  },
-];
-
-const contentListNoTitle = {
-  article: <p>article content</p>,
-  app: <p>app content</p>,
-  project: <p>project content</p>,
-};
-class Profile extends Component {
-  state = {
-    key: 'tab1',
-    noTitleKey: 'app',
-  };
-
-  onTabChange = (key, type) => {
-    console.log(key, type);
-    this.setState({ [type]: key });
-  };
-  render() {
-    return (
-      <>
-        <Card
-          style={{ width: '100%' }}
-          title="Card title"
-          extra={<a href="#">More</a>}
-          tabList={tabList}
-          activeTabKey={this.state.key}
-          onTabChange={key => {
-            this.onTabChange(key, 'key');
-          }}
-        >
-          {contentList[this.state.key]}
+      <Col span={24}>
+        <h2> Hello, {authReducer.user ? authReducer.user.fullName : ''}</h2>
+        <p>Below here are contains your information</p>
+      </Col>
+      <Col>
+        <Card title="User infomation">
+          <ul>
+            <li>First Name: <span> {user.firstName}</span></li>
+            <li>Last Name: <span> {user.lastName}</span></li>
+            <li>Your Email: <span> {user.email}</span></li>
+            <li>Your Role: <span> {user.role}</span></li>
+          </ul>
         </Card>
-        <br />
-        <br />
-        <Card
-          style={{ width: '100%' }}
-          tabList={tabListNoTitle}
-          activeTabKey={this.state.noTitleKey}
-          tabBarExtraContent={<a href="#">More</a>}
-          onTabChange={key => {
-            this.onTabChange(key, 'noTitleKey');
-          }}
-        >
-          {contentListNoTitle[this.state.noTitleKey]}
-        </Card>
-      </>
-    );
-  }
+      </Col>
+
+    </Row>
+  );
 }
 
 export default Profile;
+
+

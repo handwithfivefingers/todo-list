@@ -59,10 +59,8 @@ export const isUserLogIn = () => {
     dispatch({
       type: AUTHENTICATE.LOGIN_REQUEST
     })
-    console.log('login request');
     const token = window.localStorage.getItem('token');
     if (token) {
-      console.log('login success');
       const user = JSON.parse(localStorage.getItem('user'));
       const res = await axios.post('/auth/required');
       if (res.status === 200) {
@@ -74,7 +72,6 @@ export const isUserLogIn = () => {
           },
         })
       } else {
-        console.log('logout')
         dispatch({
           type: AUTHENTICATE.LOGIN_FAILURE,
           payload: {
