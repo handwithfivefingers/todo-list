@@ -1,5 +1,6 @@
 import axios from './../helper/AxiosService';
 import { projectConst } from './../constant/project';
+import { message } from 'antd';
 export const createProject = (form) => {
   return async (dispatch) => {
     dispatch({
@@ -68,6 +69,7 @@ export const projectDelete = (project) => {
           project
         },
       });
+      message.success('Project created successfully');
     } else {
       dispatch({
         type: projectConst.PRO_DELETE_FAILURE,

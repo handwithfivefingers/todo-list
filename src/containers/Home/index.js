@@ -277,6 +277,22 @@ class Home extends Component {
 
           </Card>
         </Col>
+        <Col span={24}>
+          <Card title='Số liệu Vaccine'>
+            <Table loading={this.state.loading} columns={this.columns} bordered size="small" dataSource={this.state.sourceData}>
+              {/* <Table.Column title="Province" dataIndex="x" render={(value, record, index) => {
+                return <span>{value}</span>
+              }} />
+              <Table.Column title="Today" dataIndex="y" sorter={(a, b) => a.y - b.y} render={(value, record, index) => {
+                return <span>{value}</span>
+              }} />
+              <Table.Column title="Total" dataIndex="z" sorter={(a, b) => a.z - b.z} render={(value, record, index) => {
+                return <span>{value}</span>
+              }} /> */}
+            </Table>
+
+          </Card>
+        </Col>
       </Row>
     );
   }

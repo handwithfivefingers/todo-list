@@ -1,5 +1,26 @@
 import { AUTHENTICATE } from './../constant/auth';
+import { message } from 'antd';
 import axios from './../helper/AxiosService';
+import jwt_decode from 'jwt-decode';
+
+function getCookie(name) {
+  var dc = document.cookie;
+  var prefix = name + "=";
+  var begin = dc.indexOf("; " + prefix);
+  if (begin == -1) {
+    begin = dc.indexOf(prefix);
+    if (begin != 0) return null;
+  }
+  else {
+    begin += 2;
+    var end = document.cookie.indexOf(";", begin);
+    if (end == -1) {
+      end = dc.length;
+    }
+  }
+  return decodeURI(dc.substring(begin + prefix.length, end));
+}
+
 export const LoginUser = (form) => {
   return async (dispatch) => {
     dispatch({
@@ -8,14 +29,19 @@ export const LoginUser = (form) => {
     const res = await axios.post('/signin', form);
     if (res.status === 200) {
       const { token, user } = res.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+
+      document.cookie = "token=" + token;
+      document.cookie = "user=" + JSON.stringify(user);
+      // console.log(document.cookie);
+      // localStorage.setItem('token', token);
+      // localStorage.setItem('user', JSON.stringify(user));
       dispatch({
         type: AUTHENTICATE.LOGIN_SUCCESS,
         payload: {
           token, user,
         },
       });
+      message.success('Đăng nhập thành công!');
     } else {
       dispatch({
         type: AUTHENTICATE.LOGIN_FAILURE,
@@ -23,6 +49,7 @@ export const LoginUser = (form) => {
           message: res.data,
         },
       });
+      message.error('Đăng nhập thất bại!');
     }
   };
 };
@@ -35,14 +62,20 @@ export const RegisterUser = (form) => {
     console.log(res);
     if (res.status === 201) {
       const { token, user } = res.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      const decode = jwt_decode(token);
+      console.log(decode);
+      // if (Date.now() >= exp * 1000) {
+      //   return false;
+      // }
+      document.cookie = "token=" + token;
+      document.cookie = "user=" + JSON.stringify(user);
       dispatch({
         type: AUTHENTICATE.REGISTER_SUCCESS,
         payload: {
           token, user
         },
       });
+      message.success('Đăng kí tài khoản thành công !');
     } else {
       dispatch({
         type: AUTHENTICATE.REGISTER_FAILURE,
@@ -50,6 +83,7 @@ export const RegisterUser = (form) => {
           message: res.data,
         },
       });
+      message.error('Đăng kí tài khoản thất bại, vui lòng thử lại sau !');
     }
   };
 };
@@ -59,9 +93,18 @@ export const isUserLogIn = () => {
     dispatch({
       type: AUTHENTICATE.LOGIN_REQUEST
     })
-    const token = window.localStorage.getItem('token');
+
+    const gettoken = () => {
+      let token = getCookie('token');
+      if (token == null) {
+        return token = ''
+      } else {
+        return token
+      }
+    }
+    const token = gettoken();
     if (token) {
-      const user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(getCookie('user'));
       const res = await axios.post('/auth/required');
       if (res.status === 200) {
         dispatch({
@@ -97,7 +140,8 @@ export const userLogout = () => {
     })
     const res = await axios.post('/signout');
     if (res.status === 200) {
-      localStorage.clear();
+      document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+      document.cookie = "user=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
       dispatch({
         type: AUTHENTICATE.LOGOUT_SUCCESS,
       })

@@ -1,7 +1,34 @@
 import axios from 'axios';
 import store from './../store/configureStore';
 import { AUTHENTICATE } from '../constant/auth';
-const token = window.localStorage.getItem('token');
+
+function getCookie(name) {
+  var dc = document.cookie;
+  var prefix = name + "=";
+  var begin = dc.indexOf("; " + prefix);
+  if (begin == -1) {
+    begin = dc.indexOf(prefix);
+    if (begin != 0) return null;
+  }
+  else {
+    begin += 2;
+    var end = document.cookie.indexOf(";", begin);
+    if (end == -1) {
+      end = dc.length;
+    }
+  }
+  return decodeURI(dc.substring(begin + prefix.length, end));
+}
+const gettoken = () => {
+  let token = getCookie('token');
+  if (token == null) {
+    return token = ''
+  } else {
+    return token
+  }
+}
+const token = gettoken();
+
 const instance = axios.create({
   baseURL: `${process.env.REACT_APP_API_GLOBAL || process.env.REACT_APP_API_LOCAL
     }`,

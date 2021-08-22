@@ -1,6 +1,6 @@
 import axios from './../helper/AxiosService';
 import { TASK } from './../constant/task';
-
+import { message } from 'antd';
 export const fetchListTask = (id) => {
   return async (dispatch) => {
     dispatch({
@@ -51,6 +51,7 @@ export const EditTask = (form) => {
           task: res.data.task,
         },
       });
+      message.success('Updated Task successfully');
     } else {
       dispatch({
         type: TASK.TASK_EDIT_FAILURE,
@@ -76,6 +77,7 @@ export const AddNewTask = (form) => {
           data: res.data,
         },
       });
+      message.success('Task created successfully');
     } else {
       dispatch({
         type: TASK.TASK_ADD_NEW_FAILURE,
@@ -101,6 +103,7 @@ export const Delete_Task = (task) => {
           data: task,
         },
       });
+      message.success('Task deleted !');
     } else {
       dispatch({
         type: TASK.TASK_DELETE_FAILURE,

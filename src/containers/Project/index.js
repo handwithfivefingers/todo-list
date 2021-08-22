@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
 import { ModalAction, TaskAction, ProjectAction } from '../../actions';
 import ModalForm from '../../components/Layout/UI/Modal/ModalForm';
+import jwt_decode from 'jwt-decode';
 class Project extends Component {
   constructor(props) {
     super(props);
@@ -29,6 +30,11 @@ class Project extends Component {
         fetchListTask(id);
       }
     }
+    // let token = window.localStorage.getItem('token');
+    let token = document.cookie.split('; ')
+      .find(row => row.startsWith('token='))
+      .split('=')[1];;
+    console.log(token);
   }
   componentDidUpdate(prevProps) {
     const { TaskListAction } = this.props;

@@ -18,7 +18,6 @@ class CardItem extends Component {
     this.state = {
       dropdown: false,
       active: false,
-      loading: true
     };
   }
 
@@ -64,7 +63,7 @@ class CardItem extends Component {
   render() {
     const { task, authReducer } = this.props;
     return (
-      <div className="todo-card-ui">
+      <div className="todo-card-ui" onClick={() => this.props.onClick(task)} active={this.props.active}>
         <Row style={{ padding: 10 }}>
           <Space align="start">
             <Avatar size="small" style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{authReducer.user ? authReducer.user.firstName.substring(0, 1) : 'U'}</Avatar>
@@ -72,7 +71,7 @@ class CardItem extends Component {
           </Space>
           <p className="desc">{task.desc}</p>
           <Progress percent={task.progress} size="small" status={task.progress === 100 ? 'success' : 'active'} />
-          {task.issue ? <Alert message={task.issue} type="error" /> : ''}
+          {task.issue ? <Alert style={{ padding: 5, textAlign: 'left', width: '100%', alignItems: 'center' }} message="Issue:" description={task.issue} showIcon type="error" /> : ''}
         </Row>
         <div className="footer">
           <div className="action-button">

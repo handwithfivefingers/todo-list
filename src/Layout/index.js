@@ -5,6 +5,25 @@ import { Redirect, Route } from 'react-router-dom';
 import { compose } from 'redux';
 import ContentLayout from '../components/Layout/Content';
 import SiderLayout from '../components/Layout/Sidebar';
+
+function getCookie(name) {
+  var dc = document.cookie;
+  var prefix = name + "=";
+  var begin = dc.indexOf("; " + prefix);
+  if (begin == -1) {
+    begin = dc.indexOf(prefix);
+    if (begin != 0) return null;
+  }
+  else {
+    begin += 2;
+    var end = document.cookie.indexOf(";", begin);
+    if (end == -1) {
+      end = dc.length;
+    }
+  }
+  return decodeURI(dc.substring(begin + prefix.length, end));
+}
+
 class LayoutRoute extends Component {
   constructor(props) {
     super(props);
@@ -14,7 +33,7 @@ class LayoutRoute extends Component {
   }
   render() {
     const { component: YoursComponent, authReducer, name, ...remainProps } = this.props;
-    const token = window.localStorage.getItem('token');
+    const token = getCookie('token');
     if (token !== null && token !== undefined) {
       return (
         <Route

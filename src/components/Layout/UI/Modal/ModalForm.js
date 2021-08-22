@@ -74,21 +74,21 @@ const ModalForm = (props) => {
       if (taskReducer.projecteditting && taskReducer.projecteditting._id) {
         // Project update
         dispatch(projectUpdate(val))
-        message.success('Project updated successfully');
+        // message.success('Project updated successfully');
       } else if (taskReducer.taskediting && taskReducer.taskediting._id) {
         // Task update
         dispatch(EditTask(val));
-        message.success('Task updated successfully');
+        // message.success('Task updated successfully');
       }
     } else if (projectid !== "" && projectid !== undefined) {
       //create
       // Task
       dispatch(AddNewTask(val));
-      message.success('Task created successfully');
+      // message.success('Task created successfully');
     } else {
       // Project
       dispatch(createProject(val));
-      message.success('Project created successfully');
+      // message.success('Project created successfully');
     }
     dispatch(HideModal());
   }
