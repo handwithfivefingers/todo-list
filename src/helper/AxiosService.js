@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from './../store/configureStore';
 import { AUTHENTICATE } from '../constant/auth';
-
+import { userLogout } from '../actions/auth';
 // const getCookie = (name) => {
 //   var dc = document.cookie;
 //   var prefix = name + "=";
@@ -49,7 +49,7 @@ const gettoken = () => {
   }
 }
 
-const token = gettoken();
+const token = getCookie('token') !== null ? getCookie('token') : '';
 const instance = axios.create({
   baseURL: `${process.env.REACT_APP_API_GLOBAL || process.env.REACT_APP_API_LOCAL
     }`,
@@ -75,11 +75,12 @@ instance.interceptors.response.use(
     // status 500 ... 
     const status = error.response ? error.response.status : 500;
     if (status === 500) {
-      document.cookie = "user=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-      document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-      store.dispatch({
-        type: AUTHENTICATE.LOGOUT_SUCCESS,
-      });
+      // document.cookie = "user=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+      // document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+      // store.dispatch({
+      //   type: AUTHENTICATE.LOGOUT_SUCCESS,
+      // });
+      userLogout();
     }
     return Promise.reject(error);
   },

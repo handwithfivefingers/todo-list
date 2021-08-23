@@ -62,8 +62,8 @@ export const RegisterUser = (form) => {
     console.log(res);
     if (res.status === 201) {
       const { token, user } = res.data;
-      const decode = jwt_decode(token);
-      console.log(decode);
+      // const decode = jwt_decode(token);
+      // console.log(decode);
       // if (Date.now() >= exp * 1000) {
       //   return false;
       // }
@@ -104,9 +104,9 @@ export const isUserLogIn = () => {
     }
     const token = gettoken();
     if (token) {
-      const user = JSON.parse(getCookie('user'));
       const res = await axios.post('/auth/required');
       if (res.status === 200) {
+        const user = JSON.parse(getCookie('user'));
         dispatch({
           type: AUTHENTICATE.LOGIN_SUCCESS,
           payload: {
