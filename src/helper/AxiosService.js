@@ -6,14 +6,17 @@ const getCookie = (name) => {
   var dc = document.cookie;
   var prefix = name + "=";
   var begin = dc.indexOf("; " + prefix); // document.cookie.indexOf(';', 'token='); // 197
-  if (begin == -1) {
+  if (begin === -1) {
+    // Không có tên cookie cần tìm
     begin = dc.indexOf(prefix);
-    if (begin != 0) return null;
+    if (begin !== 0) return null;
   }
   else {
+    // Xác định độ dài cookie
     begin += 2; // 199
+    // check chuỗi cookie kết thúc = dấu ;
     var end = dc.indexOf(";", begin); // -1
-    if (end == -1) {
+    if (end === -1) {
       end = dc.length; // 338
     }
   }
@@ -22,7 +25,7 @@ const getCookie = (name) => {
 }
 const gettoken = () => {
   let token = getCookie('token');
-  if (token == null) {
+  if (token === null) {
     return token = ''
   } else {
     return token
