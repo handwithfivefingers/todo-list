@@ -3,22 +3,22 @@ import { message } from 'antd';
 import axios from './../helper/AxiosService';
 import jwt_decode from 'jwt-decode';
 
-function getCookie(name) {
-  var dc = document.cookie;
-  var prefix = name + "=";
-  var begin = dc.indexOf("; " + prefix);
-  if (begin == -1) {
-    begin = dc.indexOf(prefix);
-    if (begin != 0) return null;
+const getCookie = (name) => {
+  const dc = document.cookie;
+  const prefix = name + '=';
+  let newtoken = null
+  if (dc.split('; ').length > 0) {
+    dc.split('; ').some(item => {
+      if (item.includes(prefix)) {
+        newtoken = item
+      }
+    });
   }
-  else {
-    begin += 2;
-    var end = document.cookie.indexOf(";", begin);
-    if (end == -1) {
-      end = dc.length;
-    }
+  if (newtoken !== null) {
+    return newtoken.split(prefix)[1]
+  } else {
+    return newtoken
   }
-  return decodeURI(dc.substring(begin + prefix.length, end));
 }
 
 export const LoginUser = (form) => {
@@ -94,15 +94,7 @@ export const isUserLogIn = () => {
       type: AUTHENTICATE.LOGIN_REQUEST
     })
 
-    const gettoken = () => {
-      let token = getCookie('token');
-      if (token == null) {
-        return token = ''
-      } else {
-        return token
-      }
-    }
-    const token = gettoken();
+    const token = getCookie('token') !== null ? getCookie('token') : '';
     if (token) {
       const res = await axios.post('/auth/required');
       if (res.status === 200) {
