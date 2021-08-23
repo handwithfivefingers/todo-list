@@ -50,6 +50,7 @@ const gettoken = () => {
 }
 
 const token = getCookie('token') !== null ? getCookie('token') : '';
+
 const instance = axios.create({
   baseURL: `${process.env.REACT_APP_API_GLOBAL || process.env.REACT_APP_API_LOCAL
     }`,
