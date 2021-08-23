@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from './../store/configureStore';
 import { AUTHENTICATE } from '../constant/auth';
 
-function getCookie(name) {
+const getCookie = (name) => {
   var dc = document.cookie;
   var prefix = name + "=";
   var begin = dc.indexOf("; " + prefix);
@@ -27,6 +27,7 @@ const gettoken = () => {
     return token
   }
 }
+
 const token = gettoken();
 
 const instance = axios.create({
@@ -54,7 +55,8 @@ instance.interceptors.response.use(
     // status 500 ... 
     const status = error.response ? error.response.status : 500;
     if (status === 500) {
-      localStorage.clear();
+      document.cookie = "user=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+      document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
       store.dispatch({
         type: AUTHENTICATE.LOGOUT_SUCCESS,
       });

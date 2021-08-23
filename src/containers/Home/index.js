@@ -126,12 +126,6 @@ class Home extends Component {
         text
       ),
   });
-  checkProvince = (value) => {
-    console.log(value);
-    this.setState({
-      visible: true,
-    })
-  }
   columns = [
     {
       title: 'Tỉnh thành',
@@ -166,7 +160,6 @@ class Home extends Component {
     }
   ]
   ModalInfo = async (value) => {
-    console.log(value);
     const res = await this.checkProvinceDetails(value);
     let xhtml = null;
     if (res === true) {
@@ -255,17 +248,6 @@ class Home extends Component {
     }).finally(() => {
       this.setState({ loading: false })
     })
-    // const vaccineData = axios.get(`${vaccine}`);
-    // this.setState({
-    //   loading: true,
-    // })
-    // vaccineData.then(res => {
-    //   this.setState({
-    //     vaccineData: res.data.dailyChart.vn.cases
-    //   })
-    // }).catch(error => {
-    //   console.log('error:', error)
-    // })
   }
   componentDidUpdate(prevProps) {
     const { taskReducer } = this.props;
@@ -279,7 +261,6 @@ class Home extends Component {
     })
     const res = await axios.get(`${provinceDetails}`);
     if (res.status === 200) {
-      console.log(res);
       const contentFilter = res.data.data.data.filter(item => item.province === value.x)
       this.setState({
         provinceData: {
@@ -295,7 +276,6 @@ class Home extends Component {
   }
   
   render() {
-    console.log(this.state.provinceData)
     return (
       <Row gutter={[16, 24]}>
         <Col span={24}>

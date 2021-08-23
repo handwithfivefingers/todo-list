@@ -96,6 +96,7 @@ export const isUserLogIn = () => {
 
     const gettoken = () => {
       let token = getCookie('token');
+      console.log(token);
       if (token == null) {
         return token = ''
       } else {
@@ -140,8 +141,8 @@ export const userLogout = () => {
     })
     const res = await axios.post('/signout');
     if (res.status === 200) {
-      document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
       document.cookie = "user=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+      document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
       dispatch({
         type: AUTHENTICATE.LOGOUT_SUCCESS,
       })

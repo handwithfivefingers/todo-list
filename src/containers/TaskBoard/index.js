@@ -33,14 +33,14 @@ class TaskBoard extends Component {
   };
 
   render() {
-    const { location, taskReducer } = this.props;
+    const { location, taskReducer, authReducer } = this.props;
     // console.log('location', this.props.location);
     return (
       <>
         <Row gutter={[16, 24]} align="left">
           <Col xs={6} sm={4} md={4} lg={4}>
             <Button
-              type="link"
+              type="primary"
               onClick={() => this.props.history.goBack()}
             >
               <EnterOutlined /> Back
@@ -50,10 +50,7 @@ class TaskBoard extends Component {
             <SearchItem projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'} />
           </Col>
           <Col xs={24} sm={8} md={8} lg={4}>
-            <Avatar icon={<UserOutlined />} />
-            <Avatar icon={<UserOutlined />} />
-            <Avatar icon={<UserOutlined />} />
-            <Avatar icon={<UserOutlined />} />
+            <Avatar icon={<UserOutlined />} /> {authReducer.user.fullName || 'Unauthorization'}
           </Col>
 
         </Row>
@@ -75,6 +72,7 @@ class TaskBoard extends Component {
 
 const mapStatetoProps = (state) => ({
   taskReducer: state.taskReducer,
+  authReducer: state.authReducer
 });
 const mapDispatchToProps = (dispatch) => ({
   TaskListAction: bindActionCreators(TaskAction, dispatch),
