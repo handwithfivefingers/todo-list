@@ -96,7 +96,6 @@ export const isUserLogIn = () => {
 
     const gettoken = () => {
       let token = getCookie('token');
-      console.log(token);
       if (token == null) {
         return token = ''
       } else {

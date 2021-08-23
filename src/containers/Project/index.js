@@ -33,8 +33,7 @@ class Project extends Component {
     // let token = window.localStorage.getItem('token');
     let token = document.cookie.split('; ')
       .find(row => row.startsWith('token='))
-      .split('=')[1];;
-    console.log(token);
+      .split('=')[1];
   }
   componentDidUpdate(prevProps) {
     const { TaskListAction } = this.props;

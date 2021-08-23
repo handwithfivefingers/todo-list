@@ -2,26 +2,43 @@ import axios from 'axios';
 import store from './../store/configureStore';
 import { AUTHENTICATE } from '../constant/auth';
 
+// const getCookie = (name) => {
+//   var dc = document.cookie;
+//   var prefix = name + "=";
+//   var begin = dc.indexOf("; " + prefix); // document.cookie.indexOf(';', 'token='); // 197
+//   if (begin === -1) {
+//     // Không có tên cookie cần tìm
+//     begin = dc.indexOf(prefix);
+//     if (begin !== 0) return null;
+//   }
+//   else {
+//     // Xác định độ dài cookie
+//     begin += 2; // 199
+//     // check chuỗi cookie kết thúc = dấu ;
+//     var end = dc.indexOf(";", begin); // -1
+//     if (end === -1) {
+//       end = dc.length; // 338
+//     }
+//   }
+//   // return decodeURI(dc.substring(begin + prefix.length, end));
+//   return decodeURI(dc.substring((dc.indexOf(prefix) + prefix.length), dc.lastIndexOf(';', prefix)))
+// }
 const getCookie = (name) => {
-  var dc = document.cookie;
-  var prefix = name + "=";
-  var begin = dc.indexOf("; " + prefix); // document.cookie.indexOf(';', 'token='); // 197
-  if (begin === -1) {
-    // Không có tên cookie cần tìm
-    begin = dc.indexOf(prefix);
-    if (begin !== 0) return null;
+  const dc = document.cookie;
+  const prefix = name + '=';
+  let newtoken = null
+  if (dc.split('; ').length > 0) {
+    dc.split('; ').some(item => {
+      if (item.includes(prefix)) {
+        newtoken = item
+      }
+    });
   }
-  else {
-    // Xác định độ dài cookie
-    begin += 2; // 199
-    // check chuỗi cookie kết thúc = dấu ;
-    var end = dc.indexOf(";", begin); // -1
-    if (end === -1) {
-      end = dc.length; // 338
-    }
+  if (newtoken !== null) {
+    return newtoken.split(prefix)[1]
+  } else {
+    return newtoken
   }
-  // return decodeURI(dc.substring(begin + prefix.length, end));
-  return decodeURI(dc.substring((dc.indexOf(prefix) + prefix.length), dc.lastIndexOf(';', prefix)))
 }
 const gettoken = () => {
   let token = getCookie('token');
