@@ -5,19 +5,20 @@ import { AUTHENTICATE } from '../constant/auth';
 const getCookie = (name) => {
   var dc = document.cookie;
   var prefix = name + "=";
-  var begin = dc.indexOf("; " + prefix);
+  var begin = dc.indexOf("; " + prefix); // document.cookie.indexOf(';', 'token='); // 197
   if (begin == -1) {
     begin = dc.indexOf(prefix);
     if (begin != 0) return null;
   }
   else {
-    begin += 2;
-    var end = document.cookie.indexOf(";", begin);
+    begin += 2; // 199
+    var end = dc.indexOf(";", begin); // -1
     if (end == -1) {
-      end = dc.length;
+      end = dc.length; // 338
     }
   }
-  return decodeURI(dc.substring(begin + prefix.length, end));
+  // return decodeURI(dc.substring(begin + prefix.length, end));
+  return decodeURI(dc.substring((dc.indexOf(prefix) + prefix.length), dc.lastIndexOf(';', prefix)))
 }
 const gettoken = () => {
   let token = getCookie('token');
@@ -29,7 +30,6 @@ const gettoken = () => {
 }
 
 const token = gettoken();
-
 const instance = axios.create({
   baseURL: `${process.env.REACT_APP_API_GLOBAL || process.env.REACT_APP_API_LOCAL
     }`,
