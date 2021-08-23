@@ -82,7 +82,6 @@ class Project extends Component {
         </Row>
         <Spin spinning={taskReducer.loading}>
           <Row gutter={[24, 16]}>
-
             {taskReducer.project
               ? taskReducer.project.map((item) => {
                 return (

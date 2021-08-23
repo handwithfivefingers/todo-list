@@ -1,4 +1,4 @@
-import { Button, Col, Skeleton } from 'antd';
+import { Button, Col, Skeleton, Spin } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -9,11 +9,11 @@ class TaskList extends Component {
 
   renderCardItem = () => {
     let xhtml = null;
-    const { task, projectId } = this.props;
+    const { task, projectId, taskReducer } = this.props;
     // console.log(task, projectId);
     const newTask = task?.filter(item => item.project === projectId);
     xhtml = newTask?.map((item) => {
-      return <TaskItem key={item._id} task={item} />;
+      return<TaskItem key={item._id} task={item} />
     });
     return xhtml;
   };

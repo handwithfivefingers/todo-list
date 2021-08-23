@@ -2,7 +2,7 @@ import {
   CalendarOutlined, EditOutlined, RestOutlined, SettingOutlined
 } from '@ant-design/icons';
 import {
-  Avatar, Col, message, Popconfirm, Popover, Row, Skeleton, Progress, Space, Alert
+  Avatar, Col, message, Popconfirm, Popover, Row, Skeleton, Progress, Space, Alert, Spin
 } from 'antd';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
@@ -50,7 +50,6 @@ class CardItem extends Component {
     message.success('Đã xóa Task');
   };
   handleDropdownMenu = (val) => {
-    console.log(val);
     this.setState({
       dropdown: val,
     });
@@ -61,70 +60,60 @@ class CardItem extends Component {
     });
   };
   render() {
-    const { task, authReducer } = this.props;
+    const { task, authReducer, taskReducer } = this.props;
     return (
-      <div className="todo-card-ui" onClick={() => this.props.onClick(task)} active={this.props.active}>
-        <Row style={{ padding: 10 }}>
-          <Space align="start">
-            <Avatar size="small" style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{authReducer.user ? authReducer.user.firstName.substring(0, 1) : 'U'}</Avatar>
-            <h3 className="title">{task.name}</h3>
-          </Space>
-          <p className="desc">{task.desc}</p>
-          <Progress percent={task.progress} size="small" status={task.progress === 100 ? 'success' : 'active'} />
-          {task.issue ? <Alert style={{ padding: 5, textAlign: 'left', width: '100%', alignItems: 'center' }} message="Issue:" description={task.issue} showIcon type="error" /> : ''}
-        </Row>
-        <div className="footer">
-          <div className="action-button">
-            <Popover content="Setting" trigger="hover">
-              <SettingOutlined
-                key="setting"
-                onClick={() => this.handleSetting(!this.state.active)}
-              />
-            </Popover>
-            <Popover content="Edit Task" trigger="hover">
-              <EditOutlined
-                key="edit"
-                onClick={() => this.handleOnclick(task)}
-              />
-            </Popover>
-            <Popover content="Task over" trigger="hover">
-              <CalendarOutlined
-                key="calendar"
-                onClick={() => this.handleDropdownMenu(!this.state.dropdown)}
-              />
-            </Popover>
-            <Popover content="Delete Task" trigger="hover">
-              <Popconfirm
-                title="Bạn có chắc muốn xóa task này ?"
-                onConfirm={(e) => this.handleDeleteTask(task)}
-                // onCancel={cancel}
-                okText="Xóa"
-                cancelText="Không"
-              >
-                <RestOutlined key="restout" />
-              </Popconfirm>
-            </Popover>
+      // <Spin spinning={taskReducer.loading}>
+        <div className="todo-card-ui" onClick={() => this.props.onClick(task)} active={this.props.active}>
+          <Row style={{ padding: 10 }}>
+            <Col span={24} style={{ textAlign: 'left' }}>
+              <Space align="start">
+                <Avatar size="small" style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{authReducer.user ? authReducer.user.firstName.substring(0, 1) : 'U'}</Avatar>
+                <h3 className="title">{task.name}</h3>
+              </Space>
+            </Col>
+            <Col span={24}>
+              <p className="desc">{task.desc}</p>
+            </Col>
+            <Col span={24}>
+              <Progress percent={task.progress} size="small" status={task.progress === 100 ? 'success' : 'active'} />
+            </Col>
+            {task.issue ? <Alert style={{ padding: 5, textAlign: 'left', width: '100%', alignItems: 'center' }} message="Issue:" description={task.issue} showIcon type="error" /> : ''}
+          </Row>
+          <div className="footer">
+            <div className="action-button">
+              <Popover content="Setting" trigger="hover">
+                <SettingOutlined
+                  key="setting"
+                  onClick={() => this.handleSetting(!this.state.active)}
+                />
+              </Popover>
+              <Popover content="Edit Task" trigger="hover">
+                <EditOutlined
+                  key="edit"
+                  onClick={() => this.handleOnclick(task)}
+                />
+              </Popover>
+              <Popover content="Task over" trigger="hover">
+                <CalendarOutlined
+                  key="calendar"
+                  onClick={() => this.handleDropdownMenu(!this.state.dropdown)}
+                />
+              </Popover>
+              <Popover content="Delete Task" trigger="hover">
+                <Popconfirm
+                  title="Bạn có chắc muốn xóa task này ?"
+                  onConfirm={(e) => this.handleDeleteTask(task)}
+                  // onCancel={cancel}
+                  okText="Xóa"
+                  cancelText="Không"
+                >
+                  <RestOutlined key="restout" />
+                </Popconfirm>
+              </Popover>
+            </div>
           </div>
         </div>
-        <div
-          className={`popup-action ${this.state.active ? 'popup-active' : ''}`}
-        >
-          <ul>
-            <li>
-              <a> Color Picker</a>
-            </li>
-            <li>
-              <a> Tag Flag</a>
-            </li>
-            <li>
-              <a> Tag User</a>
-            </li>
-            <li>
-              <a> ...</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      // </Spin>
     );
   }
 }

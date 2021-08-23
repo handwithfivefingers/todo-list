@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
   Progress, Row, Col, Tooltip, Avatar, Card, Space,
-  Statistic, Slider, Spin, Table, Button, Input
+  Statistic, Slider, Spin, Table, Button, Input, Modal
 } from 'antd';
 import {
   SearchOutlined, CheckOutlined, CloseOutlined, ArrowUpOutlined,
-  ArrowDownOutlined
+  ArrowDownOutlined, EllipsisOutlined
 } from '@ant-design/icons';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -14,11 +14,13 @@ import PS from './../../assets/img/PS.png';
 import AI from './../../assets/img/AI.png';
 import Blender from './../../assets/img/Blender.png';
 import VS from './../../assets/img/VS.png';
-import { Line, Area } from '@ant-design/charts';
+import { Line, Area, Column } from '@ant-design/charts';
 import moment from 'moment';
 
 const api = "https://api.zingnews.vn/public/v2/corona/getChart";
 const province = "https://api.zingnews.vn/public/v2/corona/getChart?type=province";
+// const vaccine = "https://api.zingnews.vn/public/v2/corona/getChart?type=vaccine";
+const provinceDetails = "https://api.zingnews.vn/public/v2/corona/getChart?type=provinces_detail";
 class Home extends Component {
   state = {
     project: null,
@@ -53,11 +55,30 @@ class Home extends Component {
       searchedColumn: '',
     },
     sourceData: [],
+    vaccineData: [],
     today: 0,
     total: 0,
     lastUpdated: null,
     loading: false,
-  };
+    visible: false,
+    provinceData: {
+      data: [],
+      xField: 'date',
+      yField: 'case',
+      tooltip: {
+        formatter: (datum) => {
+          return { name: datum.date, value: datum.case + ' ca' };
+        },
+      },
+      label: {
+        position: 'middle',
+        style: {
+          fill: '#FFFFFF',
+          opacity: 0.6,
+        },
+      },
+    },
+  }
 
   getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -105,8 +126,62 @@ class Home extends Component {
         text
       ),
   });
-
+  checkProvince = (value) => {
+    console.log(value);
+    this.setState({
+      visible: true,
+    })
+  }
   columns = [
+    {
+      title: 'Tỉnh thành',
+      dataIndex: 'x',
+      key: 'x',
+      width: '40%',
+      ...this.getColumnSearchProps('x'),
+    },
+    {
+      title: 'Ca trong ngày',
+      dataIndex: 'y',
+      key: 'y',
+      width: '30%',
+      sorter: (a, b) => a.y - b.y,
+    },
+    {
+      title: 'Tổng ca nhiễm',
+      dataIndex: 'z',
+      key: 'z',
+      sorter: (a, b) => a.z - b.z,
+      sortDirections: ['descend', 'ascend'],
+    },
+    {
+      title: '',
+      dataIndex: '',
+      key: '',
+      align: 'center',
+      render: (value, record, index) => {
+        return <Button size="small" onClick={(e) => this.ModalInfo(value)} icon={<EllipsisOutlined />}></Button>
+
+      }
+    }
+  ]
+  ModalInfo = async (value) => {
+    console.log(value);
+    const res = await this.checkProvinceDetails(value);
+    let xhtml = null;
+    if (res === true) {
+      xhtml = <Spin spinning={this.state.loading}>
+        {Modal.info({
+          title: `${value.x} các ngày gần đây`,
+          content: <Column {...this.state.provinceData} />,
+          width: 'auto',
+        })
+        }
+      </Spin>
+    }
+    return xhtml;
+  }
+  vaccineColumns = [
     {
       title: 'Tỉnh thành',
       dataIndex: 'x',
@@ -180,6 +255,17 @@ class Home extends Component {
     }).finally(() => {
       this.setState({ loading: false })
     })
+    // const vaccineData = axios.get(`${vaccine}`);
+    // this.setState({
+    //   loading: true,
+    // })
+    // vaccineData.then(res => {
+    //   this.setState({
+    //     vaccineData: res.data.dailyChart.vn.cases
+    //   })
+    // }).catch(error => {
+    //   console.log('error:', error)
+    // })
   }
   componentDidUpdate(prevProps) {
     const { taskReducer } = this.props;
@@ -187,7 +273,29 @@ class Home extends Component {
       this.applyTask(taskReducer.project[0]);
     }
   }
+  checkProvinceDetails = async (value) => {
+    this.setState({
+      loading: true
+    })
+    const res = await axios.get(`${provinceDetails}`);
+    if (res.status === 200) {
+      console.log(res);
+      const contentFilter = res.data.data.data.filter(item => item.province === value.x)
+      this.setState({
+        provinceData: {
+          ...this.state.provinceData,
+          data: contentFilter[0].detail
+        },
+        loading: false,
+      })
+      return true
+    } else {
+      return "something went wrong";
+    }
+  }
+  
   render() {
+    console.log(this.state.provinceData)
     return (
       <Row gutter={[16, 24]}>
         <Col span={24}>
@@ -263,34 +371,14 @@ class Home extends Component {
         </Col>
         <Col span={24}>
           <Card title='Số liệu theo tỉnh thành'>
-            <Table loading={this.state.loading} columns={this.columns} bordered size="small" dataSource={this.state.sourceData}>
-              {/* <Table.Column title="Province" dataIndex="x" render={(value, record, index) => {
-                return <span>{value}</span>
-              }} />
-              <Table.Column title="Today" dataIndex="y" sorter={(a, b) => a.y - b.y} render={(value, record, index) => {
-                return <span>{value}</span>
-              }} />
-              <Table.Column title="Total" dataIndex="z" sorter={(a, b) => a.z - b.z} render={(value, record, index) => {
-                return <span>{value}</span>
-              }} /> */}
+            <Table size="small" loading={this.state.loading} columns={this.columns} bordered dataSource={this.state.sourceData}>
             </Table>
-
           </Card>
         </Col>
         <Col span={24}>
-          <Card title='Số liệu Vaccine'>
-            <Table loading={this.state.loading} columns={this.columns} bordered size="small" dataSource={this.state.sourceData}>
-              {/* <Table.Column title="Province" dataIndex="x" render={(value, record, index) => {
-                return <span>{value}</span>
-              }} />
-              <Table.Column title="Today" dataIndex="y" sorter={(a, b) => a.y - b.y} render={(value, record, index) => {
-                return <span>{value}</span>
-              }} />
-              <Table.Column title="Total" dataIndex="z" sorter={(a, b) => a.z - b.z} render={(value, record, index) => {
-                return <span>{value}</span>
-              }} /> */}
+          <Card title='Số liệu Vaccine - Đang build...'>
+            <Table loading={this.state.loading} columns={this.vaccineColumns} bordered size="small" dataSource={this.state.vaccineData}>
             </Table>
-
           </Card>
         </Col>
       </Row>

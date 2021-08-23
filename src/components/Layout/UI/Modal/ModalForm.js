@@ -98,6 +98,10 @@ const ModalForm = (props) => {
         onFinish={onFinish}
         labelCol={{ span: 6 }}
         ref={formRef}
+        initialValues={{
+          progress: 0,
+          status: 'active'
+        }}
       >
         <Form.Item
           label="Task Name"
@@ -113,14 +117,13 @@ const ModalForm = (props) => {
           <Slider
             dots
             step={10}
-            defaultValue={0}
             onChange={(value) => { formRef.current?.setFieldsValue({ progress: value }) }}
           // onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
           />
         </Form.Item>
 
         <Form.Item label="Status" name="status">
-          <Select defaultValue='active'>
+          <Select>
             {TASK_STATUS.map((stt) => {
               return (
                 <Option key={stt.value} value={stt.value}>

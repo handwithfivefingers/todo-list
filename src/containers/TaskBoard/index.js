@@ -59,13 +59,11 @@ class TaskBoard extends Component {
         </Row>
         <Spin spinning={taskReducer.loading}>
           <Row gutter={[16, 24]}>
-
             {this.renderTaskBoard()}
             <DailyReport
               label="Generate Report"
               projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'}
             />
-
           </Row>
         </Spin>
         <ModalForm />

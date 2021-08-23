@@ -38,13 +38,13 @@ const removeItemByIndex = (array, item) => {
   let index = -1;
   const currentTask = array;
   index = array.findIndex(
-      (arr) => arr._id === item._id
+    (arr) => arr._id === item._id
   );
-const returnTask = [
-  ...currentTask.slice(0, index),
-  ...currentTask.slice(index + 1),
-];
-return returnTask
+  const returnTask = [
+    ...currentTask.slice(0, index),
+    ...currentTask.slice(index + 1),
+  ];
+  return returnTask
 }
 export default function tasks(state = initState, action) {
   let index = -1;
@@ -93,10 +93,10 @@ export default function tasks(state = initState, action) {
         modal: action.payload.data,
       });
     case TASK.TASK_EDIT_REQUEST:
-      return (state = {
-        loading: true,
+      return state = {
         ...state,
-      });
+        loading: true,
+      };
     case TASK.TASK_EDIT_SUCCESS:
       const item = action.payload.task;
       const newTasksEdit = state.tasks;
@@ -137,11 +137,11 @@ export default function tasks(state = initState, action) {
     case TASK.TASK_ADD_NEW_SUCCESS:
       console.log(state.tasks);
       const AddTasks = state.tasks;
-      return (state = {
+      return state = {
         ...state,
         loading: false,
         tasks: [...AddTasks, action.payload.data.task],
-      });
+      };
     case TASK.TASK_ADD_NEW_FAILURE:
       console.log(state.tasks);
       return (state = {
@@ -204,6 +204,11 @@ export default function tasks(state = initState, action) {
       return {
         ...state,
         projecteditting
+      }
+    case projectConst.PRO_EDITTING_REQUEST:
+      return {
+        ...state,
+        loading: true,
       }
     case projectConst.PRO_EDITTING_SUCCESS:
       let data = action.payload.project;
