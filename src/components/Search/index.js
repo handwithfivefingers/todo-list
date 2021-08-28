@@ -19,9 +19,6 @@ const SearchItem = ({ projectId }) => {
 
   return (
     <Input
-      // enterButton="Search"
-      // suffix={suffix}
-      // onSearch={onSearch}
       onChange={(e) => SetSearch(e.target.value)}
       allowClear
       placeholder="Auto searching ... ?"

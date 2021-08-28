@@ -2,7 +2,7 @@ import {
   EditOutlined,
   LoginOutlined, PlusSquareOutlined, RestOutlined
 } from '@ant-design/icons';
-import { Button, Col, Popover, Progress, Row, Spin, Popconfirm, message } from 'antd';
+import { Button, Col, Popover, Progress, Row, Spin, Popconfirm, Card, message } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -62,7 +62,7 @@ class Project extends Component {
     message.success('Đã xóa Project');
   }
   render() {
-    const { taskReducer } = this.props;
+    const { taskReducer, authReducer } = this.props;
 
     return (
       <>
@@ -76,73 +76,73 @@ class Project extends Component {
           </Col>
         </Row>
         <Spin spinning={taskReducer.loading}>
-          <Row gutter={[24, 16]}>
+          <Row gutter={8}>
             {taskReducer.project
               ? taskReducer.project.map((item) => {
                 return (
-                  <Col xs={24} sm={12} md={12} lg={8} xl={8} key={item._id} className="gutter-row">
-                    <div className="todo-card-ui">
-                      <div className="body">
-                        <div className="avatar">
+                  <Col xs={24} sm={12} md={12} lg={8} xl={6} key={item._id} className="gutter-row">
+                    <Card
+                      style={{ width: 'auto', marginTop: 16 }}
+                      bodyStyle={{ padding: 10 }}
+                      actions={[
+                        <Popover content="Manager Task" trigger="hover">
+                          <Link
+                            key={item._id}
+                            to={{
+                              pathname: `/project/${item.slug}`,
+                              state: { projectId: item._id },
+                            }}
+                            style={{
+                              width: '100%',
+                              borderRight: '1px solid #eee',
+                              color: 'inherit',
+                            }}
+                          >
+                            <LoginOutlined />
+                          </Link>
+                        </Popover>,
+                        <Popover content="Edit" trigger="hover">
+                          <EditOutlined onClick={() => this.EditProject(item)} />
+                        </Popover>,
+                        <Popover content="Delete Task" trigger="hover">
+                          <Popconfirm
+                            title="Bạn có chắc muốn xóa task này ?"
+                            onConfirm={(e) => this.deleteProject(item)}
+                            // onCancel={cancel}
+                            okText="Xóa"
+                            cancelText="Không"
+                          >
+                            <RestOutlined key="restout" />
+                          </Popconfirm>
+                        </Popover>
+                      ]}
+                    >
+                      <Card.Meta
+                        avatar={
                           <Progress
                             type="circle"
                             percent={item.progress}
                             width={80}
                             status={item.status}
                           />
-                        </div>
-                        <div className="content">
-                          <h3>Item: {item.name}</h3>
-                          <ul
-                            style={{
-                              listStyleType: 'none',
-                              textAlign: 'center',
-                              // padding: '5px 0 0 8px',
-                              margin: 0,
-                            }}
-                          >
-                            <li>Desc: {item.desc}</li>
-                            <li>Status: {item.type}</li>
-                            <li>Created: {item.createdAt.substring(0, 10)}</li>
-                            <li>Updated: {item.updatedAt.substring(0, 10)}</li>
+                        }
+                        style={{ padding: 5 }}
+                        title={`${item.name}`}
+                        description={
+                          <ul><li>
+                            Created: {item.createdAt.substring(0, 10)}
+                          </li>
+                            <li> Author: {authReducer.user.fullName}</li>
                           </ul>
-                        </div>
-                      </div>
-                      <div className="footer">
-                        <div className="action-button" style={{ padding: 0 }}>
-                          <Popover content="Manager Task" trigger="hover">
-                            <Link
-                              key={item._id}
-                              to={{
-                                pathname: `/project/${item.slug}`,
-                                state: { projectId: item._id },
-                              }}
-                              style={{
-                                width: '100%',
-                                borderRight: '1px solid #eee',
-                                color: 'inherit',
-                              }}
-                            >
-                              <LoginOutlined />
-                            </Link>
-                          </Popover>
-                          <Popover content="Edit" trigger="hover">
-                            <EditOutlined onClick={() => this.EditProject(item)} />
-                          </Popover>
-                          <Popover content="Delete Task" trigger="hover">
-                            <Popconfirm
-                              title="Bạn có chắc muốn xóa task này ?"
-                              onConfirm={(e) => this.deleteProject(item)}
-                              // onCancel={cancel}
-                              okText="Xóa"
-                              cancelText="Không"
-                            >
-                              <RestOutlined key="restout" />
-                            </Popconfirm>
-                          </Popover>
-                        </div>
-                      </div>
-                    </div>
+                        }
+                      />
+                      <Card type="inner" bordered={false} bodyStyle={{ padding: 0 }}>
+                        <Card.Meta
+                          style={{ display: 'flex', width: '100%', padding: 5, justifyContent: 'center' }}
+                          description={<span style={{ color: '#333' }}>{item.desc}</span>}
+                        />
+                      </Card>
+                    </Card>
                   </Col>
                 );
               })
