@@ -13,7 +13,7 @@ class TaskList extends Component {
     // console.log(task, projectId);
     const newTask = task?.filter(item => item.project === projectId);
     xhtml = newTask?.map((item) => {
-      return<TaskItem key={item._id} task={item} />
+      return <TaskItem key={item._id} task={item} />
     });
     return xhtml;
   };
@@ -36,7 +36,7 @@ class TaskList extends Component {
 
       <Col className="gutter-row task-background" xs={24} sm={12} md={8} lg={8} xl={6}>
         <div className="task-background-component">
-          <h2>{stt.label}</h2>
+          <div style={{ display: 'block' }}>  <h2 style={{ float: 'left' }}>{stt.label}</h2> <span style={{ float: 'right' }}>{this.props.counting}</span></div>
           {this.renderCardItem()}
           <Button className="task-btn" onClick={() => this.renderModalAddNew(stt.value)}>
             Add new

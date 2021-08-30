@@ -21,7 +21,7 @@ const SearchItem = ({ projectId }) => {
     <Input
       onChange={(e) => SetSearch(e.target.value)}
       allowClear
-      placeholder="Auto searching ... ?"
+      placeholder="Search by Title, Desc"
     />
   );
 };

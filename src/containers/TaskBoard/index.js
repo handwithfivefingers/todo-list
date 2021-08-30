@@ -24,6 +24,7 @@ class TaskBoard extends Component {
             key={status._id}
             task={task}
             stt={{ label: status.label, value: status.value }}
+            counting={task?.length}
             projectId={location.state.projectId}
           />
         );

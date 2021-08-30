@@ -2,27 +2,6 @@ import axios from 'axios';
 import store from './../store/configureStore';
 import { AUTHENTICATE } from '../constant/auth';
 import { userLogout } from '../actions/auth';
-// const getCookie = (name) => {
-//   var dc = document.cookie;
-//   var prefix = name + "=";
-//   var begin = dc.indexOf("; " + prefix); // document.cookie.indexOf(';', 'token='); // 197
-//   if (begin === -1) {
-//     // Không có tên cookie cần tìm
-//     begin = dc.indexOf(prefix);
-//     if (begin !== 0) return null;
-//   }
-//   else {
-//     // Xác định độ dài cookie
-//     begin += 2; // 199
-//     // check chuỗi cookie kết thúc = dấu ;
-//     var end = dc.indexOf(";", begin); // -1
-//     if (end === -1) {
-//       end = dc.length; // 338
-//     }
-//   }
-//   // return decodeURI(dc.substring(begin + prefix.length, end));
-//   return decodeURI(dc.substring((dc.indexOf(prefix) + prefix.length), dc.lastIndexOf(';', prefix)))
-// }
 const getCookie = (name) => {
   const dc = document.cookie;
   const prefix = name + '=';
@@ -52,9 +31,9 @@ const gettoken = () => {
 const token = getCookie('token') !== null ? getCookie('token') : '';
 
 const instance = axios.create({
-  baseURL: `${process.env.REACT_APP_API_GLOBAL || process.env.REACT_APP_API_LOCAL
-    }`,
-  // baseURL: `${process.env.REACT_APP_API_LOCAL}`,
+  // baseURL: `${process.env.REACT_APP_API_GLOBAL || process.env.REACT_APP_API_LOCAL
+  //   }`,
+  baseURL: `${process.env.REACT_APP_API_LOCAL}`,
   headers: {
     Authorization: token ? `Bearer ${token}` : '',
     ABCD: ` o day ne 1`
