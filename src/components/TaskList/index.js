@@ -36,7 +36,7 @@ class TaskList extends Component {
 
       <Col className="gutter-row task-background" xs={24} sm={12} md={8} lg={8} xl={6}>
         <div className="task-background-component">
-          <div style={{ display: 'block' }}>  <h2 style={{ float: 'left' }}>{stt.label}</h2> <span style={{ float: 'right' }}>{this.props.counting}</span></div>
+          <div style={{ display: 'flex',justifyContent:'space-between' }}>  <h2>{stt.label}</h2> <span>{this.props.counting}</span></div>
           {this.renderCardItem()}
           <Button className="task-btn" onClick={() => this.renderModalAddNew(stt.value)}>
             Add new
