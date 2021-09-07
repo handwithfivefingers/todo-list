@@ -1,11 +1,12 @@
+
 import { Button, Col } from 'antd';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TASK_STATUS } from '../../constant/task';
 const DailyReport = ({ projectId, label }) => {
   const tasks = useSelector(state => state.taskReducer.tasks);
   const ref = useRef();
-
+  const [taskGenerate, setTaskGenerate] = useState([]);
   const generatingReportText = () => {
     let xhtml = null;
     /** List generate following :

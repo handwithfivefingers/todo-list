@@ -1,20 +1,25 @@
-import { Button, Col, Skeleton, Spin } from 'antd';
+import { Button, Col, Skeleton, Spin, Select } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import TaskItem from '../TaskItem';
 import { ModalAction } from './../../actions';
+
 // import ModalForm from '../Layout/UI/ModalForm';
 class TaskList extends Component {
-
-  renderCardItem = () => {
+  renderCardItem = (filterTask = null) => {
     let xhtml = null;
-    const { task, projectId, taskReducer } = this.props;
-    // console.log(task, projectId);
-    const newTask = task?.filter(item => item.project === projectId);
-    xhtml = newTask?.map((item) => {
-      return <TaskItem key={item._id} task={item} />
-    });
+    if (filterTask !== null) {
+      xhtml = filterTask.map((item) => {
+        return <TaskItem key={item._id} task={item} />
+      });
+    } else {
+      const { task, projectId } = this.props;
+      const newTask = task?.filter(item => item.project === projectId);
+      xhtml = newTask?.map((item) => {
+        return <TaskItem key={item._id} task={item} />
+      });
+    }
     return xhtml;
   };
 
@@ -36,7 +41,10 @@ class TaskList extends Component {
 
       <Col className="gutter-row task-background" xs={24} sm={12} md={8} lg={8} xl={6}>
         <div className="task-background-component">
-          <div style={{ display: 'flex',justifyContent:'space-between' }}>  <h2>{stt.label}</h2> <span>{this.props.counting}</span></div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h2>{stt.label}</h2>
+            <span>{this.props.counting}</span>
+          </div>
           {this.renderCardItem()}
           <Button className="task-btn" onClick={() => this.renderModalAddNew(stt.value)}>
             Add new

@@ -36,4 +36,8 @@ export const TASK_STATUS = [
     value: 2,
     label: 'Done',
   },
+  {
+    value: 3,
+    label: 'Pending'
+  }
 ];
