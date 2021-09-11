@@ -36,7 +36,6 @@ const instance = axios.create({
   // baseURL: `${process.env.REACT_APP_API_LOCAL}`,
   headers: {
     Authorization: token ? `Bearer ${token}` : '',
-    ABCD: ` o day ne 1`
   },
 });
 
@@ -44,7 +43,6 @@ instance.interceptors.request.use((req) => {
   const { authReducer } = store.getState();
   if (authReducer.token) {
     req.headers.Authorization = `Bearer ${authReducer.token}`;
-    req.headers.ABCD = `o day ne 2`
   }
   return req;
 });
