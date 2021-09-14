@@ -14,21 +14,48 @@ const Profile = () => {
           <Avatar shape="square" size="large" />
         </Badge>
       </Space>
-
       <Col span={24}>
-        <h2> Hello, {authReducer.user ? authReducer.user.fullName : ''}</h2>
-        <p>Below here are contains your information</p>
+        <Row gutter={[8,8]}>
+          <Col span={6}>
+            <Card title={`Hello, ${authReducer.user ? authReducer.user.fullName : ''}`}>
+              <ul style={{ listStyle: 'none', textAlign: 'left' }}>
+                <li>First Name: <span> {user.firstName}</span></li>
+                <li>Last Name: <span> {user.lastName}</span></li>
+                <li>Your Email: <span> {user.email}</span></li>
+                <li>Your Role: <span> {user.role}</span></li>
+              </ul>
+            </Card>
+            <Card title={`Hello, ${authReducer.user ? authReducer.user.fullName : ''}`}>
+              <ul style={{ listStyle: 'none', textAlign: 'left' }}>
+                <li>First Name: <span> {user.firstName}</span></li>
+                <li>Last Name: <span> {user.lastName}</span></li>
+                <li>Your Email: <span> {user.email}</span></li>
+                <li>Your Role: <span> {user.role}</span></li>
+              </ul>
+            </Card>
+            <Card title={`Hello, ${authReducer.user ? authReducer.user.fullName : ''}`}>
+              <ul style={{ listStyle: 'none', textAlign: 'left' }}>
+                <li>First Name: <span> {user.firstName}</span></li>
+                <li>Last Name: <span> {user.lastName}</span></li>
+                <li>Your Email: <span> {user.email}</span></li>
+                <li>Your Role: <span> {user.role}</span></li>
+              </ul>
+            </Card>
+          </Col>
+
+          <Col span={18}>
+            <Card title={`Hello, ${authReducer.user ? authReducer.user.fullName : ''}`}>
+              <ul style={{ listStyle: 'none', textAlign: 'left' }}>
+                <li>First Name: <span> {user.firstName}</span></li>
+                <li>Last Name: <span> {user.lastName}</span></li>
+                <li>Your Email: <span> {user.email}</span></li>
+                <li>Your Role: <span> {user.role}</span></li>
+              </ul>
+            </Card>
+          </Col>
+        </Row>
       </Col>
-      <Col>
-        <Card title="User infomation">
-          <ul>
-            <li>First Name: <span> {user.firstName}</span></li>
-            <li>Last Name: <span> {user.lastName}</span></li>
-            <li>Your Email: <span> {user.email}</span></li>
-            <li>Your Role: <span> {user.role}</span></li>
-          </ul>
-        </Card>
-      </Col>
+
 
     </Row>
   );
