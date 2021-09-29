@@ -10,17 +10,16 @@ import {
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import PS from './../../assets/img/PS.png';
-import AI from './../../assets/img/AI.png';
-import Blender from './../../assets/img/Blender.png';
-import VS from './../../assets/img/VS.png';
 import { Line, Area, Column } from '@ant-design/charts';
 import moment from 'moment';
-
-const api = "https://api.zingnews.vn/public/v2/corona/getChart";
+import './style.css';
+const getAll = "https://api.zingnews.vn/public/v2/corona/getChart";
 const province = "https://api.zingnews.vn/public/v2/corona/getChart?type=province";
-// const vaccine = "https://api.zingnews.vn/public/v2/corona/getChart?type=vaccine";
+const vaccine = "https://api.zingnews.vn/public/v2/corona/getChart?type=vaccination2";
 const provinceDetails = "https://api.zingnews.vn/public/v2/corona/getChart?type=provinces_detail";
+const numFormat = (num) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
 class Home extends Component {
   state = {
     project: null,
@@ -55,7 +54,9 @@ class Home extends Component {
       searchedColumn: '',
     },
     sourceData: [],
-    vaccineData: [],
+    vaccineData: [
+
+    ],
     today: 0,
     total: 0,
     lastUpdated: null,
@@ -140,6 +141,11 @@ class Home extends Component {
       key: 'y',
       width: '30%',
       sorter: (a, b) => a.y - b.y,
+      render: (value, record, index) => {
+        return (
+          numFormat(record.y)
+        )
+      }
     },
     {
       title: 'Tổng ca nhiễm',
@@ -147,6 +153,11 @@ class Home extends Component {
       key: 'z',
       sorter: (a, b) => a.z - b.z,
       sortDirections: ['descend', 'ascend'],
+      render: (value, record, index) => {
+        return (
+          numFormat(record.z)
+        )
+      }
     },
     {
       title: '',
@@ -177,25 +188,54 @@ class Home extends Component {
   vaccineColumns = [
     {
       title: 'Tỉnh thành',
-      dataIndex: 'x',
-      key: 'x',
+      dataIndex: 'provinceName',
+      key: 'provinceName',
       width: '40%',
-      ...this.getColumnSearchProps('x'),
+      ...this.getColumnSearchProps('provinceName'),
     },
     {
-      title: 'Ca trong ngày',
-      dataIndex: 'y',
-      key: 'y',
+      title: 'Tiêm 1 Mũi',
+      dataIndex: 'totalOnceInjected',
+      key: 'totalOnceInjected',
       width: '30%',
-      sorter: (a, b) => a.y - b.y,
+      sorter: (a, b) => a.totalOnceInjected / a.population * 100 - b.totalOnceInjected / b.population * 100,
+      render: (value, record, index) => {
+        return (
+          <Tooltip title={`${numFormat(record.totalOnceInjected)} liều`}>
+            <Progress
+              strokeColor={{
+                '0%': '#108ee9',
+                '100%': '#87d068',
+              }}
+              percent={(record.totalOnceInjected / record.population * 100).toString().substring(0, 2)}
+              showInfo
+            />
+          </Tooltip>
+
+        )
+      }
     },
     {
-      title: 'Tổng ca nhiễm',
-      dataIndex: 'z',
-      key: 'z',
-      sorter: (a, b) => a.z - b.z,
+      title: 'Tiêm 2 Mũi',
+      dataIndex: 'totalTwiceInjected',
+      key: 'totalTwiceInjected',
+      sorter: (a, b) => a.totalTwiceInjected / a.population * 100 - b.totalTwiceInjected / b.population * 100,
       sortDirections: ['descend', 'ascend'],
-    },
+      render: (value, record, index) => {
+        return (
+          <Tooltip title={`${numFormat(record.totalTwiceInjected)} liều`}>
+            <Progress
+              strokeColor={{
+                '0%': '#108ee9',
+                '100%': '#87d068',
+              }}
+              percent={(record.totalTwiceInjected / record.population * 100).toString().substring(0, 2)}
+              showInfo
+            />
+          </Tooltip>
+        )
+      },
+    }
   ]
   handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -212,12 +252,12 @@ class Home extends Component {
 
   componentDidMount() {
     this.setState({ loading: true })
-    const res = axios.get(`${api}`);
+    const res = axios.get(`${getAll}`);
     res.then(response => {
       this.setState({
         last15Days: {
           ...this.state.last15Days,
-          data: response.data.data.vn.cases // 100
+          data: response.data.data.vnSeason4Daily.cases.slice(response.data.data.vnSeason4Daily.cases.length - 15)
         },
         lastAprilToNow: {
           ...this.state.lastAprilToNow,
@@ -225,12 +265,11 @@ class Home extends Component {
         },
         today: response.data.data.vnSeason4.toDay,
         total: response.data.data.vnSeason4.total,
-        // lastUpdate: moment.utc(response.data.data.lastUpdated * 1000).format('HH')
       })
-    }).catch(error => {
-      console.log('error:', error)
-    }).finally(() => {
 
+    }).catch(error => {
+      console.log('error:', error.response)
+    }).finally(() => {
       this.setState({ loading: false })
     })
     const provinceData = axios.get(`${province}`);
@@ -248,6 +287,21 @@ class Home extends Component {
     }).finally(() => {
       this.setState({ loading: false })
     })
+    this.getVaccine();
+  }
+  getVaccine = () => {
+    axios.get(`${vaccine}`)
+      .then(res => {
+        this.setState({
+          vaccineData: res.data.data
+        })
+      })
+      .catch(err => {
+        console.log(err.response);
+      })
+      .finally(() => {
+
+      })
   }
   componentDidUpdate(prevProps) {
     const { taskReducer } = this.props;
@@ -274,7 +328,7 @@ class Home extends Component {
       return "something went wrong";
     }
   }
-  
+
   render() {
     return (
       <Row gutter={[16, 24]}>
@@ -355,12 +409,14 @@ class Home extends Component {
             </Table>
           </Card>
         </Col>
+
         <Col span={24}>
-          <Card title='Số liệu Vaccine - Đang build...'>
+          <Card title='Số liệu Vaccine'>
             <Table loading={this.state.loading} columns={this.vaccineColumns} bordered size="small" dataSource={this.state.vaccineData}>
             </Table>
           </Card>
         </Col>
+
       </Row>
     );
   }
