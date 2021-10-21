@@ -78,14 +78,13 @@
 }
 .task-background-component {
   padding: 10px 15px 10px 0px;
-  background-image: 
-  linear-gradient(
-    0, 
+  background-image: linear-gradient(
+    0,
     transparent,
-    hsla(0,0%,72.9%,.12941176470588237) ,
-    hsla(0,0%,72.9%,.12941176470588237),
+    hsla(0, 0%, 72.9%, 0.12941176470588237),
+    hsla(0, 0%, 72.9%, 0.12941176470588237),
     transparent
-    );
+  );
   // background: #bababa21;
   margin: 0 5px;
   padding: 15px;
@@ -698,12 +697,10 @@
           color: #1890ff !important;
         }
       }
-      // .ant-menu-item-selected {
-      //   span,
-      //   a {
-      //     color: #fff;
-      //   }
-      // }
     }
   }
+}
+
+.ant-form-item {
+  margin-bottom: 4px;
 }

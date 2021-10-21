@@ -15,16 +15,14 @@ class Login extends Component {
     });
     const { AuthActionCreator } = this.props;
     const { LoginUser } = AuthActionCreator;
-    setTimeout(() => {
-      LoginUser(val);
+    LoginUser(val).finally(() => {
       this.setState({
         submitting: false,
-      });
-    }, 1000);
+      })
+    })
   }
   render() {
     const { authReducer } = this.props;
-    const { submitting } = this.state;
     if (authReducer.authenticate) {
       return <Redirect to="/" />;
     }
@@ -42,11 +40,11 @@ class Login extends Component {
             labelCol={{ span: 6 }}
           >
 
-            <Form.Item name="email" rules={[{ required: true, message: 'Please enter your email !' }]}>
+            <Form.Item name="email" rules={[{ required: true, message: 'Vui lòng nhập email !' }]}>
               <Input type="email" placeholder="Email" />
             </Form.Item>
-            <Form.Item name="password" rules={[{ required: true, message: 'Please enter your password !' }]}>
-              <Input.Password placeholder="Password" />
+            <Form.Item name="password" rules={[{ required: true, message: 'Vui lòng nhập mật khẩu !' }]}>
+              <Input.Password placeholder="Mật khẩu" />
             </Form.Item>
             <Form.Item>
               <Space>

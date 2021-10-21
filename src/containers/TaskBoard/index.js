@@ -51,7 +51,7 @@ class TaskBoard extends Component {
             <SearchItem projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'} />
           </Col>
           <Col xs={24} sm={8} md={8} lg={4}>
-            <Avatar icon={<UserOutlined />} /> {authReducer.user.fullName || 'Unauthorization'}
+            <Avatar icon={<UserOutlined />} /> {authReducer?.user?.fullName || 'Unauthorization'}
           </Col>
 
         </Row>

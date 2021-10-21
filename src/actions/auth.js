@@ -26,31 +26,34 @@ export const LoginUser = (form) => {
     dispatch({
       type: AUTHENTICATE.LOGIN_REQUEST,
     });
-    const res = await axios.post('/signin', form);
-    if (res.status === 200) {
-      const { token, user } = res.data;
-
-      document.cookie = "token=" + token;
-      document.cookie = "user=" + JSON.stringify(user);
-      // console.log(document.cookie);
-      // localStorage.setItem('token', token);
-      // localStorage.setItem('user', JSON.stringify(user));
-      dispatch({
-        type: AUTHENTICATE.LOGIN_SUCCESS,
-        payload: {
-          token, user,
-        },
-      });
-      message.success('Đăng nhập thành công!');
-    } else {
-      dispatch({
-        type: AUTHENTICATE.LOGIN_FAILURE,
-        payload: {
-          message: res.data,
-        },
-      });
-      message.error('Đăng nhập thất bại!');
-    }
+    // const res = await 
+    axios.post('/signin', form)
+      .then(res => {
+        const { token, user } = res.data;
+        document.cookie = "token=" + token;
+        document.cookie = "user=" + JSON.stringify(user);
+        // console.log(document.cookie);
+        // localStorage.setItem('token', token);
+        // localStorage.setItem('user', JSON.stringify(user));
+        dispatch({
+          type: AUTHENTICATE.LOGIN_SUCCESS,
+          payload: {
+            token, user,
+          },
+        });
+        message.success('Đăng nhập thành công!');
+      })
+      .catch(err => {
+        console.log(err.response.data.message);
+        let res = err.response.data
+        dispatch({
+          type: AUTHENTICATE.LOGIN_FAILURE,
+          payload: {
+            message: res.message,
+          }
+        });
+        message.error(err.response.data.message)
+      })
   };
 };
 export const RegisterUser = (form) => {
@@ -58,33 +61,50 @@ export const RegisterUser = (form) => {
     dispatch({
       type: AUTHENTICATE.REGISTER_REQUEST,
     });
-    const res = await axios.post('/signup', form);
-    console.log(res);
-    if (res.status === 201) {
-      const { token, user } = res.data;
-      // const decode = jwt_decode(token);
-      // console.log(decode);
-      // if (Date.now() >= exp * 1000) {
-      //   return false;
-      // }
-      document.cookie = "token=" + token;
-      document.cookie = "user=" + JSON.stringify(user);
-      dispatch({
-        type: AUTHENTICATE.REGISTER_SUCCESS,
-        payload: {
-          token, user
-        },
-      });
-      message.success('Đăng kí tài khoản thành công !');
-    } else {
-      dispatch({
-        type: AUTHENTICATE.REGISTER_FAILURE,
-        payload: {
-          message: res.data,
-        },
-      });
-      message.error('Đăng kí tài khoản thất bại, vui lòng thử lại sau !');
-    }
+    axios.post('/signup', form)
+      .then(res => {
+        const { token, user } = res.data;
+        document.cookie = "token=" + token;
+        document.cookie = "user=" + JSON.stringify(user);
+        dispatch({
+          type: AUTHENTICATE.REGISTER_SUCCESS,
+          payload: {
+            token, user
+          },
+        });
+        message.success('Đăng kí tài khoản thành công !');
+      })
+      .catch(err => {
+        dispatch({
+          type: AUTHENTICATE.REGISTER_FAILURE,
+          payload: {
+            message: err.response.data.message,
+          },
+        });
+        message.error(err.response.data.message);
+      })
+
+    // const res = await axios.post('/signup', form);
+    // if (res.status === 201) {
+    //   const { token, user } = res.data;
+    //   document.cookie = "token=" + token;
+    //   document.cookie = "user=" + JSON.stringify(user);
+    //   dispatch({
+    //     type: AUTHENTICATE.REGISTER_SUCCESS,
+    //     payload: {
+    //       token, user
+    //     },
+    //   });
+    //   message.success('Đăng kí tài khoản thành công !');
+    // } else {
+    //   dispatch({
+    //     type: AUTHENTICATE.REGISTER_FAILURE,
+    //     payload: {
+    //       message: res.data,
+    //     },
+    //   });
+    //   message.error('Đăng kí tài khoản thất bại, vui lòng thử lại sau !');
+    // }
   };
 };
 
