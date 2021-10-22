@@ -62,11 +62,10 @@ class CardItem extends Component {
   render() {
     const { task, authReducer, taskReducer } = this.props;
     return (
-      // <Spin spinning={taskReducer.loading}>
       <div className="todo-card-ui" onClick={() => this.props.onClick(task)} active={this.props.active}>
         <Row gutter={6} style={{ maxWidth: '100%', padding: 10 }}>
           <Col span={24} style={{ textAlign: 'left' }}>
-            <Space align="start">
+            <Space align="start" style={{ columnGap: 4 }}>
               <Avatar size="small" style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{authReducer.user ? authReducer.user.firstName.substring(0, 1) : 'U'}</Avatar>
               <h3 className="title">{task.name}</h3>
             </Space>

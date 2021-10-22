@@ -40,7 +40,7 @@ class TaskList extends Component {
     return (
 
       <Col className="gutter-row task-background" xs={24} sm={12} md={8} lg={8} xl={6}>
-        <div className="task-background-component">
+        <div className="task-background-component scrollbar">
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2>{stt.label}</h2>
             <span>{this.props.counting}</span>
@@ -50,7 +50,6 @@ class TaskList extends Component {
             Add new
           </Button>
         </div>
-
       </Col>
 
     );

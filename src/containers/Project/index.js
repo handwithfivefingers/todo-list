@@ -1,15 +1,15 @@
 import {
   EditOutlined,
-  LoginOutlined, PlusSquareOutlined, RestOutlined
+  LoginOutlined, PlusSquareOutlined, RestOutlined, UserAddOutlined
 } from '@ant-design/icons';
-import { Button, Col, Popover, Progress, Row, Spin, Popconfirm, Card, message } from 'antd';
+import { Button, Col, Popover, Progress, Row, Spin, Popconfirm, Card, message, Modal, Mentions } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
 import { ModalAction, TaskAction, ProjectAction } from '../../actions';
 import ModalForm from '../../components/Layout/UI/Modal/ModalForm';
-
+import UserSelected from '../../components/Layout/UI/Modal/UserSelected';
 class Project extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +20,12 @@ class Project extends Component {
     search: '',
     x: 0,
     y: 0,
+    loading: false,
+    childModal: {
+      component: null,
+      visibile: false,
+      width: '50%'
+    }
   };
   componentDidMount() {
     const { TaskListAction } = this.props;
@@ -61,9 +67,18 @@ class Project extends Component {
     projectDelete(item);
     message.success('Đã xóa Project');
   }
+
+  addUser = (item) => {
+    this.setState({
+      childModal: {
+        ...this.state.childModal,
+        visible: true,
+        component: <UserSelected />,
+      }
+    })
+  }
   render() {
     const { taskReducer, authReducer } = this.props;
-
     return (
       <>
         <Row>
@@ -85,36 +100,33 @@ class Project extends Component {
                       style={{ width: 'auto', marginTop: 16 }}
                       bodyStyle={{ padding: 10 }}
                       actions={[
-                        <Popover content="Manager Task" trigger="hover">
-                          <Link
-                            key={item._id}
-                            to={{
-                              pathname: `/project/${item.slug}`,
-                              state: { projectId: item._id },
-                            }}
-                            style={{
-                              width: '100%',
-                              borderRight: '1px solid #eee',
-                              color: 'inherit',
-                            }}
-                          >
-                            <LoginOutlined />
-                          </Link>
-                        </Popover>,
-                        <Popover content="Edit" trigger="hover">
-                          <EditOutlined onClick={() => this.EditProject(item)} />
-                        </Popover>,
-                        <Popover content="Delete Task" trigger="hover">
-                          <Popconfirm
-                            title="Bạn có chắc muốn xóa task này ?"
-                            onConfirm={(e) => this.deleteProject(item)}
-                            // onCancel={cancel}
-                            okText="Xóa"
-                            cancelText="Không"
-                          >
-                            <RestOutlined key="restout" />
-                          </Popconfirm>
-                        </Popover>
+                        <Link
+                          key={item._id}
+                          to={{
+                            pathname: `/project/${item.slug}`,
+                            state: { projectId: item._id },
+                          }}
+                          style={{
+                            width: '100%',
+                            borderRight: '1px solid #eee',
+                            color: 'inherit',
+                          }}
+                        >
+                          <LoginOutlined />
+                        </Link>
+                        ,
+                        <EditOutlined onClick={() => this.EditProject(item)} />
+                        ,
+                        <UserAddOutlined onClick={() => this.addUser(item)} />
+                        ,
+                        <Popconfirm
+                          title="Bạn có chắc muốn xóa task này ?"
+                          onConfirm={(e) => this.deleteProject(item)}
+                          okText="Xóa"
+                          cancelText="Không"
+                        >
+                          <RestOutlined key="restout" />
+                        </Popconfirm>
                       ]}
                     >
                       <Card.Meta
@@ -150,6 +162,15 @@ class Project extends Component {
           </Row>
         </Spin>
         <ModalForm project />
+        <Modal
+          onOk={() => console.log('ok')}
+          footer={null}
+          onCancel={() => this.setState({ childModal: { visible: false } })}
+          visible={this.state.childModal.visible}
+          maskClosable={false}
+        >
+          {this.state.childModal.component}
+        </Modal>
       </>
     );
   }

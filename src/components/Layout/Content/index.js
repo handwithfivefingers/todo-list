@@ -11,8 +11,8 @@ class ContentLayout extends Component {
     return (
       <Layout className="site-layout">
         <HeaderLayout />
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
+        <Content>
+          <Breadcrumb>
             <Breadcrumb.Item>Project Management</Breadcrumb.Item>
             {TASK_ROUTE.map((item, index) => {
               if (item.path === this.props.location.pathname) {
@@ -22,7 +22,7 @@ class ContentLayout extends Component {
           </Breadcrumb>
           <div
             className="site-layout-background"
-            style={{ padding: 24, minHeight: 360 }}
+            style={{ padding: 8, minHeight: 360 }}
           >
             {this.props.children}
           </div>

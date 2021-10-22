@@ -59,7 +59,8 @@ const ModalForm = (props) => {
         desc: '',
         progress: 0,
         status: props.project ? 'active' : 0,
-        id: ''
+        id: '',
+        issue: ''
       })
     }
   }, [taskReducer.showModal])
@@ -176,7 +177,6 @@ const ModalForm = (props) => {
             step={10}
             defaultValue={0}
             onChange={(value) => { formRef.current?.setFieldsValue({ progress: value }) }}
-          // onAfterChange={(value) => { console.log('onAfterChange: ', value); }}
           />
         </Form.Item>
         <Form.Item label="Status" name="status">

@@ -1,5 +1,5 @@
 import { EnterOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Row, Spin } from 'antd';
+import { Avatar, Button, Col, Row, Space, Spin } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -38,30 +38,25 @@ class TaskBoard extends Component {
     // console.log('location', this.props.location);
     return (
       <>
-        <Row gutter={[16, 24]} align="left">
-          <Col xs={6} sm={4} md={4} lg={4}>
-            <Button
-              type="primary"
-              onClick={() => this.props.history.goBack()}
-            >
-              <EnterOutlined /> Back
-            </Button>
-          </Col>
-          <Col xs={18} sm={12} md={12} lg={16}>
-            <SearchItem projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'} />
-          </Col>
-          <Col xs={24} sm={8} md={8} lg={4}>
+        <Space className="search-layout" size="large" style={{ width: '100%', justifyContent: 'space-between' }}>
+          <Button
+            type="primary"
+            onClick={() => this.props.history.goBack()}
+          >
+            <EnterOutlined /> Back
+          </Button>
+          <SearchItem projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'} />
+          <div className="avatar">
             <Avatar icon={<UserOutlined />} /> {authReducer?.user?.fullName || 'Unauthorization'}
-          </Col>
-
-        </Row>
+          </div>
+        </Space>
         <Spin spinning={taskReducer.loading}>
-          <Row gutter={[16, 24]}>
+          <Row gutter={[16, 24]} style={{ marginTop: '20px' }}>
             {this.renderTaskBoard()}
-            <DailyReport
+            {/* <DailyReport
               label="Generate Report"
               projectId={location.state !== null && location.state !== undefined ? location.state.projectId : 'Error'}
-            />
+            /> */}
           </Row>
         </Spin>
         <ModalForm />
