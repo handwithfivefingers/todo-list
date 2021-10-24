@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Mentions, Form, Button, Space } from 'antd'
+import { Mentions, Form, Button, Space, message } from 'antd'
 import axios from './../../../../helper/AxiosService';
 import debounce from 'lodash/debounce';
 import { UserAddOutlined } from '@ant-design/icons';
 const { Option } = Mentions
-const UserSelected = () => {
+const UserSelected = (props) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
 
@@ -34,14 +34,21 @@ const UserSelected = () => {
   const onFinish = (val) => {
     const form = new FormData();
     form.append('user', val.userSelected.split(' '))
+    form.append('projectId', props.projectId);
     axios.post(`/userapply`, form)
       .then(res => {
         console.log(res)
+        message.success('Lời mời đã được gửi đi')
+        if (props.onClose) {
+          props.onClose();
+        }
       })
       .catch(err => {
         console.log(err.response);
+        message.error('Đã có lỗi xảy ra')
       })
   }
+  console.log(props.projectId)
   return (
     <Form onFinish={onFinish}>
       <h3 style={{ color: '#1890ff' }}><UserAddOutlined style={{ padding: '0 10px 0 0' }} />Thêm Thành viên</h3>

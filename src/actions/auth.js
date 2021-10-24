@@ -83,28 +83,6 @@ export const RegisterUser = (form) => {
         });
         message.error(err.response.data.message);
       })
-
-    // const res = await axios.post('/signup', form);
-    // if (res.status === 201) {
-    //   const { token, user } = res.data;
-    //   document.cookie = "token=" + token;
-    //   document.cookie = "user=" + JSON.stringify(user);
-    //   dispatch({
-    //     type: AUTHENTICATE.REGISTER_SUCCESS,
-    //     payload: {
-    //       token, user
-    //     },
-    //   });
-    //   message.success('Đăng kí tài khoản thành công !');
-    // } else {
-    //   dispatch({
-    //     type: AUTHENTICATE.REGISTER_FAILURE,
-    //     payload: {
-    //       message: res.data,
-    //     },
-    //   });
-    //   message.error('Đăng kí tài khoản thất bại, vui lòng thử lại sau !');
-    // }
   };
 };
 

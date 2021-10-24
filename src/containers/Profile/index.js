@@ -1,13 +1,35 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Form, Card, Row, Col, Button, Badge, Avatar, Space, Input, Collapse } from 'antd';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons'
+import { Form, Card, Row, Col, Button, Badge, Avatar, Space, Input, Collapse, Spin, message } from 'antd';
+import axios from '../../helper/AxiosService';
 const Profile = () => {
+  const [loading, setLoading] = useState(false);
+  const [request, setRequest] = useState([])
   const authReducer = useSelector(state => state.authReducer);
   const user = authReducer.user ? authReducer.user : '';
   const formRef = useRef();
   useEffect(() => {
     setField()
   }, [formRef])
+  useEffect(() => {
+    getRequestData();
+  }, [user])
+  const getRequestData = () => {
+    setLoading(true);
+    const form = new FormData();
+    form.append('_id', user?._id);
+    axios.post('/project/request', form)
+      .then(res => {
+        setRequest(res.data.request);
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
   const setField = () => {
     formRef.current.setFieldsValue({
       firstName: user?.firstName,
@@ -19,10 +41,36 @@ const Profile = () => {
   const onFinish = (val) => {
     console.log(val)
   }
-  const acceptInvite = () => {
-    console.log('Đã chấp nhận')
+  const acceptInvite = (req) => {
+    setLoading(true);
+    const form = new FormData();
+    form.append('userId', user?._id)
+    axios.post(`/project/request/${req._id}`, form)
+      .then(res => {
+        message.success('Đã tham gia Project :', req.name)
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
+      .finally(() => {
+        getRequestData()
+      })
   }
-
+  const destroyInvite = (req) => {
+    setLoading(true);
+    const form = new FormData();
+    form.append('userId', user?._id)
+    axios.post(`/project/refuse/${req._id}`, form)
+      .then(res => {
+        message.success('Hủy thành công')
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
+      .finally(() => {
+        getRequestData()
+      })
+  }
   return (
     <Row gutter={[16, 12]} justify="start" style={{ padding: '12px' }}>
       <Col span={24}>
@@ -73,20 +121,53 @@ const Profile = () => {
                   </Collapse.Panel>
                 </Collapse>
               </Card>
-              <Card title={`Project Request`}>
-                Project Name: xxxxxx <Button type="primary" onClick={() => acceptInvite()}> Chấp Nhận</Button>
-              </Card>
+              <Spin spinning={loading}>
+                <Card title={`Project Request`}>
+                  {
+                    request?.length > 0
+                      ?
+                      request.map(req => <Space
+                        style={{ justifyContent: 'space-between', width: '100%', padding: '8px 0' }}
+                      >
+                        <b> {req.name}</b>
+                        {/* <Button type="primary"
+
+                        >
+                          Chấp Nhận
+                        </Button> */}
+                        <Space>
+                          <Button type="primary" shape="circle" onClick={(e) => acceptInvite(req)}>
+                            <PlusOutlined style={{ color: '#fff', fontSize: '16px' }} />
+                          </Button>
+                          <Button type="danger" shape="circle" onClick={(e) => destroyInvite(req)} >
+                            <CloseOutlined style={{ color: '#fff', fontSize: '16px' }} />
+                          </Button>
+                          </Space>
+                      </Space>)
+                      :
+                      <Space style={{ justifyContent: 'space-between', width: '100%', padding: '8px 0' }}>
+                        Hiện không có lời mời nào
+                      </Space>
+                  }
+                </Card>
+              </Spin>
             </Col>
 
             <Col span={18}>
               <Card title={`Hello, ${authReducer.user ? authReducer.user.fullName : ''}`}>
-                <p>Những dự án hiện đang tham gia ....</p>
-                <ul style={{ listStyle: 'none', textAlign: 'left' }}>
-                  <li>First Name: <span> {user.firstName}</span></li>
-                  <li>Last Name: <span> {user.lastName}</span></li>
-                  <li>Your Email: <span> {user.email}</span></li>
-                  <li>Your Role: <span> {user.role}</span></li>
-                </ul>
+                <Row>
+                  <Col span={12}>
+                    <Card title="Project cá nhân">
+
+                    </Card>
+
+                  </Col>
+                  <Col span={12}>
+                    <Card title="Project Tham gia">
+
+                    </Card>
+                  </Col>
+                </Row>
               </Card>
             </Col>
           </Row>

@@ -10,7 +10,6 @@ const initialState = {
 };
 
 export default function Auth(state = initialState, action) {
-  console.log(action.type);
   switch (action.type) {
     case AUTHENTICATE.LOGIN_REQUEST:
       return (state = {

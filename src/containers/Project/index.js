@@ -67,15 +67,95 @@ class Project extends Component {
     projectDelete(item);
     message.success('Đã xóa Project');
   }
-
   addUser = (item) => {
     this.setState({
       childModal: {
         ...this.state.childModal,
         visible: true,
-        component: <UserSelected />,
+        component: <UserSelected projectId={item._id} onClose={() => this.setState({ childModal: { ...this.state.childModal, visible: false } })} />,
       }
     })
+  }
+  renderAction = (item) => {
+    const { taskReducer, authReducer } = this.props;
+    let xhtml = [];
+    if (item.userAccess.length > 0) {
+      let index = -1;
+      index = item.userAccess.findIndex(id => id === authReducer.user._id && id !== item.userOwner)
+      if (index !== -1) {
+        xhtml.push(<Link
+          key={item._id}
+          to={{
+            pathname: `/project/${item.slug}`,
+            state: { projectId: item._id },
+          }}
+          style={{
+            width: '100%',
+            borderRight: '1px solid #eee',
+            color: 'inherit',
+          }}
+        >
+          <LoginOutlined />
+        </Link>)
+      } else {
+        xhtml.push(<Link
+          key={item._id}
+          to={{
+            pathname: `/project/${item.slug}`,
+            state: { projectId: item._id },
+          }}
+          style={{
+            width: '100%',
+            borderRight: '1px solid #eee',
+            color: 'inherit',
+          }}
+        >
+          <LoginOutlined />
+        </Link>
+          ,
+          <EditOutlined onClick={() => this.EditProject(item)} />
+          ,
+          <UserAddOutlined onClick={() => this.addUser(item)} />
+          ,
+          <Popconfirm
+            title="Bạn có chắc muốn xóa task này ?"
+            onConfirm={(e) => this.deleteProject(item)}
+            okText="Xóa"
+            cancelText="Không"
+          >
+            <RestOutlined key="restout" />
+          </Popconfirm>)
+      }
+    } else {
+      xhtml.push(<Link
+        key={item._id}
+        to={{
+          pathname: `/project/${item.slug}`,
+          state: { projectId: item._id },
+        }}
+        style={{
+          width: '100%',
+          borderRight: '1px solid #eee',
+          color: 'inherit',
+        }}
+      >
+        <LoginOutlined />
+      </Link>
+        ,
+        <EditOutlined onClick={() => this.EditProject(item)} />
+        ,
+        <UserAddOutlined onClick={() => this.addUser(item)} />
+        ,
+        <Popconfirm
+          title="Bạn có chắc muốn xóa task này ?"
+          onConfirm={(e) => this.deleteProject(item)}
+          okText="Xóa"
+          cancelText="Không"
+        >
+          <RestOutlined key="restout" />
+        </Popconfirm>)
+    }
+    return xhtml;
   }
   render() {
     const { taskReducer, authReducer } = this.props;
@@ -99,35 +179,7 @@ class Project extends Component {
                     <Card
                       style={{ width: 'auto', marginTop: 16 }}
                       bodyStyle={{ padding: 10 }}
-                      actions={[
-                        <Link
-                          key={item._id}
-                          to={{
-                            pathname: `/project/${item.slug}`,
-                            state: { projectId: item._id },
-                          }}
-                          style={{
-                            width: '100%',
-                            borderRight: '1px solid #eee',
-                            color: 'inherit',
-                          }}
-                        >
-                          <LoginOutlined />
-                        </Link>
-                        ,
-                        <EditOutlined onClick={() => this.EditProject(item)} />
-                        ,
-                        <UserAddOutlined onClick={() => this.addUser(item)} />
-                        ,
-                        <Popconfirm
-                          title="Bạn có chắc muốn xóa task này ?"
-                          onConfirm={(e) => this.deleteProject(item)}
-                          okText="Xóa"
-                          cancelText="Không"
-                        >
-                          <RestOutlined key="restout" />
-                        </Popconfirm>
-                      ]}
+                      actions={this.renderAction(item)}
                     >
                       <Card.Meta
                         avatar={
