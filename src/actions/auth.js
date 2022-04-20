@@ -27,6 +27,7 @@ export const LoginUser = (form) => {
       type: AUTHENTICATE.LOGIN_REQUEST,
     });
     // const res = await 
+    
     axios.post('/signin', form)
       .then(res => {
         const { token, user } = res.data;
