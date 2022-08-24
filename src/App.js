@@ -1,7 +1,7 @@
-import { Layout } from 'antd';
+import { Layout, Spin } from 'antd';
 import 'antd/dist/antd.css';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { isUserLogIn } from './actions/auth';
 import './App.css';
@@ -9,28 +9,40 @@ import './assets/css/style.scss';
 import { TASK_ROUTE } from './constant/route';
 import NotFound from './containers/404';
 import LayoutRoute from './Layout';
+import ContentLayout from './components/Layout/Content';
+import SiderLayout from './components/Layout/Sidebar';
+import { compose } from 'redux';
 
-function App() {
+function App(props) {
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(isUserLogIn())
+    dispatch(isUserLogIn());
   }, []);
+
   return (
     <div className="App">
       <Layout style={{ minHeight: '100vh', overflowX: 'hidden' }}>
         <Router>
+          <SiderLayout />
+
           <Switch>
-            {TASK_ROUTE.map((item) => {
-              return (
-                <LayoutRoute
-                  key={item.path}
-                  path={item.path}
-                  component={item.component}
-                  exact={item.exact}
-                  name={item.name}
-                />
-              );
-            })}
+            <ContentLayout>
+              <Spin spinning={props?.authReducer.authenticating}>
+                {TASK_ROUTE.map((item) => {
+                  return (
+                    <LayoutRoute
+                      key={item.path}
+                      path={item.path}
+                      component={item.component}
+                      exact={item.exact}
+                      name={item.name}
+                    />
+                  );
+                })}
+              </Spin>
+            </ContentLayout>
+
             <Route path="*" component={NotFound} />
           </Switch>
         </Router>
@@ -38,5 +50,11 @@ function App() {
     </div>
   );
 }
+const mapStatetoProps = ({ authReducer }) => ({
+  authReducer,
+});
 
-export default App;
+const mapDispatchtoProps = null;
+
+const withConenct = connect(mapStatetoProps, mapDispatchtoProps);
+export default compose(withConenct)(App);

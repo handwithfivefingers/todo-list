@@ -5,60 +5,47 @@ const initialState = {
   authenticating: false,
   information: null,
   message: '',
-  token: null,
-  user: '',
 };
 
 export default function Auth(state = initialState, action) {
   switch (action.type) {
     case AUTHENTICATE.LOGIN_REQUEST:
-      return (state = {
+      return {
         ...state,
         authenticating: true,
-      });
+      };
     case AUTHENTICATE.LOGIN_SUCCESS:
       let { token, user } = action.payload;
-      return (state = {
+      return {
         ...state,
         authenticating: false,
         authenticate: true,
-        token,
-        user,
-      });
+      };
     case AUTHENTICATE.LOGIN_FAILURE:
-      return (state = {
+      return {
         ...state,
         authenticating: false,
         message: action.payload.message,
-      });
+      };
     case AUTHENTICATE.REGISTER_REQUEST:
-      return (state = {
+      return {
         ...state,
         authenticating: true,
-      });
+      };
     case AUTHENTICATE.REGISTER_SUCCESS:
-      return (state = {
+      return {
         ...state,
         authenticating: false,
         authenticate: true,
-        token: action.payload.token,
-        user: action.payload.user
-      });
+      };
     case AUTHENTICATE.REGISTER_FAILURE:
-      return (state = {
+      return {
         ...state,
         authenticating: false,
         message: action.payload.message,
-      });
+      };
     case AUTHENTICATE.LOGOUT_SUCCESS:
-      return (state = {
-        ...state,
-        authenticating: false,
-        authenticate: false,
-        user: null,
-        token: null,
-        // message: action.payload.message,
-      });
+      return state;
     default:
       return state;
   }
