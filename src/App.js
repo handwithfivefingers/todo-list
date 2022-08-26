@@ -25,9 +25,8 @@ import { AuthProvider } from './helper/context/AuthContext';
 import { useAuthenticate } from './helper/hook';
 import Route from './constant/route';
 
-const RouterComp = () => {
-  const routerComp = useRoutes(ROUTER());
-
+const RouterComp = (props) => {
+  const routerComp = useRoutes(ROUTER(props?.auth));
   return routerComp;
 };
 
@@ -35,13 +34,11 @@ function App(props) {
   // const { isLogin, loading } = useAuthenticate();
   // console.log(isLogin, loading);
   const [auth, setAuth] = useState(false);
-
   const authHook = useAuthenticate();
 
   useEffect(() => {
     setAuth(authHook.isLogin);
   }, [authHook]);
-  console.log(authHook);
 
   return (
     <div className="App">
@@ -56,7 +53,7 @@ function App(props) {
             <SiderLayout />
             <ContentLayout>
               <Spin spinning={authHook.loading}>
-                <RouterComp />
+                <RouterComp auth={auth}/>
               </Spin>
             </ContentLayout>
           </Router>

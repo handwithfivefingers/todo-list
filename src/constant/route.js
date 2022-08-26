@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import NotFound from '../containers/404';
 import Login from '../containers/Login';
 import Profile from '../containers/Profile';
@@ -6,7 +6,6 @@ import Register from '../containers/Register';
 import Home from './../containers/Home';
 import Project from './../containers/Project';
 import TaskBoard from './../containers/TaskBoard';
-
 export const TASK_ROUTE = [
   {
     path: '/',
@@ -42,7 +41,7 @@ export const TASK_ROUTE = [
   },
 ];
 
-export default () => [
+export default (status) => [
   {
     title: 'Trang chủ',
     path: '',
@@ -53,7 +52,7 @@ export default () => [
       },
       {
         path: 'project',
-        element: <Outlet />,
+        element: !status && <Navigate to="/login" /> || <Outlet />,
         children: [
           {
             index: true,
@@ -67,11 +66,11 @@ export default () => [
       },
       {
         path: 'login',
-        element: <Login />,
+        element: status && <Navigate to="/" /> || <Login />,
       },
       {
         path: 'register',
-        element: <Register />,
+        element: status && <Navigate to="/" /> || <Register />,
       },
     ],
   },

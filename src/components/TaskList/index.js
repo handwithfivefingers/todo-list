@@ -1,5 +1,14 @@
-import { Button, Col, Skeleton, Spin, Select } from 'antd';
-import React, { Component, useMemo } from 'react';
+import { Button, Col, Skeleton, Spin, Select, message } from 'antd';
+import { debounce } from 'lodash';
+import React, {
+  Component,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import TaskService from '../../service/task.service';
 import TaskItem from '../TaskItem';
 
 // import ModalForm from '../Layout/UI/ModalForm';
@@ -61,13 +70,38 @@ import TaskItem from '../TaskItem';
 // const withConnect = connect(mapStatetoProps, mapDispatchToProps);
 
 const TaskList = (props) => {
-  const { stt, counting } = props;
+  const { stt, counting, onDragEvent } = props;
+
+  const onDragStart = (e, item) => {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text', JSON.stringify(item));
+  };
+
+  const onDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const onHandleDrop = (event, stt) => {
+    event.preventDefault();
+    let item = JSON.parse(event.dataTransfer.getData('text'));
+    if (!item) return;
+    if (item.status === stt.value) return;
+    onDragEvent(item._id, stt.value);
+  };
 
   const renderCardItem = useMemo(() => {
-    return props?.task?.map((item, index) => (
-      <TaskItem key={item._id} task={item} index={index} />
-    ));
-  }, []);
+    return (
+      props?.task &&
+      props?.task?.map((item, index) => (
+        <TaskItem
+          key={index}
+          task={item || null}
+          index={index}
+          onDragStart={onDragStart}
+        />
+      ))
+    );
+  }, [props?.task]);
 
   return (
     <Col
@@ -78,7 +112,11 @@ const TaskList = (props) => {
       lg={8}
       xl={6}
     >
-      <div className="task-background-component scrollbar">
+      <div
+        className="task-background-component scrollbar"
+        onDrop={(ev) => onHandleDrop(ev, stt)}
+        onDragOver={onDragOver}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h2>{stt.label}</h2>
           <span>{counting}</span>

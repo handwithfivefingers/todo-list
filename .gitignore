@@ -5,6 +5,12 @@
 /.pnp
 .pnp.js
 
+
+
+#useless file
+
+package-lock.json
+
 # testing
 /coverage
 

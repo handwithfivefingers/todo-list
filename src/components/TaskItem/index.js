@@ -20,7 +20,8 @@ import {
 const TaskItem = (props) => {
   const handleDropdownMenu = () => {};
   const handleSetting = () => {};
-  const { task, index } = props;
+  const { task, index, onDragStart } = props;
+
   return (
     <div
       onClick={() => void 0}
@@ -29,6 +30,8 @@ const TaskItem = (props) => {
         ['--animate-duration']: `${(index + 1) / 10}s`,
         ['--animate-delay']: `0.2s`,
       }}
+      draggable
+      onDragStart={(e) => onDragStart(e, task)}
     >
       <Row gutter={6} style={{ maxWidth: '100%', padding: 10 }}>
         <Col span={24} style={{ textAlign: 'left' }}>
@@ -39,11 +42,11 @@ const TaskItem = (props) => {
             >
               T
             </Avatar>
-            <h3 className="title">{task.name}</h3>
+            <h3 className="title">{task?.name}</h3>
           </Space>
         </Col>
         <Col span={24}>
-          <p className="desc">{task.desc}</p>
+          <p className="desc">{task?.desc}</p>
         </Col>
         <Col span={24}>
           <Progress
@@ -52,7 +55,7 @@ const TaskItem = (props) => {
             status={task?.progress === 100 ? 'success' : 'active'}
           />
         </Col>
-        {task.issue && (
+        {task?.issue && (
           <Alert
             style={{
               padding: 5,

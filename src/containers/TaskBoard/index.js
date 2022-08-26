@@ -1,90 +1,17 @@
 import { EnterOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Row, Space, Spin } from 'antd';
-import React, { Component, useEffect, useRef } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Avatar, Button, Col, message, Row, Space, Spin } from 'antd';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { TASK_STATUS } from '../../constant/task';
 import { useFetch } from '../../helper/hook';
 import TaskService from '../../service/task.service';
 import TaskList from './../../components/TaskList';
 
-// import { connect } from 'react-redux';
-// import { bindActionCreators, compose } from 'redux';
-// import ModalForm from '../../components/Layout/UI/Modal/ModalForm';
-// import SearchItem from '../../components/Search';
-// import { ModalAction, TaskAction } from './../../actions';
-// import { TASK_STATUS } from './../../constant/task';
-
-// class TaskBoard extends Component {
-//   renderTaskBoard = () => {
-//     let xhtml = null;
-//     const { taskReducer, location } = this.props;
-//     if (location.state !== null && location.state !== undefined) {
-//       xhtml = TASK_STATUS.map((status, index) => {
-//         const task = taskReducer.tasks?.filter(
-//           (item) => parseInt(item.status) === status.value
-//         );
-//         return (
-//           <TaskList
-//             key={status._id}
-//             task={task}
-//             stt={{ label: status.label, value: status.value }}
-//             counting={task?.length}
-//             projectId={location.state.projectId}
-//           />
-//         );
-//       });
-//     }
-//     return xhtml;
-//   };
-
-//   render() {
-//     const { location, taskReducer, authReducer } = this.props;
-//     // console.log('location', this.props.location);
-//     return (
-//       <>
-//         <Space
-//           className="search-layout"
-//           size="large"
-//           style={{ width: '100%', justifyContent: 'space-between' }}
-//         >
-//           <Button type="primary" onClick={() => this.props.history.goBack()}>
-//             <EnterOutlined /> Back
-//           </Button>
-//           <SearchItem
-//             projectId={
-//               location.state !== null && location.state !== undefined
-//                 ? location.state.projectId
-//                 : 'Error'
-//             }
-//           />
-//           <div className="avatar">
-//             <Avatar icon={<UserOutlined />} />{' '}
-//             {authReducer?.user?.fullName || 'Unauthorization'}
-//           </div>
-//         </Space>
-//         <Spin spinning={taskReducer.loading}>
-//           <Row gutter={[16, 24]} style={{ marginTop: '20px' }}>
-//             {this.renderTaskBoard()}
-//           </Row>
-//         </Spin>
-//         <ModalForm />
-//       </>
-//     );
-//   }
-// }
-
-// const mapStatetoProps = (state) => ({
-//   taskReducer: state.taskReducer,
-//   authReducer: state.authReducer,
-// });
-// const mapDispatchToProps = (dispatch) => ({
-//   TaskListAction: bindActionCreators(TaskAction, dispatch),
-//   ModalListAction: bindActionCreators(ModalAction, dispatch),
-// });
-// const withConnect = connect(mapStatetoProps, mapDispatchToProps);
-
 const TaskBoard = (props) => {
   let location = useLocation();
+
+  const queryClient = useQueryClient();
 
   let navigate = useNavigate();
 
@@ -94,14 +21,21 @@ const TaskBoard = (props) => {
 
   if (!projectId) navigate(-1);
 
+  const fetchTodos = () => TaskService.getAll({ _id: projectId, search: '' });
+
   const { data, isLoading, status, refetch } = useFetch({
     cacheName: [`taskList-${location.state.projectId}`],
-    fn: () => TaskService.getAll({ _id: projectId, search: '' }),
+    fn: fetchTodos,
+  });
+
+  const mutation = useMutation((params) => TaskService.update(params), {
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries([`taskList-${location.state.projectId}`]);
+    },
   });
 
   if (data) taskRef.current = data.data;
-
-  console.log(isLoading);
 
   const renderTaskBoard = () => {
     let xhtml = null;
@@ -118,6 +52,7 @@ const TaskBoard = (props) => {
             stt={{ label: status.label, value: status.value }}
             counting={task?.length}
             projectId={location.state.projectId}
+            onDragEvent={(id, status) => mutation.mutate({ _id: id, status })}
           />
         );
       });
