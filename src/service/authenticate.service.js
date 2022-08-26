@@ -4,7 +4,7 @@ const api_path = {
   login: '/signin',
   logout: '',
   register: '/signup',
-  authenticate: '/auth/required',
+  authenticate: '/auth',
 };
 
 const AuthenticateService = {

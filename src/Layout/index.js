@@ -1,8 +1,6 @@
 import { Spin } from 'antd';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
-import { compose } from 'redux';
 
 class LayoutRoute extends Component {
   constructor(props) {
@@ -12,12 +10,8 @@ class LayoutRoute extends Component {
     };
   }
   render() {
-    const {
-      component: YoursComponent,
-      authReducer,
-      name,
-      ...remainProps
-    } = this.props;
+    
+    const { component: YoursComponent, ...remainProps } = this.props;
 
     return (
       <Route
@@ -28,11 +22,4 @@ class LayoutRoute extends Component {
   }
 }
 
-const mapStatetoProps = ({ authReducer }) => ({
-  authReducer,
-});
-
-const mapDispatchtoProps = null;
-
-const withConenct = connect(mapStatetoProps, mapDispatchtoProps);
-export default compose(withConenct)(LayoutRoute);
+export default LayoutRoute;

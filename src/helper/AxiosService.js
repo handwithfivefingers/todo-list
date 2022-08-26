@@ -1,6 +1,4 @@
 import axios from 'axios';
-import store from './../store/configureStore';
-import { AUTHENTICATE } from '../constant/auth';
 
 const instance = axios.create({
   baseURL: `${
@@ -29,9 +27,6 @@ instance.interceptors.response.use(
     // status 500 ...
     const status = error.response ? error.response.status : 500;
     if (status === 500) {
-      store.dispatch({
-        type: AUTHENTICATE.LOGOUT_SUCCESS,
-      });
     }
     return Promise.reject(error);
   }

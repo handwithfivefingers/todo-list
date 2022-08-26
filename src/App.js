@@ -1,60 +1,69 @@
 import { Layout, Spin } from 'antd';
-import 'antd/dist/antd.css';
-import { useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { isUserLogIn } from './actions/auth';
-import './App.css';
-import './assets/css/style.scss';
-import { TASK_ROUTE } from './constant/route';
+
+import { useState, useEffect } from 'react';
+
+import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
+
+import ROUTER, { TASK_ROUTE } from './constant/route';
+
 import NotFound from './containers/404';
+
 import LayoutRoute from './Layout';
+
 import ContentLayout from './components/Layout/Content';
+
 import SiderLayout from './components/Layout/Sidebar';
-import { compose } from 'redux';
+
+import 'antd/dist/antd.css';
+
+import './assets/css/style.scss';
+
+import 'animate.css';
+
+import { AuthProvider } from './helper/context/AuthContext';
+
+import { useAuthenticate } from './helper/hook';
+import Route from './constant/route';
+
+const RouterComp = () => {
+  const routerComp = useRoutes(ROUTER());
+
+  return routerComp;
+};
 
 function App(props) {
-  const dispatch = useDispatch();
+  // const { isLogin, loading } = useAuthenticate();
+  // console.log(isLogin, loading);
+  const [auth, setAuth] = useState(false);
+
+  const authHook = useAuthenticate();
 
   useEffect(() => {
-    dispatch(isUserLogIn());
-  }, []);
+    setAuth(authHook.isLogin);
+  }, [authHook]);
+  console.log(authHook);
 
   return (
     <div className="App">
       <Layout style={{ minHeight: '100vh', overflowX: 'hidden' }}>
-        <Router>
-          <SiderLayout />
-
-          <Switch>
+        <AuthProvider
+          value={{
+            auth,
+            setAuth,
+          }}
+        >
+          <Router>
+            <SiderLayout />
             <ContentLayout>
-              <Spin spinning={props?.authReducer.authenticating}>
-                {TASK_ROUTE.map((item) => {
-                  return (
-                    <LayoutRoute
-                      key={item.path}
-                      path={item.path}
-                      component={item.component}
-                      exact={item.exact}
-                      name={item.name}
-                    />
-                  );
-                })}
+              <Spin spinning={authHook.loading}>
+                <RouterComp />
               </Spin>
             </ContentLayout>
-
-            <Route path="*" component={NotFound} />
-          </Switch>
-        </Router>
+          </Router>
+        </AuthProvider>
       </Layout>
     </div>
   );
 }
-const mapStatetoProps = ({ authReducer }) => ({
-  authReducer,
-});
 
-const mapDispatchtoProps = null;
-
-const withConenct = connect(mapStatetoProps, mapDispatchtoProps);
-export default compose(withConenct)(App);
+export default App;
