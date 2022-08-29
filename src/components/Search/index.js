@@ -2,7 +2,7 @@ import { Input, Select, Space, DatePicker, Form, Button, Col, Row } from 'antd';
 import React, { createRef, useEffect, useState, useRef } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
-const SearchItem = ({ projectId }) => {
+const SearchBar = ({ projectId }) => {
   const [loading, setLoading] = useState(false);
 
   const formRef = useRef();
@@ -10,7 +10,9 @@ const SearchItem = ({ projectId }) => {
   const onFinish = (val) => {
     console.log(val);
   };
+  
   return (
+
     <Form onFinish={onFinish} ref={formRef}>
       <Input.Group compact>
         <Form.Item name="Search" style={{ margin: 0 }}>
@@ -48,4 +50,4 @@ const SearchItem = ({ projectId }) => {
   );
 };
 
-export default SearchItem;
+export default SearchBar;

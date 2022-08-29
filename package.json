@@ -1,7 +1,7 @@
 {
   "name": "todo-list",
-  "homepage": "https://todo-list-ndy3xo0qk-handwithfivefingers.vercel.app/",
-  "version": "0.1.0",
+  "homepage": ".",
+  "version": "0.2",
   "private": true,
   "dependencies": {
     "@tanstack/react-query": "^4.2.1",
@@ -12,6 +12,7 @@
     "antd": "^4.22.8",
     "axios": "^0.21.1",
     "dayjs": "^1.11.5",
+    "framer-motion": "^6.5.1",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -24,11 +25,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "sv": "json-server --watch ./server/db.json --port 3002",
-    "dev": "concurrently \" npm run sv \" \" npm start \"",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -48,7 +45,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "redux-devtools-extension": "^2.13.9"
+  "author": {
+    "name": "Five Finger"
   }
 }

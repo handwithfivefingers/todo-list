@@ -1,0 +1,52 @@
+.taskBackgroundComponent {
+  border-radius: 4px;
+  margin: 0 5px;
+  position: relative;
+  height: calc(100vh - 130px);
+  background-color: rgb(225, 225, 225);
+  border-radius: 8px;
+
+  :global {
+    .ant-card {
+      max-width: 230px;
+      width: 230px;
+      border-radius: 8px;
+      box-shadow: rgb(45 45 45 / 7%);
+      transition: box-shadow 0.3s ease-out, transform 0.3s ease-out,
+        opacity 0.2s ease-out;
+      transition-delay: 0.1s;
+      &:hover {
+        box-shadow: rgb(45 45 45 / 5%) 0px 2px 2px,
+          rgb(49 49 49 / 5%) 0px 4px 4px, rgb(42 42 42 / 5%) 0px 8px 8px,
+          rgb(32 32 32 / 5%) 0px 16px 16px, rgb(49 49 49 / 5%) 0px 32px 32px,
+          rgb(35 35 35 / 5%) 0px 64px 64px !important;
+      }
+    }
+  }
+
+  h2 {
+    text-align: left;
+  }
+  &:hover {
+    > button {
+      position: sticky;
+      bottom: 0;
+      transition: all 0.2s;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px;
+  }
+
+  .cardList {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 220px);
+    overflow: auto;
+    overflow-x: hidden;
+    padding:6px;
+  }
+}

@@ -15,19 +15,31 @@ import {
   Input,
   Modal,
 } from 'antd';
-
-
-
+import {
+  AnimatePresence,
+  motion,
+  useIsPresent,
+} from 'framer-motion/dist/framer-motion';
 import './style.css';
 
-class Home extends Component {
-  render() {
-    return <Row gutter={[16, 24]}></Row>;
-  }
-}
-// const mapStatetoProps = (state) => ({
-//   taskReducer: state.taskReducer,
-// });
-// const mapDispatchtoProps = null;
-// const withConnect = connect(mapStatetoProps, mapDispatchtoProps);
-export default Home
+const Home = () => {
+  const isPresent = useIsPresent();
+
+  return (
+    <Row gutter={[16, 24]}>
+      Hello world
+      <motion.div
+        initial={{ scaleX: 1 }}
+        animate={{
+          scaleX: 0,
+          transition: { duration: 0.5, ease: 'circOut' },
+        }}
+        exit={{ scaleX: 1, transition: { duration: 0.5, ease: 'circIn' } }}
+        style={{ originX: isPresent ? 0 : 1 }}
+        className="privacy-screen"
+      />
+    </Row>
+  );
+};
+
+export default Home;

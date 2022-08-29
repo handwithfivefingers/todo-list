@@ -1,76 +1,18 @@
-import { Button, Col, Skeleton, Spin, Select, message } from 'antd';
-import { debounce } from 'lodash';
-import React, {
-  Component,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import TaskService from '../../service/task.service';
+import { Button, Card, Col } from 'antd';
+import React, { useMemo } from 'react';
 import TaskItem from '../TaskItem';
-
-// import ModalForm from '../Layout/UI/ModalForm';
-// class TaskList extends Component {
-//   renderCardItem = (filterTask = null) => {
-//     let xhtml = null;
-//     if (filterTask !== null) {
-//       xhtml = filterTask.map((item) => {
-//         return <TaskItem key={item._id} task={item} />
-//       });
-//     } else {
-//       const { task, projectId } = this.props;
-//       const newTask = task?.filter(item => item.project === projectId);
-//       xhtml = newTask?.map((item) => {
-//         return <TaskItem key={item._id} task={item} />
-//       });
-//     }
-//     return xhtml;
-//   };
-
-//   renderModalAddNew = (val) => {
-//     console.log(val);
-//     const { ModalActionCreator, projectId } = this.props;
-//     const { ShowModal } = ModalActionCreator;
-//     ShowModal({ title: `Add New Task`, projectId });
-//   };
-//   handleCancel = () => {
-//     const { ModalActionCreator } = this.props;
-//     const { HideModal } = ModalActionCreator;
-//     HideModal();
-//   };
-
-//   render() {
-//     const { stt } = this.props;
-//     return (
-
-//       <Col className="gutter-row task-background" xs={24} sm={12} md={8} lg={8} xl={6}>
-//         <div className="task-background-component scrollbar">
-//           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-//             <h2>{stt.label}</h2>
-//             <span>{this.props.counting}</span>
-//           </div>
-//           {this.renderCardItem()}
-//           <Button className="task-btn" onClick={() => this.renderModalAddNew(stt.value)}>
-//             Add new
-//           </Button>
-//         </div>
-//       </Col>
-
-//     );
-//   }
-// }
-// const mapStatetoProps = (state) => ({
-//   taskReducer: state.taskReducer,
-// });
-// const mapDispatchToProps = (dispatch) => ({
-//   ModalActionCreator: bindActionCreators(ModalAction, dispatch),
-// });
-// const withConnect = connect(mapStatetoProps, mapDispatchToProps);
+import styles from './styles.module.scss';
 
 const TaskList = (props) => {
-  const { stt, counting, onDragEvent } = props;
+  const {
+    stt,
+    counting,
+    onDragEvent,
+    onUpdate,
+    setConfigModal,
+    setOpen,
+    open,
+  } = props;
 
   const onDragStart = (e, item) => {
     e.dataTransfer.effectAllowed = 'move';
@@ -98,11 +40,15 @@ const TaskList = (props) => {
           task={item || null}
           index={index}
           onDragStart={onDragStart}
+          onUpdate={onUpdate}
+          setConfigModal={setConfigModal}
+          setOpen={setOpen}
+          open={open}
         />
       ))
     );
   }, [props?.task]);
-
+console.log(stt);
   return (
     <Col
       className="gutter-row task-background"
@@ -113,15 +59,19 @@ const TaskList = (props) => {
       xl={6}
     >
       <div
-        className="task-background-component scrollbar"
+        className={[styles.taskBackgroundComponent, 'scrollbar'].join(' ')}
         onDrop={(ev) => onHandleDrop(ev, stt)}
         onDragOver={onDragOver}
+        onClick={(e) => e.stopPropagation()}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className={styles.header}>
           <h2>{stt.label}</h2>
           <span>{counting}</span>
         </div>
-        {renderCardItem}
+        <div className={[styles.cardList, 'scrollbar'].join(' ')}>
+          {renderCardItem}
+        </div>
+
         <Button
           className="task-btn"
           // onClick={() => this.renderModalAddNew(stt.value)}
@@ -129,6 +79,7 @@ const TaskList = (props) => {
           Add new
         </Button>
       </div>
+      {/* </motion.div> */}
     </Col>
   );
 };

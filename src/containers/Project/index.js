@@ -25,6 +25,7 @@ import ModalForm from '../../components/Layout/UI/Modal/ModalForm';
 import UserSelected from '../../components/Layout/UI/Modal/UserSelected';
 import { useFetch } from '../../helper/hook';
 import ProjectService from '../../service/project.service';
+import { useIsPresent, motion } from 'framer-motion/dist/framer-motion';
 
 const Project = (props) => {
   const [showForm, setShowForm] = useState(false);
@@ -36,6 +37,8 @@ const Project = (props) => {
     cacheName: [`projectList`],
     fn: () => ProjectService.getAll(),
   });
+
+  const isPresent = useIsPresent();
 
   if (data) projectRef.current = data.data;
 
@@ -124,8 +127,6 @@ const Project = (props) => {
     return xhtml;
   };
 
-  console.log('trigger');
-
   return (
     <Row>
       <Col>
@@ -138,6 +139,14 @@ const Project = (props) => {
       <Spin spinning={loading}>
         <Row gutter={8}>{renderCard()}</Row>
       </Spin>
+
+      <motion.div
+        initial={{ scaleX: 1 }}
+        animate={{ scaleX: 0, transition: { duration: 0.5, ease: 'circOut' } }}
+        exit={{ scaleX: 1, transition: { duration: 0.5, ease: 'circIn' } }}
+        style={{ originX: isPresent ? 0 : 1 }}
+        className="privacy-screen"
+      />
     </Row>
   );
 };

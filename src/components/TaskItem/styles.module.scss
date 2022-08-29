@@ -1,0 +1,79 @@
+.motionBlock {
+  display: flex;
+  background: #fff;
+  margin: 4px 0;
+  border-radius: 8px;
+}
+.todoCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: calc(100vw - 200px - 48px - 36px);
+  background: #fff;
+  margin: 6px 0;
+  box-shadow: rgba(45, 45, 45, 0.07);
+}
+$w: calc(calc(100vw - 48px - 36px) / 4);
+.motion {
+  padding: 6px;
+  pointer-events: auto;
+  position: relative;
+  transition: all 0.5s;
+  width: calc(calc(100vw - -200px - 48px - 36px) / 4);
+  word-break: break-all;
+  border-radius: 8px;
+  
+  &.open {
+    height: auto;
+    max-width: 700px;
+    width: $w;
+    top: 30px;
+    left: calc(50vw - calc(calc(100vw - 48px - 36px) / 4) / 2);
+    right: 0;
+    position: fixed;
+    z-index: 1;
+    overflow: hidden;
+    padding: 20px 12px;
+    // transform: translate(-50%, -50%);
+    .todoCard {
+      z-index: 9;
+      overflow: hidden;
+      transform: translateZ(0);    }
+  }
+}
+
+.parent {
+  background: white;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.parent[isOpen='true'] {
+  width: 400px;
+  height: 200px;
+}
+
+.overlay {
+  z-index: 1;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.8);
+  will-change: opacity;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  a {
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

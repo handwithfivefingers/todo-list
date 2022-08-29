@@ -1,8 +1,12 @@
 import { Layout, Spin } from 'antd';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, cloneElement } from 'react';
 
-import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  useLocation,
+  useRoutes,
+} from 'react-router-dom';
 
 import ROUTER, { TASK_ROUTE } from './constant/route';
 
@@ -23,16 +27,26 @@ import 'animate.css';
 import { AuthProvider } from './helper/context/AuthContext';
 
 import { useAuthenticate } from './helper/hook';
+
 import Route from './constant/route';
 
-const RouterComp = (props) => {
-  const routerComp = useRoutes(ROUTER(props?.auth));
-  return routerComp;
+import { AnimatePresence, motion } from 'framer-motion/dist/framer-motion';
+
+const RouterComp = ({ auth }) => {
+  let location = useLocation();
+
+  const routerComp = useRoutes(ROUTER(auth));
+
+  if (!routerComp) return null;
+
+  return (
+    <AnimatePresence mode="sync" initial={false}>
+      {cloneElement(routerComp, { key: location.pathname })}
+    </AnimatePresence>
+  );
 };
 
 function App(props) {
-  // const { isLogin, loading } = useAuthenticate();
-  // console.log(isLogin, loading);
   const [auth, setAuth] = useState(false);
   const authHook = useAuthenticate();
 
@@ -52,9 +66,9 @@ function App(props) {
           <Router>
             <SiderLayout />
             <ContentLayout>
-              <Spin spinning={authHook.loading}>
-                <RouterComp auth={auth}/>
-              </Spin>
+              {/* <Spin spinning={authHook.loading}> */}
+                <RouterComp auth={auth} />
+              {/* </Spin> */}
             </ContentLayout>
           </Router>
         </AuthProvider>
