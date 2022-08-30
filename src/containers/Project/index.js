@@ -1,51 +1,42 @@
-import {
-  EditOutlined,
-  LoginOutlined,
-  PlusSquareOutlined,
-  RestOutlined,
-  UserAddOutlined,
-} from '@ant-design/icons';
-import {
-  Button,
-  Col,
-  Popover,
-  Progress,
-  Row,
-  Spin,
-  Popconfirm,
-  Card,
-  message,
-  Modal,
-  Mentions,
-} from 'antd';
-import React, { Component, useEffect, useMemo, useRef, useState } from 'react';
+import { LoginOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Popover, Progress, Row, Spin } from 'antd';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
-import ModalForm from '../../components/Layout/UI/Modal/ModalForm';
-import UserSelected from '../../components/Layout/UI/Modal/UserSelected';
 import { useFetch } from '../../helper/hook';
 import ProjectService from '../../service/project.service';
-import { useIsPresent, motion } from 'framer-motion/dist/framer-motion';
 
 const Project = (props) => {
   const [showForm, setShowForm] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const projectRef = useRef(new Array());
-  let navigate = useNavigate();
 
   const { data, isLoading, status, refetch } = useFetch({
     cacheName: [`projectList`],
     fn: () => ProjectService.getAll(),
   });
 
-  const isPresent = useIsPresent();
+  const renderAction = (item) => {
+    let xhtml = [];
+    xhtml.push(
+      <Link
+        key={item._id}
+        to={`/project/${item.slug}`}
+        state={{ projectId: item._id }}
+        style={{
+          width: '100%',
+          borderRight: '1px solid #eee',
+          color: 'inherit',
+        }}
+      >
+        <LoginOutlined />
+      </Link>
+    );
+    return xhtml;
+  }
 
-  if (data) projectRef.current = data.data;
-
-  const renderCard = useMemo(
-    () => () => {
-      let xhtml = null;
-      xhtml = projectRef?.current?.map((item, index) => {
+  const renderCard = () => {
+    let xhtml = null;
+    xhtml =
+      data &&
+      data?.data?.map((item, index) => {
         return (
           <Col
             xs={24}
@@ -103,27 +94,6 @@ const Project = (props) => {
           </Col>
         );
       });
-      return xhtml;
-    },
-    [projectRef.current]
-  );
-
-  const renderAction = (item) => {
-    let xhtml = [];
-    xhtml.push(
-      <Link
-        key={item._id}
-        to={`/project/${item.slug}`}
-        state={{ projectId: item._id }}
-        style={{
-          width: '100%',
-          borderRight: '1px solid #eee',
-          color: 'inherit',
-        }}
-      >
-        <LoginOutlined />
-      </Link>
-    );
     return xhtml;
   };
 
@@ -136,17 +106,8 @@ const Project = (props) => {
           </Button>
         </Popover>
       </Col>
-      <Spin spinning={loading}>
-        <Row gutter={8}>{renderCard()}</Row>
-      </Spin>
 
-      <motion.div
-        initial={{ scaleX: 1 }}
-        animate={{ scaleX: 0, transition: { duration: 0.5, ease: 'circOut' } }}
-        exit={{ scaleX: 1, transition: { duration: 0.5, ease: 'circIn' } }}
-        style={{ originX: isPresent ? 0 : 1 }}
-        className="privacy-screen"
-      />
+      <Row gutter={8}>{status === 'success' && renderCard()}</Row>
     </Row>
   );
 };

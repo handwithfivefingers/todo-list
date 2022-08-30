@@ -37,6 +37,7 @@ const dismissDistance = 150;
 
 const TaskItem = (props) => {
   const handleSetting = () => {};
+
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -44,35 +45,9 @@ const TaskItem = (props) => {
 
   const { task, index, onDragStart } = props;
 
-  const yAxis = useMotionValue(0);
-
-  const zIndex = useMotionValue(open ? 2 : 0);
-
   // Maintain the visual border radius when we perform the layoutTransition by inverting its scaleX/Y
 
-  const inverted = useInvertedBorderRadius(20);
-
-  // We'll use the opened card element to calculate the scroll constraints
-  const cardRef = useRef(null);
-
-  const constraints = useScrollConstraints(cardRef, open);
-
-  const checkZIndex = (latest) => {
-    if (open) {
-      zIndex.set(9);
-    } else if (!open && latest.scaleX < 1.01) {
-      zIndex.set(0);
-    }
-  };
-
-  // When this card is selected, attach a wheel event listener
   const containerRef = useRef(null);
-
-  let { scaleX, scaleY } = inverted;
-  const scaleTranslate = ({ x, y, scaleX, scaleY }) =>
-    `scaleX(${scaleX}) scaleY(${scaleY}) translate(${x}, ${y}) translateZ(0)`;
-
-  const animateStart = () => {};
 
   const onFinish = () => {
     console.log(form.getFieldsValue());
@@ -82,34 +57,24 @@ const TaskItem = (props) => {
     <AnimatePresence>
       {task && (
         <div
-          className={styles.motionBlock}
+          className={[
+            styles.motionBlock,
+            'animate__animated animate__fadeInUp',
+          ].join(' ')}
           ref={containerRef}
           initial={{ opacity: 0, scale: 1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1 }}
         >
-          <Overlay isSelected={open} setOpen={setOpen} />
-
-          <motion.div
-            ref={cardRef}
-            isOpen={open}
+          <div
             className={[
               styles.motion,
               styles.todoCard,
               (open && styles.open) || '',
             ].join(' ')}
             layoutTransition={open ? openSpring : closeSpring}
-            onUpdate={checkZIndex}
-            style={{
-              ...inverted,
-              y: yAxis,
-            }}
-            onAnimationStart={animateStart}
-            dragConstraints={constraints}
-            onClick={() => setOpen(open ? open : true)}
             draggable={open ? false : true}
             onDragStart={(e) => onDragStart(e, task)}
-            transformTemplate={scaleTranslate}
           >
             <Form
               form={form}
@@ -127,27 +92,13 @@ const TaskItem = (props) => {
               />
               <TaskFooter open={open} onFinish={onFinish} />
             </Form>
-          </motion.div>
+          </div>
         </div>
       )}
     </AnimatePresence>
   );
 };
 
-const Overlay = ({ isSelected, setOpen }) => {
-  let location = useLocation();
-  return (
-    <motion.div
-      initial={false}
-      animate={{ opacity: isSelected ? 1 : 0 }}
-      transition={{ duration: 0.2 }}
-      style={{ pointerEvents: isSelected ? 'auto' : 'none' }}
-      className={styles.overlay}
-    >
-      <a onClick={(e) => setOpen(false)} />
-    </motion.div>
-  );
-};
 export default TaskItem;
 
 /**

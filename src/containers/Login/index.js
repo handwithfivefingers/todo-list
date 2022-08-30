@@ -1,6 +1,11 @@
-import { Button, Card, Form, Input, Space, Spin } from 'antd';
-import React, { Component, useContext, useEffect, useState } from 'react';
-import { Link, Redirect, useNavigate } from 'react-router-dom';
+import { Button, Card, Form, Input, Space } from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  Link,
+  Navigate,
+  useNavigate,
+  useNavigationType,
+} from 'react-router-dom';
 import { AuthContext } from '../../helper/context/AuthContext';
 import AuthenticateService from '../../service/authenticate.service';
 
@@ -13,6 +18,8 @@ const Login = () => {
 
   let navigate = useNavigate();
 
+  let navigateType = useNavigationType();
+
   const onFinish = async (val) => {
     try {
       let res = await AuthenticateService.Login(val);
@@ -23,9 +30,14 @@ const Login = () => {
       console.log(err);
     }
   };
-  
+
+
   useEffect(() => {
-    auth && navigate('/');
+    if (navigateType !== 'POP') {
+      auth && navigate(-1);
+    } else {
+      auth && navigate('/');
+    }
   }, [auth]);
 
   return (

@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useNavigationType } from 'react-router-dom';
 import NotFound from '../containers/404';
 import Login from '../containers/Login';
 import Profile from '../containers/Profile';
@@ -41,41 +41,47 @@ export const TASK_ROUTE = [
   },
 ];
 
-export default (status) => [
-  {
-    title: 'Trang chủ',
-    path: '',
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: 'project',
-        element: !status && <Navigate to="/login" /> || <Outlet />,
-        children: [
-          {
-            index: true,
-            element: <Project />,
-          },
-          {
-            path: ':slug',
-            element: <TaskBoard />,
-          },
-        ],
-      },
-      {
-        path: 'login',
-        element: status && <Navigate to="/" /> || <Login />,
-      },
-      {
-        path: 'register',
-        element: status && <Navigate to="/" /> || <Register />,
-      },
-    ],
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
-];
+export default (status) => {
+  let navigateType = useNavigationType();
+
+  return [
+    {
+      title: 'Trang chủ',
+      path: '',
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+        {
+          path: 'login',
+          element: status ? <Navigate to="/" /> : <Login />,
+        },
+        {
+          path: 'register',
+          element: <Register />,
+        },
+      ],
+    },
+    {
+      path: 'project',
+      element: (!status && <Navigate to="/login" />) || <Outlet />,
+      children: [
+        {
+          index: true,
+          element: <Project />,
+        },
+        {
+          path: ':slug',
+          element: <TaskBoard />,
+        },
+      ],
+    },
+
+    {
+      path: '*',
+      element: <NotFound />,
+    },
+  ];
+};

@@ -1,24 +1,13 @@
-import { EnterOutlined, UserOutlined } from '@ant-design/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Avatar, Button, Form, Input, Row, Select, Space } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Form, Row } from 'antd';
+import React, { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TASK_STATUS } from '../../constant/task';
 import { useFetch } from '../../helper/hook';
 import TaskService from '../../service/task.service';
 import TaskList from './../../components/TaskList';
 
-import {
-  AnimatePresence,
-  motion,
-  useIsPresent,
-} from 'framer-motion/dist/framer-motion';
-
-import styles from './styles.module.scss';
-
 import TaskHeader from '../../components/TaskHeader';
-
-import { openSpring, closeSpring } from '../../helper/animation';
 
 const TaskBoard = (props) => {
   let location = useLocation();
@@ -29,11 +18,7 @@ const TaskBoard = (props) => {
 
   const taskRef = useRef(new Array());
 
-  const isPresent = useIsPresent();
-
   const [form] = Form.useForm();
-
-  if (!location?.state?.projectId) navigate(-1);
 
   const { data, isLoading, status } = useFetch({
     cacheName: [`taskList-${location?.state?.projectId}`],
@@ -46,6 +31,8 @@ const TaskBoard = (props) => {
       queryClient.invalidateQueries([`taskList-${location.state.projectId}`]);
     },
   });
+
+  if (!location?.state?.projectId) return null;
 
   if (data) taskRef.current = data.data;
 
@@ -71,11 +58,6 @@ const TaskBoard = (props) => {
       });
     }
     return xhtml;
-  };
-
-  const handleUpdate = () => {
-    let val = form.getFieldsValue();
-    console.log(val);
   };
 
   return (

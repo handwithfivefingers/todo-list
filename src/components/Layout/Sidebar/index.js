@@ -10,7 +10,7 @@ import { Layout, Menu } from 'antd';
 
 import React, { useState } from 'react';
 
-import { NavLink } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import Logo from './../../../logo.svg';
 
@@ -19,6 +19,7 @@ const { SubMenu } = Menu;
 const { Sider } = Layout;
 
 const SiderLayout = (props) => {
+  const location = useLocation();
   const [state, setState] = useState({
     theme: 'dark',
   });
@@ -36,11 +37,11 @@ const SiderLayout = (props) => {
           style={{ background: 'inherit' }}
         >
           <Menu.Item key={'/'} icon={<PieChartOutlined />}>
-            <NavLink to="/">Home</NavLink>
+            <Link to="/">Home</Link>
           </Menu.Item>
 
           <Menu.Item key={'/project'} icon={<PieChartOutlined />}>
-            <NavLink to="/project">Project</NavLink>
+            <Link to="/project">Project</Link>
           </Menu.Item>
 
           {/* {authReducer.authenticate && authReducer.token ? (
@@ -60,7 +61,7 @@ const SiderLayout = (props) => {
             </>
           )} */}
           <Menu.Item key={'/login'} icon={<PieChartOutlined />}>
-            <NavLink to="/login">Login</NavLink>
+            <Link to="/login">Login</Link>
           </Menu.Item>
         </Menu>
       </div>
@@ -79,17 +80,18 @@ const SiderLayout = (props) => {
           // defaultSelectedKeys={match.path}
           mode="vertical"
           style={{ background: 'inherit' }}
+          selectedKeys={location.pathname}
         >
           <Menu.Item key={'/'} icon={<PieChartOutlined />}>
-            <NavLink to="/">Home</NavLink>
+            <Link to="/">Home</Link>
           </Menu.Item>
 
           <Menu.Item key={'/project'} icon={<FolderOutlined />}>
-            <NavLink to="/project">Project</NavLink>
+            <Link to="/project">Project</Link>
           </Menu.Item>
 
           <Menu.Item key={'/login'} icon={<PieChartOutlined />}>
-            <NavLink to="/login">Login</NavLink>
+            <Link to="/login">Login</Link>
           </Menu.Item>
         </Menu>
       </Sider>

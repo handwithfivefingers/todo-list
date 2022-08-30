@@ -1,4 +1,4 @@
-import { Layout, Spin } from 'antd';
+import { Layout, Spin, Button, notification } from 'antd';
 
 import { useState, useEffect, cloneElement } from 'react';
 
@@ -32,6 +32,8 @@ import Route from './constant/route';
 
 import { AnimatePresence, motion } from 'framer-motion/dist/framer-motion';
 
+import { fetchToken, onMessageListener } from './configs/firebase';
+
 const RouterComp = ({ auth }) => {
   let location = useLocation();
 
@@ -50,6 +52,48 @@ function App(props) {
   const [auth, setAuth] = useState(false);
   const authHook = useAuthenticate();
 
+  const [show, setShow] = useState(false);
+
+  const [isTokenFound, setTokenFound] = useState(false);
+
+  const [noti, setNoti] = useState({
+    message: null,
+    description: null,
+  });
+
+  useEffect(() => {
+    let { message, description } = noti;
+    if (show && (message || description)) {
+      notification.open({
+        message: noti.message,
+        description: noti.description,
+        duration: 0,
+      });
+      setShow(false);
+      setNoti({
+        message: null,
+        description: null,
+      });
+    }
+  }, [show, noti]);
+
+  fetchToken(setTokenFound);
+
+  onMessageListener()
+    .then((payload) => {
+      setNoti({
+        message: payload.notification.title,
+        description: payload.notification.body,
+      });
+      setShow(true);
+      // console.log(payload);
+    })
+    .catch((err) => console.log('failed: ', err));
+
+  const onShowNotificationClicked = () => {
+    setShow(true);
+  };
+
   useEffect(() => {
     setAuth(authHook.isLogin);
   }, [authHook]);
@@ -57,6 +101,9 @@ function App(props) {
   return (
     <div className="App">
       <Layout style={{ minHeight: '100vh', overflowX: 'hidden' }}>
+        {/* {isTokenFound && <h1> Notification permission enabled 👍🏻 </h1>}
+        {!isTokenFound && <h1> Need notification permission ❗️ </h1>}
+        <Button onClick={() => onShowNotificationClicked()}>Show Toast</Button> */}
         <AuthProvider
           value={{
             auth,
@@ -66,9 +113,9 @@ function App(props) {
           <Router>
             <SiderLayout />
             <ContentLayout>
-              {/* <Spin spinning={authHook.loading}> */}
+              <Spin spinning={authHook.loading}>
                 <RouterComp auth={auth} />
-              {/* </Spin> */}
+              </Spin>
             </ContentLayout>
           </Router>
         </AuthProvider>

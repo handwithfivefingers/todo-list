@@ -1,18 +1,10 @@
-import { Button, Card, Col } from 'antd';
+import { Button, Col } from 'antd';
 import React, { useMemo } from 'react';
 import TaskItem from '../TaskItem';
 import styles from './styles.module.scss';
 
 const TaskList = (props) => {
-  const {
-    stt,
-    counting,
-    onDragEvent,
-    onUpdate,
-    setConfigModal,
-    setOpen,
-    open,
-  } = props;
+  const { stt, counting, onDragEvent, onUpdate, setConfigModal } = props;
 
   const onDragStart = (e, item) => {
     e.dataTransfer.effectAllowed = 'move';
@@ -42,13 +34,11 @@ const TaskList = (props) => {
           onDragStart={onDragStart}
           onUpdate={onUpdate}
           setConfigModal={setConfigModal}
-          setOpen={setOpen}
-          open={open}
         />
       ))
     );
   }, [props?.task]);
-console.log(stt);
+
   return (
     <Col
       className="gutter-row task-background"
@@ -72,14 +62,8 @@ console.log(stt);
           {renderCardItem}
         </div>
 
-        <Button
-          className="task-btn"
-          // onClick={() => this.renderModalAddNew(stt.value)}
-        >
-          Add new
-        </Button>
+        <Button className="task-btn">Add new</Button>
       </div>
-      {/* </motion.div> */}
     </Col>
   );
 };
