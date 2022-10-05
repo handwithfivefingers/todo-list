@@ -1,32 +1,37 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+} from 'firebase/firestore';
 
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCtJPIdv7iG_cc19h5YkapMfJSVw8Qpf1M',
-  authDomain: 'push-notification-3ea3d.firebaseapp.com',
-  databaseURL: 'https://push-notification-3ea3d.firebaseio.com',
-  projectId: 'push-notification-3ea3d',
-  storageBucket: 'push-notification-3ea3d.appspot.com',
-  messagingSenderId: '863626441436',
-  appId: '1:863626441436:web:37eb8f6e2a96121e5aba19',
-  measurementId: 'G-D4B6EHSY9P',
+  apiKey: 'AIzaSyCzg8mSMFqkArE1jDQH1p7cVuMSUNCJMiM',
+  authDomain: 'todo-truyenmai.firebaseapp.com',
+  projectId: 'todo-truyenmai',
+  storageBucket: 'todo-truyenmai.appspot.com',
+  messagingSenderId: '499784443670',
+  appId: '1:499784443670:web:2205572d057b1589989237',
+  measurementId: 'G-7SD0B3DPBK',
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+const database = getFirestore(app);
+
 const analytics = getAnalytics(app);
 
 const messaging = getMessaging(app);
 
-export const fetchToken = (setTokenFound) => {
+const fetchToken = (setTokenFound) => {
   return getToken(messaging, {
     vapidKey:
       'BBkQ-6d5wmQNxKbliB7XgljJSDpS9LLZBzqZv_araUX9skJBs0_T42tzYDhtKPNHb3D4dYhI1GFSSSdEt2_dof0',
@@ -51,11 +56,63 @@ export const fetchToken = (setTokenFound) => {
     });
 };
 
-export const onMessageListener = () =>
+const onMessageListener = () =>
   new Promise((resolve) => {
     onMessage(messaging, (payload) => {
       resolve(payload);
     });
   });
 
-export { app, analytics };
+class FireBaseMethods {
+  constructor() {}
+
+  createDoc = async (field, params) => {
+    try {
+      console.log(field, params);
+      let res = await addDoc(collection(database, field), {
+        ...params,
+      });
+      console.log(res);
+      return true;
+    } catch (error) {
+      console.log('create doc error', error);
+      return false;
+    }
+  };
+
+  getSingleDoc = () => {};
+
+  getAllDocs = async (field) => {
+    const querySnapshot = await getDocs(collection(database, field));
+
+    let _data = querySnapshot.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() };
+    });
+
+    return _data;
+  };
+
+  updateDoc = async (...arg) => {
+    console.log(arg);
+
+    try {
+      let [field, ...otherThing] = arg;
+
+      console.log(field, otherThing);
+      // let res = await updateDoc(collection(database, arg[0]), {
+      //   ...params,
+      // });
+      // console.log(res);
+      // return true;
+    } catch (error) {
+      console.log('create doc error', error);
+      return false;
+    }
+  };
+
+  deleteDoc = () => {};
+}
+
+const FireBase = new FireBaseMethods();
+
+export { app, analytics, database, fetchToken, onMessageListener, FireBase };

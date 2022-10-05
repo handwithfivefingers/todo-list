@@ -1,58 +1,47 @@
-import { Row } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styles from './styles.module.scss';
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useDeprecatedInvertedScale,
-} from 'framer-motion/dist/framer-motion';
-
+import { Button } from 'antd';
+import { FireBase } from '../../configs/firebase';
 const Home = () => {
-  return (
-    <div className={styles.wrapper}>
-      <div className={styles.component}>
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-      </div>
-    </div>
-  );
-};
+  let [data, setData] = useState();
 
-const Card = (props) => {
-  const ref = useRef();
-  const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState(false);
+  useEffect(() => {
+    getScreenData();
+  }, []);
 
-  const animateConfig = {
-    animate: {
-      position: 'absolute',
-      top: open ? `calc(50% - ${ref.current?.clientHeight / 2})` : 0,
-      left: open ? `calc(50% - ${ref.current?.clientHeight / 2})` : 0,
-      width: ref.current?.clientWidth,
-      height: ref.current?.clientHeight,
-      zIndex: open ? 2 : 0,
-      opacity: open ? 1 : 0,
-      scaleX: open ? 2 : 1,
-      scaleY: open ? 2 : 1,
-    },
-    initial: false,
-    onClick: () => setOpen(!open),
-    transition: {
-      type: 'spring',
-      damping: 25,
-      stiffness: 200,
-    },
+  const getScreenData = async () => {
+    let res = await FireBase.getAllDocs('user');
+    console.log(res);
+  };
+
+  const addData = async () => {
+    console.log(FireBase);
+    let res = await FireBase.createDoc('user', {
+      username: 'hdme1997',
+      password: '12345678',
+      phone: '0798341239',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  };
+
+  const updateDoc = async () => {
+    console.log('update doc');
+    let res = await FireBase.updateDoc('user', {
+      username: 'hdme1997',
+      password: '123456789',
+      phone: '0798341239',
+      updatedAt: new Date(),
+    });
+    console.log(res);
   };
 
   return (
-    <div className={styles.item} style={{ position: 'relative' }} ref={ref}>
-      <motion.div className={styles.itemFixed} {...animateConfig}></motion.div>
-      <motion.h1 {...animateConfig}>hehe</motion.h1>
-      <h1>hehe</h1>
+    <div className={styles.wrapper}>
+      <div className={styles.component}>
+        <Button onClick={addData}> addData</Button>
+        <Button onClick={updateDoc}> updateDoc</Button>
+      </div>
     </div>
   );
 };

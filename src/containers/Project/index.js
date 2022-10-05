@@ -30,7 +30,7 @@ const Project = (props) => {
       </Link>
     );
     return xhtml;
-  }
+  };
 
   const renderCard = () => {
     let xhtml = null;

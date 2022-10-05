@@ -13,14 +13,19 @@
     "axios": "^0.21.1",
     "dayjs": "^1.11.5",
     "firebase": "^9.9.3",
-    "framer-motion": "^7.2.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
     "sass": "^1.35.2",
     "web-vitals": "^1.1.2"
+  },
+  "devDependencies": {
+    "react-error-overlay": "^6.0.9"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   },
   "scripts": {
     "start": "react-scripts start",

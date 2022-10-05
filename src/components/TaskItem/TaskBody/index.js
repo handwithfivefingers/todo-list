@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  motion,
-  useDeprecatedInvertedScale,
-} from 'framer-motion/dist/framer-motion';
 import { Alert, Form, Input, Progress } from 'antd';
 export default function TaskBody({ open, desc, progress, issue }) {
-  const inverted = useDeprecatedInvertedScale();
   const renderInput = () => {
     return (
       <>
@@ -49,9 +44,5 @@ export default function TaskBody({ open, desc, progress, issue }) {
       </>
     );
   };
-  return (
-    <motion.div style={{ ...inverted, originY: 0, originX: 0 }}>
-      {open ? renderInput() : renderHtml()}
-    </motion.div>
-  );
+  return <div>{open ? renderInput() : renderHtml()}</div>;
 }

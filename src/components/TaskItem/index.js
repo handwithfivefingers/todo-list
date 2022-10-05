@@ -1,39 +1,16 @@
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useDeprecatedInvertedScale,
-} from 'framer-motion/dist/framer-motion';
 import React, { useRef, useState } from 'react';
 
 import {
-  CalendarOutlined,
-  EditOutlined,
-  RestOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
-import {
-  Alert,
-  Avatar,
-  Col,
-  Form,
-  Popconfirm,
-  Popover,
-  Progress,
-  Row,
-  Space,
+  Form
 } from 'antd';
 
-import styles from './styles.module.scss';
+import { useNavigate } from 'react-router-dom';
 import { closeSpring, openSpring } from '../../helper/animation';
-import { useScrollConstraints, useWheelScroll } from '../../helper/hook';
-import { useInvertedBorderRadius } from '../../helper/hook/useInvertedBorderRadius';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import TaskTitle from './TaskTitle';
+import styles from './styles.module.scss';
 import TaskBody from './TaskBody';
 import TaskFooter from './TaskFooter';
+import TaskTitle from './TaskTitle';
 
-const dismissDistance = 150;
 
 const TaskItem = (props) => {
   const handleSetting = () => {};
@@ -54,48 +31,46 @@ const TaskItem = (props) => {
   };
 
   return (
-    <AnimatePresence>
-      {task && (
+    task && (
+      <div
+        className={[
+          styles.motionBlock,
+          'animate__animated animate__fadeInUp',
+        ].join(' ')}
+        ref={containerRef}
+        initial={{ opacity: 0, scale: 1 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 1 }}
+      >
         <div
           className={[
-            styles.motionBlock,
-            'animate__animated animate__fadeInUp',
+            styles.motion,
+            styles.todoCard,
+            (open && styles.open) || '',
           ].join(' ')}
-          ref={containerRef}
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1 }}
+          layoutTransition={open ? openSpring : closeSpring}
+          draggable={open ? false : true}
+          onDragStart={(e) => onDragStart(e, task)}
         >
-          <div
-            className={[
-              styles.motion,
-              styles.todoCard,
-              (open && styles.open) || '',
-            ].join(' ')}
-            layoutTransition={open ? openSpring : closeSpring}
-            draggable={open ? false : true}
-            onDragStart={(e) => onDragStart(e, task)}
+          <Form
+            form={form}
+            initialValues={{ ...task }}
+            layout="vertical"
+            onFinish={onFinish}
           >
-            <Form
-              form={form}
-              initialValues={{ ...task }}
-              layout="vertical"
-              onFinish={onFinish}
-            >
-              <TaskTitle open={open} name={task?.name} />
+            <TaskTitle open={open} name={task?.name} />
 
-              <TaskBody
-                open={open}
-                desc={task.desc}
-                progress={task.progress}
-                issue={task.issue}
-              />
-              <TaskFooter open={open} onFinish={onFinish} />
-            </Form>
-          </div>
+            <TaskBody
+              open={open}
+              desc={task.desc}
+              progress={task.progress}
+              issue={task.issue}
+            />
+            <TaskFooter open={open} onFinish={onFinish} />
+          </Form>
         </div>
-      )}
-    </AnimatePresence>
+      </div>
+    )
   );
 };
 

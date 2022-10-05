@@ -1,6 +1,6 @@
-import { Layout, Spin, Button, notification } from 'antd';
+import { Layout, notification, Spin } from 'antd';
 
-import { useState, useEffect, cloneElement } from 'react';
+import { cloneElement, useEffect, useState } from 'react';
 
 import {
   BrowserRouter as Router,
@@ -8,11 +8,7 @@ import {
   useRoutes,
 } from 'react-router-dom';
 
-import ROUTER, { TASK_ROUTE } from './constant/route';
-
-import NotFound from './containers/404';
-
-import LayoutRoute from './Layout';
+import ROUTER from './constant/route';
 
 import ContentLayout from './components/Layout/Content';
 
@@ -28,9 +24,6 @@ import { AuthProvider } from './helper/context/AuthContext';
 
 import { useAuthenticate } from './helper/hook';
 
-import Route from './constant/route';
-
-import { AnimatePresence, motion } from 'framer-motion/dist/framer-motion';
 
 import { fetchToken, onMessageListener } from './configs/firebase';
 
@@ -41,11 +34,7 @@ const RouterComp = ({ auth }) => {
 
   if (!routerComp) return null;
 
-  return (
-    <AnimatePresence mode="sync" initial={false}>
-      {cloneElement(routerComp, { key: location.pathname })}
-    </AnimatePresence>
-  );
+  return cloneElement(routerComp, { key: location.pathname });
 };
 
 function App(props) {
