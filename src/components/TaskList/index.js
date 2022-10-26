@@ -1,11 +1,12 @@
-import { Button, Col } from 'antd';
-import React, { useMemo } from 'react';
+import { Button, Col, Modal, Input, Form, InputNumber } from 'antd';
+import React, { useMemo, useRef } from 'react';
+import TaskService from '../../service/task.service';
 import TaskItem from '../TaskItem';
 import styles from './styles.module.scss';
 
 const TaskList = (props) => {
   const { stt, counting, onDragEvent, onUpdate, setConfigModal } = props;
-
+  const createRef = useRef();
   const onDragStart = (e, item) => {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text', JSON.stringify(item));
@@ -39,6 +40,41 @@ const TaskList = (props) => {
     );
   }, [props?.task]);
 
+  const openModal = () => {
+    Modal.success({
+      icon: '',
+      title: 'Create Event',
+      content: (
+        <Form ref={createRef} layout="vertical">
+          <Form.Item name={['name']} label="Name">
+            <Input />
+          </Form.Item>
+          <Form.Item name={['desc']} label="Description">
+            <Input.TextArea rows={4} />
+          </Form.Item>
+          <Form.Item name={['issue']} label="Issue">
+            <Input />
+          </Form.Item>
+          <Form.Item name={['progress']} label="Progressing">
+            <InputNumber min={0} max={100} style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item name={['status']} label="Status">
+            <InputNumber min={0} max={4} style={{ with: '100%' }} />
+          </Form.Item>
+        </Form>
+      ),
+      onOk: () => createTask(),
+    });
+  };
+
+  const createTask = async () => {
+    let value = createRef.current?.getFieldsValue();
+    console.log(value);
+
+    let res = await TaskService.create({...value, project: props?.projectId});
+    console.log(res);
+  };
+
   return (
     <Col
       className="gutter-row task-background"
@@ -62,7 +98,9 @@ const TaskList = (props) => {
           {renderCardItem}
         </div>
 
-        <Button className="task-btn">Add new</Button>
+        <Button className="task-btn" onClick={openModal}>
+          Add new
+        </Button>
       </div>
     </Col>
   );

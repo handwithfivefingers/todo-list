@@ -67,16 +67,25 @@ class FireBaseMethods {
   constructor() {}
 
   createDoc = async (field, params) => {
+    let result = {
+      status: false,
+      data: [],
+    };
     try {
-      console.log(field, params);
+      // console.log(field, params);
       let res = await addDoc(collection(database, field), {
         ...params,
       });
-      console.log(res);
-      return true;
+
+      result.status = true;
+
+      result.data = res;
     } catch (error) {
       console.log('create doc error', error);
-      return false;
+
+      result.status = false;
+    } finally {
+      return result;
     }
   };
 
@@ -99,11 +108,6 @@ class FireBaseMethods {
       let [field, ...otherThing] = arg;
 
       console.log(field, otherThing);
-      // let res = await updateDoc(collection(database, arg[0]), {
-      //   ...params,
-      // });
-      // console.log(res);
-      // return true;
     } catch (error) {
       console.log('create doc error', error);
       return false;

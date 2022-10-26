@@ -67,14 +67,6 @@ const TaskBoard = (props) => {
       <Row gutter={[16, 24]} style={{ marginTop: '20px' }}>
         {!isLoading && status === 'success' && renderTaskBoard()}
       </Row>
-
-      {/* <motion.div
-        initial={{ scaleX: 1 }}
-        animate={{ scaleX: 0, transition: { duration: 0.5, ease: 'circOut' } }}
-        exit={{ scaleX: 1, transition: { duration: 0.5, ease: 'circIn' } }}
-        style={{ originX: isPresent ? 0 : 1 }}
-        className="privacy-screen"
-      /> */}
     </>
   );
 };
